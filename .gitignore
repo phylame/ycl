@@ -10,7 +10,7 @@
 hs_err_pid*
 
 # Maven output
-*/target/
+target/
 
 # Eclipse files
 .project
