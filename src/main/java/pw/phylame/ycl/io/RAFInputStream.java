@@ -16,6 +16,9 @@
 
 package pw.phylame.ycl.io;
 
+import lombok.NonNull;
+import pw.phylame.ycl.util.Validate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -25,37 +28,29 @@ import java.io.RandomAccessFile;
  */
 public class RAFInputStream extends InputStream {
     private final RandomAccessFile source;
-    private final long endPos;    // value: curPos + size
-    private long curPos;
+    private final long endpos;    // value: curpos + size
+    private long curpos;
 
     public RAFInputStream(RandomAccessFile source, long size) throws IOException {
         this(source, source.getFilePointer(), size);
     }
 
     // size < 0 to use all content of source
-    public RAFInputStream(RandomAccessFile source, long offset, long size) throws IOException {
-        if (source == null) {
-            throw new NullPointerException("source");
-        }
-
+    public RAFInputStream(@NonNull RandomAccessFile source, long offset, long size) throws IOException {
         this.source = source;
         long length = source.length();
 
-        curPos = (offset < 0) ? 0 : offset;
-        endPos = (size < 0) ? length : curPos + size;
+        curpos = (offset < 0) ? 0 : offset;
+        endpos = (size < 0) ? length : curpos + size;
 
-        if (curPos >= length) {
-            throw new IllegalArgumentException("offset >= length of source");
-        }
-        if (endPos > length) {
-            throw new IllegalArgumentException("offset + size > length of source");
-        }
+        Validate.require(curpos < length, "offset >= length of source");
+        Validate.require(endpos <= length, "offset + size > length of source");
     }
 
     @Override
     public int read() throws IOException {
-        if (curPos < endPos) {
-            ++curPos;
+        if (curpos < endpos) {
+            ++curpos;
             return source.read();
         } else {
             return -1;
@@ -71,13 +66,13 @@ public class RAFInputStream extends InputStream {
         } else if (len == 0) {
             return 0;
         }
-        long count = endPos - curPos;
+        long count = endpos - curpos;
         if (count == 0) {
             return -1;
         }
         count = count < len ? count : len;
         len = source.read(b, off, (int) count);
-        curPos += count;
+        curpos += count;
         return len;
     }
 
@@ -86,13 +81,13 @@ public class RAFInputStream extends InputStream {
         if (n < 0) {
             return 0;
         }
-        n = source.skipBytes((int) Math.min(n, endPos - curPos));
-        curPos = Math.min(curPos + n, endPos);
+        n = source.skipBytes((int) Math.min(n, endpos - curpos));
+        curpos = Math.min(curpos + n, endpos);
         return n;
     }
 
     @Override
     public int available() throws IOException {
-        return (int) (endPos - curPos);
+        return (int) (endpos - curpos);
     }
 }

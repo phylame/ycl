@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ImplementorFactory<T> {
     private static final String TAG = "IMP";
@@ -28,7 +29,7 @@ public class ImplementorFactory<T> {
     private final boolean reusable;
     private final ClassLoader loader;
 
-    private final HashMap<String, ImpHolder> impHolders = new HashMap<>();
+    private final Map<String, ImpHolder> impHolders = new HashMap<>();
 
     /**
      * Constructs object with specified class type.
@@ -140,7 +141,7 @@ public class ImplementorFactory<T> {
                 Validate.checkNotNull(path, "No path and class specified");
                 val klass = loader != null ? Class.forName(path, true, loader) : Class.forName(path);
                 if (!type.isAssignableFrom(klass)) {
-                    Log.d("IMP", "{1} not extend or implement {2}", klass.getName(), type.getName());
+                    Log.d(TAG, "{1} not extend or implement {2}", klass.getName(), type.getName());
                     return null;
                 }
                 clazz = (Class<T>) klass;

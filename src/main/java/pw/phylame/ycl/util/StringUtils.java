@@ -42,72 +42,6 @@ public final class StringUtils {
         return !isEmpty(cs);
     }
 
-    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator) {
-        return getNamedParts(str, partSeparator, "=");
-    }
-
-    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator,
-                                                           @NonNull String valueSeparator) {
-        List<Pair<String, String>> parts = new ArrayList<>();
-        int index;
-        for (String part : str.split(partSeparator)) {
-            index = part.indexOf(valueSeparator);
-            if (index != -1) {
-                parts.add(new Pair<String, String>(part.substring(0, index), part.substring(index + valueSeparator.length())));
-            } else {
-                parts.add(new Pair<String, String>(part, ""));
-            }
-        }
-        return parts;
-    }
-
-    public static String getFirstPartOf(@NonNull String str, @NonNull String sep) {
-        int index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(0, index);
-    }
-
-    public static String getFirstPartOf(@NonNull String str, char sep) {
-        int index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(0, index);
-    }
-
-    public static String getSecondPartOf(@NonNull String str, @NonNull String sep) {
-        int index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(index + sep.length());
-    }
-
-    public static String getSecondPartOf(@NonNull String str, char sep) {
-        int index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(index + 1);
-    }
-
-    public static String getValueOfName(String str, String name, String sep, boolean ignoreCase) {
-        for (String part : str.split(sep)) {
-            int index = part.trim().indexOf('=');
-            if (index != -1) {
-                val n = part.substring(0, index);
-                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
-                    return part.substring(index + 1);
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String[] getValuesOfName(String str, String name, String sep, boolean ignoreCase) {
-        List<String> result = new ArrayList<>();
-        for (String part : str.split(sep)) {
-            int index = part.trim().indexOf('=');
-            if (index != -1) {
-                val n = part.substring(0, index);
-                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
-                    result.add(part.substring(index + 1));
-                }
-            }
-        }
-        return result.toArray(new String[result.size()]);
-    }
-
     public static String toString(Object o) {
         return o != null ? o.toString() : null;
     }
@@ -138,8 +72,8 @@ public final class StringUtils {
         }
         StringBuilder sb = new StringBuilder(str.length());
         boolean isFirst = true;
-        int length = str.length();
-        for (int i = 0; i < length; ++i) {
+        val end = str.length();
+        for (int i = 0; i < end; ++i) {
             char ch = str.charAt(i);
             if (!Character.isLetter(ch)) {
                 isFirst = true;
@@ -209,24 +143,25 @@ public final class StringUtils {
     }
 
     public static <T> String join(CharSequence separator, T[] objects) {
-        StringBuilder sb = new StringBuilder();
-        int end = objects.length - 1;
-        for (int ix = 0; ix < end; ++ix) {
-            sb.append(objects[ix].toString()).append(separator);
+        val b = new StringBuilder();
+        val end = objects.length - 1;
+        for (int i = 0; i < end; ++i) {
+            b.append(objects[i].toString()).append(separator);
         }
-        return sb.append(objects[end].toString()).toString();
+        return b.append(objects[end].toString()).toString();
     }
 
     public static <T> String join(CharSequence separator, Collection<T> objects) {
-        StringBuilder sb = new StringBuilder();
-        int end = objects.size(), ix = 1;
+        val b = new StringBuilder();
+        val end = objects.size();
+        int i = 1;
         for (T object : objects) {
-            sb.append(object.toString());
-            if (ix++ != end) {
-                sb.append(separator);
+            b.append(object.toString());
+            if (i++ != end) {
+                b.append(separator);
             }
         }
-        return sb.toString();
+        return b.toString();
     }
 
     /**
@@ -238,37 +173,105 @@ public final class StringUtils {
      * @throws NullPointerException if the <code>cs</code> is <code>null</code>
      */
     public static List<String> splitLines(@NonNull CharSequence cs, boolean skipEmpty) {
-        List<String> lines = new LinkedList<>();
-        int ix, begin = 0, length = cs.length();
+        val lines = new LinkedList<String>();
+        int i, begin = 0;
+        val end = cs.length();
         CharSequence sub;
-        for (ix = 0; ix < length; ) {
-            char ch = cs.charAt(ix);
+        for (i = 0; i < end; ) {
+            char ch = cs.charAt(i);
             if ('\n' == ch) {   // \n
-                sub = cs.subSequence(begin, ix);
+                sub = cs.subSequence(begin, i);
                 if (sub.length() > 0 || !skipEmpty) {
                     lines.add(sub.toString());
                 }
-                begin = ++ix;
+                begin = ++i;
             } else if ('\r' == ch) {
-                sub = cs.subSequence(begin, ix);
+                sub = cs.subSequence(begin, i);
                 if (sub.length() > 0 || !skipEmpty) {
                     lines.add(sub.toString());
                 }
-                if (ix + 1 < length && '\n' == cs.charAt(ix + 1)) {   // \r\n
-                    begin = ix += 2;
+                if (i + 1 < end && '\n' == cs.charAt(i + 1)) {   // \r\n
+                    begin = i += 2;
                 } else {    // \r
-                    begin = ++ix;
+                    begin = ++i;
                 }
             } else {
-                ++ix;
+                ++i;
             }
         }
-        if (ix >= begin) {
+        if (i >= begin) {
             sub = cs.subSequence(begin, cs.length());
             if (sub.length() > 0 || !skipEmpty) {
                 lines.add(sub.toString());
             }
         }
         return lines;
+    }
+
+
+    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator) {
+        return getNamedParts(str, partSeparator, "=");
+    }
+
+    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator,
+                                                           @NonNull String valueSeparator) {
+        List<Pair<String, String>> parts = new ArrayList<>();
+        int index;
+        for (String part : str.split(partSeparator)) {
+            index = part.indexOf(valueSeparator);
+            if (index != -1) {
+                parts.add(new Pair<String, String>(part.substring(0, index), part.substring(index + valueSeparator.length())));
+            } else {
+                parts.add(new Pair<String, String>(part, ""));
+            }
+        }
+        return parts;
+    }
+
+    public static String getFirstPartOf(@NonNull String str, @NonNull String sep) {
+        int index = str.indexOf(sep);
+        return index < 0 ? str : str.substring(0, index);
+    }
+
+    public static String getFirstPartOf(@NonNull String str, char sep) {
+        int index = str.indexOf(sep);
+        return index < 0 ? str : str.substring(0, index);
+    }
+
+    public static String getSecondPartOf(@NonNull String str, @NonNull String sep) {
+        int index = str.indexOf(sep);
+        return index < 0 ? str : str.substring(index + sep.length());
+    }
+
+    public static String getSecondPartOf(@NonNull String str, char sep) {
+        int index = str.indexOf(sep);
+        return index < 0 ? str : str.substring(index + 1);
+    }
+
+    public static String getValueOfName(String str, String name, String sep, boolean ignoreCase) {
+        for (String part : str.split(sep)) {
+            int index = part.trim().indexOf('=');
+            if (index != -1) {
+                val n = part.substring(0, index);
+                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
+                    return part.substring(index + 1);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String[] getValuesOfName(String str, String name, String sep, boolean ignoreCase) {
+        List<String> result = new ArrayList<>();
+        for (String part : str.split(sep)) {
+            int index = part.trim().indexOf('=');
+            if (index != -1) {
+                val n = part.substring(0, index);
+                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
+                    result.add(part.substring(index + 1));
+                }
+            }
+        }
+        return result.toArray(new String[result.size()]);
     }
 }

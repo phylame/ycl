@@ -30,6 +30,8 @@ public final class DateUtils {
     private DateUtils() {
     }
 
+    private static final String TAG = "DATEs";
+
     public static final String ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String RFC1123_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
@@ -115,20 +117,23 @@ public final class DateUtils {
     }
 
     public static Date parseDate(String str, Date defaultValue) {
-        if (str == null) {
+        if (StringUtils.isEmpty(str)) {
             return defaultValue;
         }
         try {
             return forISO(str);
         } catch (ParseException e) {
+            Log.e(TAG, e);
         }
         try {
             return forRFC1123(str);
         } catch (ParseException e) {
+            Log.e(TAG, e);
         }
         try {
             return forRFC1036(str);
         } catch (ParseException e) {
+            Log.e(TAG, e);
         }
         try {
             return forANSIC(str);

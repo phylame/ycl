@@ -41,29 +41,32 @@ public final class MiscUtils {
         return !isEmpty(m);
     }
 
-    public static <E> E getFirst(@NonNull Iterable<E> iterable) {
-        return getFirst(iterable.iterator());
+    public static <E> E firstOf(@NonNull Iterable<E> i) {
+        return firstOf(i.iterator());
     }
 
-    public static <E> E getFirst(@NonNull Iterator<E> iterator) {
-        return iterator.hasNext() ? iterator.next() : null;
+    public static <E> E firstOf(@NonNull Iterator<E> i) {
+        return i.hasNext() ? i.next() : null;
     }
 
+    @SafeVarargs
     public static <E> Set<E> setOf(E... elements) {
         val set = new HashSet<E>();
         Collections.addAll(set, elements);
-        return set;
+        return Collections.unmodifiableSet(set);
     }
 
     public static <K, V> Map<K, V> mapOf(Object... objects) {
-        Map<K, V> m = new HashMap<>();
+        val m = new HashMap<K, V>();
         fillMap(m, objects);
         return Collections.unmodifiableMap(m);
     }
 
-    public static <V> Map<Integer, V> indexedMapOf(@NonNull Collection<V> c) {
-        Map<Integer, V> m = new HashMap<>();
-        fillMap(m, c);
+    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c, int from) {
+        val m = new HashMap<Integer, V>();
+        for (V v : c) {
+            m.put(from++, v);
+        }
         return Collections.unmodifiableMap(m);
     }
 
@@ -77,12 +80,6 @@ public final class MiscUtils {
         }
         for (int i = 0; i < objects.length; i += 2) {
             m.put((K) objects[i], (V) objects[i + 1]);
-        }
-    }
-
-    public static <V> void fillMap(@NonNull Map<Integer, V> m, @NonNull Collection<V> c) {
-        for (V v : c) {
-            m.put(m.size(), v);
         }
     }
 }
