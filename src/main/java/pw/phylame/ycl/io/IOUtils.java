@@ -31,7 +31,7 @@ public final class IOUtils {
     /**
      * File of builtin MIME mapping.
      */
-    public static final String MIME_MAPPING_FILE = "mime.properties";
+    public static final String MIME_MAPPING_FILE = "/pw/phylame/ycl/io/mime.properties";
 
     /**
      * Mapping extension name to MIME type.
