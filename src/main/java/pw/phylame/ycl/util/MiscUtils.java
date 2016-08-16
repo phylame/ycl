@@ -17,6 +17,7 @@
 package pw.phylame.ycl.util;
 
 import lombok.NonNull;
+import lombok.val;
 
 import java.util.*;
 
@@ -46,6 +47,12 @@ public final class MiscUtils {
 
     public static <E> E getFirst(@NonNull Iterator<E> iterator) {
         return iterator.hasNext() ? iterator.next() : null;
+    }
+
+    public static <E> Set<E> setOf(E... elements) {
+        val set = new HashSet<E>();
+        Collections.addAll(set, elements);
+        return set;
     }
 
     public static <K, V> Map<K, V> mapOf(Object... objects) {
