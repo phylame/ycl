@@ -100,9 +100,6 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(ByteInput input, ByteOutput output, int size, int bufferSize) throws IOException {
-        if (size <= 0) {
-            return 0;
-        }
         byte[] bytes = new byte[bufferSize];
         int n, total = 0;
         while ((n = input.read(bytes, 0, bufferSize)) != -1) {
@@ -134,9 +131,6 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(Reader reader, Writer writer, int size, int bufferSize) throws IOException {
-        if (size == 0) {
-            return 0;
-        }
         char[] chars = new char[bufferSize];
         int n, total = 0;
         while ((n = reader.read(chars, 0, bufferSize)) != -1) {

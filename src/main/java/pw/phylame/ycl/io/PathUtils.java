@@ -92,7 +92,7 @@ public final class PathUtils {
         if (ext.isEmpty()) {
             return UNKNOWN_MIME;
         }
-        return mimeMap.get().getProperty(name, UNKNOWN_MIME);
+        return mimeMap.get().getProperty(ext, UNKNOWN_MIME);
     }
 
     public static String mimeOrDetect(@NonNull String path, String mime) {
