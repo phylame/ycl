@@ -27,10 +27,7 @@ import java.io.StringWriter;
 /**
  * Utilities for creating exception.
  */
-public final class Exceptions {
-    private Exceptions() {
-    }
-
+public class Exceptions {
     public static IllegalArgumentException forIllegalArgument(String format, Object... args) {
         return new IllegalArgumentException(String.format(format, args));
     }
