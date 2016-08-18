@@ -142,6 +142,14 @@ public final class DateUtils {
         }
     }
 
+    public static String format(@NonNull Date date, @NonNull String format) {
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    public static Date parse(@NonNull String str, @NonNull String format) throws ParseException {
+        return new SimpleDateFormat(format).parse(str);
+    }
+
     public static Date calculate(@NonNull Date date, char type, int amount) {
         int field;
         switch (type) {

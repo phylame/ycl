@@ -49,6 +49,10 @@ public final class MiscUtils {
         return i.hasNext() ? i.next() : null;
     }
 
+    public static <E> List<E> listOf(E... elements) {
+        return Arrays.asList(elements);
+    }
+
     @SafeVarargs
     public static <E> Set<E> setOf(E... elements) {
         val set = new HashSet<E>();
