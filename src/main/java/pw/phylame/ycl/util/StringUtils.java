@@ -70,7 +70,7 @@ public final class StringUtils {
         if (isEmpty(str)) {
             return toString(str);
         }
-        StringBuilder sb = new StringBuilder(str.length());
+        val b = new StringBuilder(str.length());
         boolean isFirst = true;
         val end = str.length();
         for (int i = 0; i < end; ++i) {
@@ -83,9 +83,9 @@ public final class StringUtils {
             } else {
                 ch = Character.toLowerCase(ch);
             }
-            sb.append(ch);
+            b.append(ch);
         }
-        return sb.toString();
+        return b.toString();
     }
 
     /**
@@ -95,6 +95,9 @@ public final class StringUtils {
      * @return the string removed space
      */
     public static String trimmed(String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
         int len = str.length();
         int st = 0;
 
@@ -115,8 +118,9 @@ public final class StringUtils {
      * @return <tt>true</tt> if all characters are upper case or
      * <tt>false</tt> if contains lower case character(s)
      */
-    public static boolean isLowerCase(CharSequence cs) {
-        for (int i = 0; i < cs.length(); ++i) {
+    public static boolean isLowerCase(@NonNull CharSequence cs) {
+        val end = cs.length();
+        for (int i = 0; i < end; ++i) {
             /* found upper case */
             if (Character.isUpperCase(cs.charAt(i))) {
                 return false;
@@ -132,8 +136,9 @@ public final class StringUtils {
      * @return <tt>true</tt> if all characters are lower case or
      * <tt>false</tt> if contains upper case character(s)
      */
-    public static boolean isUpperCase(CharSequence cs) {
-        for (int i = 0; i < cs.length(); ++i) {
+    public static boolean isUpperCase(@NonNull CharSequence cs) {
+        val end = cs.length();
+        for (int i = 0; i < end; ++i) {
             /* found lower case */
             if (Character.isLowerCase(cs.charAt(i))) {
                 return false;
@@ -142,8 +147,8 @@ public final class StringUtils {
         return true;
     }
 
-    public static <T> String join(CharSequence separator, T[] objects) {
-        val b = new StringBuilder();
+    public static <T> String join(@NonNull CharSequence separator, @NonNull T[] objects) {
+        val b = new StringBuilder(objects.length * 8);
         val end = objects.length - 1;
         for (int i = 0; i < end; ++i) {
             b.append(objects[i].toString()).append(separator);
@@ -151,11 +156,11 @@ public final class StringUtils {
         return b.append(objects[end].toString()).toString();
     }
 
-    public static <T> String join(CharSequence separator, Collection<T> objects) {
-        val b = new StringBuilder();
-        val end = objects.size();
+    public static <T> String join(@NonNull CharSequence separator, @NonNull Collection<T> elements) {
+        val b = new StringBuilder(elements.size() * 8);
+        val end = elements.size();
         int i = 1;
-        for (T object : objects) {
+        for (T object : elements) {
             b.append(object.toString());
             if (i++ != end) {
                 b.append(separator);
@@ -178,7 +183,7 @@ public final class StringUtils {
         val end = cs.length();
         CharSequence sub;
         for (i = 0; i < end; ) {
-            char ch = cs.charAt(i);
+            val ch = cs.charAt(i);
             if ('\n' == ch) {   // \n
                 sub = cs.subSequence(begin, i);
                 if (sub.length() > 0 || !skipEmpty) {
@@ -208,66 +213,68 @@ public final class StringUtils {
         return lines;
     }
 
-
-    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator) {
-        return getNamedParts(str, partSeparator, "=");
+    public static List<Pair<String, String>> getNamedPairs(String str, String partSeparator) {
+        return getNamedPairs(str, partSeparator, "=");
     }
 
-    public static List<Pair<String, String>> getNamedParts(@NonNull String str, @NonNull String partSeparator,
+    public static List<Pair<String, String>> getNamedPairs(@NonNull String str, @NonNull String partSeparator,
                                                            @NonNull String valueSeparator) {
-        List<Pair<String, String>> parts = new ArrayList<>();
+        val pairs = new ArrayList<Pair<String, String>>();
         int index;
-        for (String part : str.split(partSeparator)) {
+        for (val part : str.split(partSeparator)) {
             index = part.indexOf(valueSeparator);
             if (index != -1) {
-                parts.add(new Pair<String, String>(part.substring(0, index), part.substring(index + valueSeparator.length())));
+                pairs.add(new Pair<String, String>(part.substring(0, index), part.substring(index + valueSeparator.length())));
             } else {
-                parts.add(new Pair<String, String>(part, ""));
+                pairs.add(new Pair<String, String>(part, ""));
             }
         }
-        return parts;
+        return pairs;
     }
 
-    public static String getFirstPartOf(@NonNull String str, @NonNull String sep) {
-        int index = str.indexOf(sep);
+    public static String firstPartOf(@NonNull String str, @NonNull String sep) {
+        val index = str.indexOf(sep);
         return index < 0 ? str : str.substring(0, index);
     }
 
-    public static String getFirstPartOf(@NonNull String str, char sep) {
-        int index = str.indexOf(sep);
+    public static String firstPartOf(@NonNull String str, char sep) {
+        val index = str.indexOf(sep);
         return index < 0 ? str : str.substring(0, index);
     }
 
-    public static String getSecondPartOf(@NonNull String str, @NonNull String sep) {
-        int index = str.indexOf(sep);
+    public static String secondPartOf(@NonNull String str, @NonNull String sep) {
+        val index = str.indexOf(sep);
         return index < 0 ? str : str.substring(index + sep.length());
     }
 
-    public static String getSecondPartOf(@NonNull String str, char sep) {
-        int index = str.indexOf(sep);
+    public static String secondPartOf(@NonNull String str, char sep) {
+        val index = str.indexOf(sep);
         return index < 0 ? str : str.substring(index + 1);
     }
 
-    public static String getValueOfName(String str, String name, String sep, boolean ignoreCase) {
-        for (String part : str.split(sep)) {
-            int index = part.trim().indexOf('=');
+    public static String valueOfName(@NonNull String str, @NonNull String name, @NonNull String sep,
+                                     boolean ignoreCase, String fallback) {
+        for (val part : str.split(sep)) {
+            val index = part.trim().indexOf('=');
             if (index != -1) {
-                val n = part.substring(0, index);
-                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
-                    return part.substring(index + 1);
+                val tag = part.substring(0, index);
+                if (ignoreCase && tag.equalsIgnoreCase(name) || tag.equals(name)) {
+                    val value = part.substring(index + 1);
+                    return isNotEmpty(value) ? value : fallback;
                 }
             }
         }
         return null;
     }
 
-    public static String[] getValuesOfName(String str, String name, String sep, boolean ignoreCase) {
-        List<String> result = new ArrayList<>();
-        for (String part : str.split(sep)) {
-            int index = part.trim().indexOf('=');
+    public static String[] valuesOfName(@NonNull String str, @NonNull String name, @NonNull String sep,
+                                        boolean ignoreCase) {
+        val result = new ArrayList<String>();
+        for (val part : str.split(sep)) {
+            val index = part.trim().indexOf('=');
             if (index != -1) {
-                val n = part.substring(0, index);
-                if (ignoreCase && n.equalsIgnoreCase(name) || n.equals(name)) {
+                val tag = part.substring(0, index);
+                if (ignoreCase && tag.equalsIgnoreCase(name) || tag.equals(name)) {
                     result.add(part.substring(index + 1));
                 }
             }

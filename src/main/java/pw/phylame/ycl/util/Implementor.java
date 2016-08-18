@@ -22,7 +22,7 @@ import lombok.val;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImplementorFactory<T> {
+public class Implementor<T> {
     private static final String TAG = "IMP";
 
     private final Class<T> type;
@@ -37,7 +37,7 @@ public class ImplementorFactory<T> {
      * @param type     class of the interface
      * @param reusable <code>true</code> to reuse instance
      */
-    public ImplementorFactory(@NonNull Class<T> type, boolean reusable, ClassLoader loader) {
+    public Implementor(@NonNull Class<T> type, boolean reusable, ClassLoader loader) {
         this.type = type;
         this.reusable = reusable;
         this.loader = loader;
@@ -78,7 +78,7 @@ public class ImplementorFactory<T> {
         }
     }
 
-    public String[] getNames() {
+    public String[] names() {
         return impHolders.keySet().toArray(new String[impHolders.size()]);
     }
 

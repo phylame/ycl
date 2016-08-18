@@ -18,6 +18,7 @@ package pw.phylame.ycl.io;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.val;
 import pw.phylame.ycl.util.Log;
 
 import java.io.*;
@@ -36,6 +37,8 @@ public final class IOUtils {
     }
 
     private static final String TAG = "IOs";
+
+    public static final String CLASS_PATH_PREFIX = "!";
 
     /**
      * Default buffer size
@@ -72,6 +75,19 @@ public final class IOUtils {
 
     public static ByteOutput getByteOutput(RandomAccessFile raf) {
         return new RAFWrapper(raf);
+    }
+
+    public static InputStream openResource(@NonNull String path, ClassLoader loader) throws IOException {
+        if (path.startsWith(CLASS_PATH_PREFIX)) {
+            val name = path.substring(CLASS_PATH_PREFIX.length());
+            return loader != null
+                    ? loader.getResourceAsStream(name)
+                    : getContextClassLoader().getResourceAsStream(name);
+        } else if (path.matches("^((http://)|(https://)|(ftp://)|(file://)).*")) {
+            return new URL(path).openStream();
+        } else {
+            return new FileInputStream(path);
+        }
     }
 
     /**
