@@ -49,6 +49,7 @@ public final class MiscUtils {
         return i.hasNext() ? i.next() : null;
     }
 
+    @SafeVarargs
     public static <E> List<E> listOf(E... elements) {
         return Arrays.asList(elements);
     }

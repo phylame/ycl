@@ -22,6 +22,7 @@ import lombok.val;
 import pw.phylame.ycl.util.Log;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -75,19 +76,6 @@ public final class IOUtils {
 
     public static ByteOutput getByteOutput(RandomAccessFile raf) {
         return new RAFWrapper(raf);
-    }
-
-    public static InputStream openResource(@NonNull String path, ClassLoader loader) throws IOException {
-        if (path.startsWith(CLASS_PATH_PREFIX)) {
-            val name = path.substring(CLASS_PATH_PREFIX.length());
-            return loader != null
-                    ? loader.getResourceAsStream(name)
-                    : getContextClassLoader().getResourceAsStream(name);
-        } else if (path.matches("^((http://)|(https://)|(ftp://)|(file://)).*")) {
-            return new URL(path).openStream();
-        } else {
-            return new FileInputStream(path);
-        }
     }
 
     /**
@@ -445,7 +433,22 @@ public final class IOUtils {
         });
     }
 
-    public static Enumeration<URL> getResources(String name, ClassLoader loader) {
+    public static URL resourceFor(@NonNull String path, ClassLoader loader) throws MalformedURLException {
+        if (path.startsWith(CLASS_PATH_PREFIX)) {
+            val name = path.substring(CLASS_PATH_PREFIX.length());
+            return loader != null ? loader.getResource(name) : getContextClassLoader().getResource(name);
+        } else if (path.matches("^[a-z]{2,}://.*")) {
+            return new URL(path);
+        } else {
+            return new URL("file:///" + new File(path).getAbsolutePath());
+        }
+    }
+
+    public static InputStream openResource(@NonNull String path, ClassLoader loader) throws IOException {
+        return resourceFor(path, loader).openStream();
+    }
+
+    public static Enumeration<URL> resourcesFor(@NonNull String name, ClassLoader loader) {
         return AccessController.doPrivileged(new FindResourcesAction(name, loader));
     }
 
