@@ -440,12 +440,14 @@ public final class IOUtils {
         } else if (path.matches("^[a-z]{2,}://.*")) {
             return new URL(path);
         } else {
-            return new URL("file:///" + new File(path).getAbsolutePath());
+            val file = new File(path);
+            return file.exists() ? new URL("file:///" + file.getAbsolutePath()) : null;
         }
     }
 
     public static InputStream openResource(@NonNull String path, ClassLoader loader) throws IOException {
-        return resourceFor(path, loader).openStream();
+        val url = resourceFor(path, loader);
+        return url != null ? url.openStream() : null;
     }
 
     public static Enumeration<URL> resourcesFor(@NonNull String name, ClassLoader loader) {
