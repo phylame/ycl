@@ -16,6 +16,8 @@
 
 package pw.phylame.ycl.util;
 
+import lombok.Getter;
+
 import java.io.PrintStream;
 import java.text.MessageFormat;
 
@@ -23,59 +25,104 @@ public final class Log {
     private Log() {
     }
 
+    public static final int ALL = 7;
+
+    public static final int TRACE = 6;
+
+    public static final int DEBUG = 5;
+
+    public static final int INFO = 4;
+
+    public static final int WARN = 3;
+
+    public static final int ERROR = 2;
+
+    public static final int FATAL = 1;
+
+    public static final int OFF = 0;
+
+    public static final int DEFAULT_LEVEL = INFO;
+
+    @Getter
+    private static int level = DEFAULT_LEVEL;
+
     public static PrintStream out = System.out;
 
     public static PrintStream err = System.err;
 
+    public static void setLevel(int lv) {
+        if (lv < OFF || lv > ALL) {
+            throw Exceptions.forIllegalArgument("log level must in [OFF(%d), ALL(%d)], found %d", OFF, ALL, lv);
+        }
+        level = lv;
+    }
+
     public static void t(String tag, String format, Object... args) {
-        out.println(formatText(tag, "t", format, args));
+        if (isEnable(TRACE))
+            out.println(formatText(tag, "t", format, args));
     }
 
     public static void t(String tag, Throwable t) {
-        t(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(TRACE))
+            t(tag, Exceptions.dumpThrowable(t));
     }
 
     public static void d(String tag, String format, Object... args) {
-        out.println(formatText(tag, "d", format, args));
+        if (isEnable(DEBUG))
+            out.println(formatText(tag, "d", format, args));
     }
 
     public static void d(String tag, Throwable t) {
-        d(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(DEBUG))
+            d(tag, Exceptions.dumpThrowable(t));
     }
 
     public static void i(String tag, String format, Object... args) {
-        out.println(formatText(tag, "i", format, args));
+        if (isEnable(INFO))
+            out.println(formatText(tag, "i", format, args));
     }
 
     public static void i(String tag, Throwable t) {
-        i(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(INFO))
+            i(tag, Exceptions.dumpThrowable(t));
     }
 
     public static void w(String tag, String format, Object... args) {
-        out.println(formatText(tag, "w", format, args));
+        if (isEnable(WARN))
+            out.println(formatText(tag, "w", format, args));
     }
 
     public static void w(String tag, Throwable t) {
-        w(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(WARN))
+            w(tag, Exceptions.dumpThrowable(t));
     }
 
     public static void e(String tag, String format, Object... args) {
-        err.println(formatText(tag, "e", format, args));
+        if (isEnable(ERROR))
+            err.println(formatText(tag, "e", format, args));
     }
 
     public static void e(String tag, Throwable t) {
-        e(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(ERROR))
+            e(tag, Exceptions.dumpThrowable(t));
     }
 
     public static void f(String tag, String format, Object... args) {
-        err.println(formatText(tag, "f", format, args));
+        if (isEnable(FATAL))
+            err.println(formatText(tag, "f", format, args));
     }
 
     public static void f(String tag, Throwable t) {
-        f(tag, Exceptions.dumpThrowable(t));
+        if (isEnable(FATAL))
+            f(tag, Exceptions.dumpThrowable(t));
+    }
+
+    private static boolean isEnable(int lv) {
+        return lv <= level;
     }
 
     private static String formatText(String tag, String level, String format, Object... args) {
         return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag, MessageFormat.format(format, args));
     }
+
 }
