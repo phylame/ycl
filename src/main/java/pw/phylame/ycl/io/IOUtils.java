@@ -19,7 +19,7 @@ package pw.phylame.ycl.io;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.ycl.util.Log;
+import pw.phylame.ycl.log.Log;
 
 import java.io.*;
 import java.net.MalformedURLException;

@@ -14,47 +14,39 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.util;
+package pw.phylame.ycl.log;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import pw.phylame.ycl.util.Exceptions;
 
 import java.io.PrintStream;
 import java.text.MessageFormat;
+
+import static pw.phylame.ycl.log.Level.*;
 
 public final class Log {
     private Log() {
     }
 
-    public static final int ALL = 7;
-
-    public static final int TRACE = 6;
-
-    public static final int DEBUG = 5;
-
-    public static final int INFO = 4;
-
-    public static final int WARN = 3;
-
-    public static final int ERROR = 2;
-
-    public static final int FATAL = 1;
-
-    public static final int OFF = 0;
-
-    public static final int DEFAULT_LEVEL = INFO;
+    @Getter
+    @Setter
+    @NonNull
+    private static Level level = DEFAULT_LEVEL;
 
     @Getter
-    private static int level = DEFAULT_LEVEL;
+    @Setter
+    @NonNull
+    private static PrintStream out = System.out;
 
-    public static PrintStream out = System.out;
+    @Getter
+    @Setter
+    @NonNull
+    private static PrintStream err = System.err;
 
-    public static PrintStream err = System.err;
-
-    public static void setLevel(int lv) {
-        if (lv < OFF || lv > ALL) {
-            throw Exceptions.forIllegalArgument("log level must in [OFF(%d), ALL(%d)], found %d", OFF, ALL, lv);
-        }
-        level = lv;
+    public static boolean isEnable(Level level) {
+        return level.getCode() <= Log.level.getCode();
     }
 
     public static void t(String tag, String format, Object... args) {
@@ -115,10 +107,6 @@ public final class Log {
     public static void f(String tag, Throwable t) {
         if (isEnable(FATAL))
             f(tag, Exceptions.dumpThrowable(t));
-    }
-
-    private static boolean isEnable(int lv) {
-        return lv <= level;
     }
 
     private static String formatText(String tag, String level, String format, Object... args) {

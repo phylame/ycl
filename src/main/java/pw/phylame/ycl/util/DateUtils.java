@@ -17,6 +17,7 @@
 package pw.phylame.ycl.util;
 
 import lombok.NonNull;
+import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.value.Lazy;
 
 import java.text.DateFormat;

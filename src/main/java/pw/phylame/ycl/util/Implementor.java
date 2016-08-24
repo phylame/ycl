@@ -18,6 +18,7 @@ package pw.phylame.ycl.util;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.ycl.log.Log;
 
 import java.util.HashMap;
 import java.util.Map;

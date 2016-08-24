@@ -23,11 +23,15 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public final class Translator {
+public final class Linguist {
     private final String path;
     private final Locale locale;
 
-    public Translator(@NonNull String path, Locale locale) {
+    public Linguist(String path) {
+        this(path, null);
+    }
+
+    public Linguist(@NonNull String path, Locale locale) {
         this.path = path;
         this.locale = locale;
     }

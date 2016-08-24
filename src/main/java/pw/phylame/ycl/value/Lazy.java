@@ -17,7 +17,7 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
-import pw.phylame.ycl.util.Log;
+import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Provider;
 
 public final class Lazy<T> {
