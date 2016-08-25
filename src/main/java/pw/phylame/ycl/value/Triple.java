@@ -30,7 +30,7 @@ public final class Triple<A, B, C> {
     @Getter
     private final C third;
 
-    public <X extends A, Y extends B, Z extends C> Triple(X first, Y second, Z third) {
+    public <AX extends A, BX extends B, CX extends C> Triple(AX first, BX second, CX third) {
         this.first = first;
         this.second = second;
         this.third = third;

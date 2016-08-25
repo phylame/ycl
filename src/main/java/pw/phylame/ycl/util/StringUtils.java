@@ -213,6 +213,10 @@ public final class StringUtils {
         return lines;
     }
 
+    private static Pair<String, String> pairOf(String first, String second) {
+        return new Pair<>(first, second);
+    }
+
     public static List<Pair<String, String>> getNamedPairs(String str, String partSeparator) {
         return getNamedPairs(str, partSeparator, "=");
     }
@@ -224,32 +228,42 @@ public final class StringUtils {
         for (val part : str.split(partSeparator)) {
             index = part.indexOf(valueSeparator);
             if (index != -1) {
-                pairs.add(new Pair<String, String>(part.substring(0, index), part.substring(index + valueSeparator.length())));
+                pairs.add(pairOf(part.substring(0, index), part.substring(index + valueSeparator.length())));
             } else {
-                pairs.add(new Pair<String, String>(part, ""));
+                pairs.add(pairOf(part, ""));
             }
         }
         return pairs;
     }
 
-    public static String firstPartOf(@NonNull String str, @NonNull String sep) {
+    public static Pair<String, String> partition(@NonNull String str, @NonNull String sep) {
         val index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(0, index);
+        return index < 0
+                ? pairOf(str, "")
+                : pairOf(str.substring(0, index), str.substring(index + sep.length()));
+    }
+
+    public static Pair<String, String> partition(@NonNull String str, char sep) {
+        val index = str.indexOf(sep);
+        return index < 0
+                ? pairOf(str, "")
+                : pairOf(str.substring(0, index), str.substring(index + 1));
+    }
+
+    public static String firstPartOf(@NonNull String str, @NonNull String sep) {
+        return partition(str, sep).getFirst();
     }
 
     public static String firstPartOf(@NonNull String str, char sep) {
-        val index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(0, index);
+        return partition(str, sep).getFirst();
     }
 
     public static String secondPartOf(@NonNull String str, @NonNull String sep) {
-        val index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(index + sep.length());
+        return partition(str, sep).getSecond();
     }
 
     public static String secondPartOf(@NonNull String str, char sep) {
-        val index = str.indexOf(sep);
-        return index < 0 ? str : str.substring(index + 1);
+        return partition(str, sep).getSecond();
     }
 
     public static String valueOfName(@NonNull String str, @NonNull String name, @NonNull String sep,

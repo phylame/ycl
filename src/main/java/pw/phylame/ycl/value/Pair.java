@@ -27,7 +27,7 @@ public final class Pair<A, B> {
     @Getter
     private final B second;
 
-    public <X extends A, Y extends B> Pair(X first, Y second) {
+    public <AX extends A, BX extends B> Pair(AX first, BX second) {
         this.first = first;
         this.second = second;
     }
