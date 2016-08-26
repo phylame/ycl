@@ -17,8 +17,11 @@
 package pw.phylame.ycl.util;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.val;
+import pw.phylame.ycl.io.IOUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 public final class MiscUtils {
@@ -50,14 +53,14 @@ public final class MiscUtils {
     }
 
     @SafeVarargs
-    public static <E> List<E> listOf(E... elements) {
-        return Arrays.asList(elements);
+    public static <E> List<E> listOf(E... objects) {
+        return Arrays.asList(objects);
     }
 
     @SafeVarargs
-    public static <E> Set<E> setOf(E... elements) {
+    public static <E> Set<E> setOf(E... objects) {
         val set = new HashSet<E>();
-        Collections.addAll(set, elements);
+        Collections.addAll(set, objects);
         return Collections.unmodifiableSet(set);
     }
 
@@ -76,7 +79,7 @@ public final class MiscUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <K, V> void fillMap(Map<K, V> m, Object... objects) {
+    public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... objects) {
         if (objects == null || objects.length == 0) {
             return;
         }
@@ -85,6 +88,27 @@ public final class MiscUtils {
         }
         for (int i = 0; i < objects.length; i += 2) {
             m.put((K) objects[i], (V) objects[i + 1]);
+        }
+    }
+
+    public static Properties propertiesFor(@NonNull String path, ClassLoader loader) throws IOException {
+        val in = IOUtils.openResource(path, loader);
+        if (in != null) {
+            val prop = new Properties();
+            prop.load(in);
+            in.close();
+            return prop;
+        }
+        return null;
+    }
+
+    @SneakyThrows(IOException.class)
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path) {
+        val prop = propertiesFor(path, null);
+        if (prop != null) {
+            for (val e : prop.entrySet()) {
+                m.put(e.getKey().toString(), e.getValue().toString());
+            }
         }
     }
 }
