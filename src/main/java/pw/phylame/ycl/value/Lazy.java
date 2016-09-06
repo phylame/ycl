@@ -20,7 +20,7 @@ import lombok.NonNull;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Provider;
 
-public final class Lazy<T> {
+public final class Lazy<T> implements Value<T> {
     private volatile boolean initialized = false;
 
     private T value;
@@ -38,6 +38,7 @@ public final class Lazy<T> {
         this.fallback = fallback;
     }
 
+    @Override
     public T get() {
         if (!initialized) {
             synchronized (this) {

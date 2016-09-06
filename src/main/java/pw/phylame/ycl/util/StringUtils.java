@@ -169,6 +169,14 @@ public final class StringUtils {
         return b.toString();
     }
 
+    public static String multiplyOf(String str, int count) {
+        val b = new StringBuffer();
+        for (int i = 0; i < count; i++) {
+            b.append(str);
+        }
+        return b.toString();
+    }
+
     /**
      * Returns list of lines split from text content in this object.
      *

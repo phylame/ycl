@@ -18,14 +18,15 @@ package pw.phylame.ycl.util;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 
 import java.io.IOException;
 import java.util.*;
 
-public final class MiscUtils {
-    private MiscUtils() {
+public final class CollectionUtils {
+    private CollectionUtils() {
     }
 
     public static boolean isEmpty(Collection<?> c) {
@@ -44,12 +45,16 @@ public final class MiscUtils {
         return !isEmpty(m);
     }
 
-    public static <E> E firstOf(@NonNull Iterable<E> i) {
-        return firstOf(i.iterator());
+    public static <E> E firstOf(Iterable<E> i) {
+        return i != null ? firstOf(i.iterator()) : null;
     }
 
-    public static <E> E firstOf(@NonNull Iterator<E> i) {
-        return i.hasNext() ? i.next() : null;
+    public static <E> E firstOf(Iterator<E> i) {
+        return i == null ? null : (i.hasNext() ? i.next() : null);
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull Enumeration<?> e, final Function<Object, E> transformer) {
+        return new SimpleIterable<>(new EnumerationIterator<>(e, transformer));
     }
 
     @SafeVarargs
@@ -103,12 +108,44 @@ public final class MiscUtils {
     }
 
     @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path) {
-        val prop = propertiesFor(path, null);
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path, ClassLoader loader) {
+        val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {
                 m.put(e.getKey().toString(), e.getValue().toString());
             }
+        }
+    }
+
+    @Value
+    private static class SimpleIterable<E> implements Iterable<E> {
+        private final Iterator<E> i;
+
+        @Override
+        public Iterator<E> iterator() {
+            return i;
+        }
+    }
+
+    @Value
+    private static class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<?> e;
+        private final Function<Object, E> transformer;
+
+        @Override
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        @Override
+        public E next() {
+            val item = e.nextElement();
+            return transformer != null ? transformer.apply(item) : (E) item;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
         }
     }
 }
