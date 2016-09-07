@@ -23,6 +23,7 @@ import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -81,7 +82,11 @@ public final class PathUtils {
     }, new Properties());
 
     public static void mapMime(@NonNull String extension, @NonNull String mime) {
-        mimeMap.get().setProperty(extension, mime);
+        mimeMap.get().put(extension, mime);
+    }
+
+    public static void updateMimes(@NonNull Map<?, ?> m) {
+        mimeMap.get().putAll(m);
     }
 
     public static String mimeFor(@NonNull String name) {

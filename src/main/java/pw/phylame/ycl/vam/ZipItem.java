@@ -14,13 +14,39 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.format;
+package pw.phylame.ycl.vam;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
-public abstract class AbstraceConverter<T> implements Converter<T> {
+import java.util.zip.ZipEntry;
+
+@ToString
+public class ZipItem implements Item {
+    @Getter
+    private final ZipEntry entry;
+
+    public ZipItem(@NonNull String name) {
+        this.entry = new ZipEntry(name);
+    }
+
+    public ZipItem(ZipEntry entry) {
+        this.entry = entry;
+    }
+
     @Override
-    public String render(@NonNull T o) {
-        return o.toString();
+    public String getName() {
+        return entry.getName();
+    }
+
+    @Override
+    public String getComment() {
+        return entry.getComment();
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return entry.isDirectory();
     }
 }

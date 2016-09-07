@@ -57,7 +57,7 @@ public final class Converters {
     }
 
     static {
-        val sc = new AbstraceConverter<String>() {
+        val sc = new AbstractConverter<String>() {
             @Override
             public String parse(String str) {
                 return str;
@@ -65,7 +65,7 @@ public final class Converters {
         };
         set(String.class, sc);
         set(CharSequence.class, sc);
-        val bc = new AbstraceConverter<Boolean>() {
+        val bc = new AbstractConverter<Boolean>() {
             @Override
             public Boolean parse(String str) {
                 return Boolean.parseBoolean(str);
@@ -73,7 +73,7 @@ public final class Converters {
         };
         set(Boolean.class, bc);
         set(boolean.class, bc);
-        val yc = new AbstraceConverter<Byte>() {
+        val yc = new AbstractConverter<Byte>() {
             @Override
             public Byte parse(String str) {
                 return Byte.parseByte(str);
@@ -81,7 +81,7 @@ public final class Converters {
         };
         set(Byte.class, yc);
         set(byte.class, yc);
-        val hc = new AbstraceConverter<Short>() {
+        val hc = new AbstractConverter<Short>() {
             @Override
             public Short parse(String str) {
                 return Short.parseShort(str);
@@ -89,7 +89,7 @@ public final class Converters {
         };
         set(Short.class, hc);
         set(short.class, hc);
-        val ic = new AbstraceConverter<Integer>() {
+        val ic = new AbstractConverter<Integer>() {
             @Override
             public Integer parse(String str) {
                 return Integer.parseInt(str);
@@ -97,7 +97,7 @@ public final class Converters {
         };
         set(Integer.class, ic);
         set(int.class, ic);
-        val lc = new AbstraceConverter<Long>() {
+        val lc = new AbstractConverter<Long>() {
             @Override
             public Long parse(String str) {
                 return Long.parseLong(str);
@@ -105,7 +105,7 @@ public final class Converters {
         };
         set(Long.class, lc);
         set(long.class, lc);
-        val fc = new AbstraceConverter<Float>() {
+        val fc = new AbstractConverter<Float>() {
             @Override
             public Float parse(String str) {
                 return Float.parseFloat(str);
@@ -113,7 +113,7 @@ public final class Converters {
         };
         set(Float.class, fc);
         set(float.class, fc);
-        val dc = new AbstraceConverter<Double>() {
+        val dc = new AbstractConverter<Double>() {
             @Override
             public Double parse(String str) {
                 return Double.parseDouble(str);

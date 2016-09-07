@@ -46,35 +46,35 @@ public final class IOUtils {
      */
     public static int DEFAULT_BUFFER_SIZE = 8192;
 
-    public interface ByteInput {
+    public interface Reading {
         int read(byte[] b, int off, int len) throws IOException;
     }
 
-    public static ByteInput getByteInput(InputStream in) {
+    public static Reading getReading(@NonNull InputStream in) {
         if (!(in instanceof BufferedInputStream)) {
             in = new BufferedInputStream(in);
         }
         return new ISWrapper(in);
     }
 
-    public static ByteInput getByteInput(RandomAccessFile raf) {
+    public static Reading getReading(RandomAccessFile raf) {
         return new RAFWrapper(raf);
     }
 
-    public interface ByteOutput {
+    public interface Writing {
         void write(byte[] b, int off, int len) throws IOException;
 
         void flush() throws IOException;
     }
 
-    public static ByteOutput getByteOutput(OutputStream out) {
+    public static Writing getWriting(OutputStream out) {
         if (!(out instanceof BufferedOutputStream)) {
             out = new BufferedOutputStream(out);
         }
         return new OSWrapper(out);
     }
 
-    public static ByteOutput getByteOutput(RandomAccessFile raf) {
+    public static Writing getWriting(RandomAccessFile raf) {
         return new RAFWrapper(raf);
     }
 
@@ -94,7 +94,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>ByteInput</code> to <code>ByteOutput</code>.
+     * Copies bytes from <code>Reading</code> to <code>Writing</code>.
      *
      * @param input      input source
      * @param output     destination output
@@ -103,7 +103,7 @@ public final class IOUtils {
      * @return number of copied bytes
      * @throws IOException if occur I/O error.
      */
-    public static int copy(ByteInput input, ByteOutput output, int size, int bufferSize) throws IOException {
+    public static int copy(@NonNull Reading input, @NonNull Writing output, int size, int bufferSize) throws IOException {
         byte[] bytes = new byte[bufferSize];
         int n, total = 0;
         while ((n = input.read(bytes, 0, bufferSize)) != -1) {
@@ -120,7 +120,7 @@ public final class IOUtils {
         return total;
     }
 
-    public static int copy(ByteInput input, ByteOutput output, int size) throws IOException {
+    public static int copy(Reading input, Writing output, int size) throws IOException {
         return copy(input, output, size, DEFAULT_BUFFER_SIZE);
     }
 
@@ -134,7 +134,7 @@ public final class IOUtils {
      * @return number of copied characters
      * @throws IOException if occur I/O error.
      */
-    public static int copy(Reader reader, Writer writer, int size, int bufferSize) throws IOException {
+    public static int copy(@NonNull Reader reader, @NonNull Writer writer, int size, int bufferSize) throws IOException {
         char[] chars = new char[bufferSize];
         int n, total = 0;
         while ((n = reader.read(chars, 0, bufferSize)) != -1) {
@@ -166,7 +166,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(InputStream in, OutputStream out, int size, int bufferSize) throws IOException {
-        return copy(getByteInput(in), getByteOutput(out), size, bufferSize);
+        return copy(getReading(in), getWriting(out), size, bufferSize);
     }
 
     public static int copy(InputStream in, OutputStream out, int size) throws IOException {
@@ -184,7 +184,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(InputStream in, RandomAccessFile out, int size, int bufferSize) throws IOException {
-        return copy(getByteInput(in), getByteOutput(out), size, bufferSize);
+        return copy(getReading(in), getWriting(out), size, bufferSize);
     }
 
     public static int copy(InputStream in, RandomAccessFile out, int size) throws IOException {
@@ -202,7 +202,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(RandomAccessFile in, OutputStream out, int size, int bufferSize) throws IOException {
-        return copy(getByteInput(in), getByteOutput(out), size, bufferSize);
+        return copy(getReading(in), getWriting(out), size, bufferSize);
     }
 
     public static int copy(RandomAccessFile in, OutputStream out, int size) throws IOException {
@@ -220,7 +220,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static int copy(RandomAccessFile in, RandomAccessFile out, int size, int bufferSize) throws IOException {
-        return copy(getByteInput(in), getByteOutput(out), size, bufferSize);
+        return copy(getReading(in), getWriting(out), size, bufferSize);
     }
 
     public static int copy(RandomAccessFile in, RandomAccessFile out, int size) throws IOException {
@@ -234,9 +234,9 @@ public final class IOUtils {
      * @return the bytes
      * @throws IOException if occur I/O error
      */
-    public static byte[] toBytes(ByteInput in) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        copy(in, getByteOutput(out), -1, DEFAULT_BUFFER_SIZE);
+    public static byte[] toBytes(Reading in) throws IOException {
+        val out = new ByteArrayOutputStream();
+        copy(in, getWriting(out), -1, DEFAULT_BUFFER_SIZE);
         return out.toByteArray();
     }
 
@@ -248,7 +248,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error
      */
     public static byte[] toBytes(InputStream in) throws IOException {
-        return toBytes(getByteInput(in));
+        return toBytes(getReading(in));
     }
 
     /**
@@ -259,7 +259,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error
      */
     public static byte[] toBytes(RandomAccessFile raf) throws IOException {
-        return toBytes(getByteInput(raf));
+        return toBytes(getReading(raf));
     }
 
     /**
@@ -318,7 +318,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error.
      */
     public static String toString(Reader reader) throws IOException {
-        StringWriter out = new StringWriter();
+        val out = new StringWriter();
         copy(reader, out, -1, DEFAULT_BUFFER_SIZE);
         return out.toString();
     }
@@ -331,9 +331,9 @@ public final class IOUtils {
      * @return the string
      * @throws IOException if occur I/O error
      */
-    public static String toString(ByteInput in, String encoding) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        copy(in, getByteOutput(out), -1, DEFAULT_BUFFER_SIZE);
+    public static String toString(Reading in, String encoding) throws IOException {
+        val out = new ByteArrayOutputStream();
+        copy(in, getWriting(out), -1, DEFAULT_BUFFER_SIZE);
         return encoding != null ? out.toString(encoding) : out.toString();
     }
 
@@ -346,7 +346,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O error
      */
     public static String toString(InputStream in, String encoding) throws IOException {
-        return toString(getByteInput(in), encoding);
+        return toString(getReading(in), encoding);
     }
 
     /**
@@ -358,13 +358,8 @@ public final class IOUtils {
      * @throws IOException if occur I/O error
      */
     public static List<String> toLines(Reader reader, boolean skipEmpty) throws IOException {
-        BufferedReader br;
-        if (reader instanceof BufferedReader) {
-            br = (BufferedReader) reader;
-        } else {
-            br = new BufferedReader(reader);
-        }
-        List<String> lines = new LinkedList<>();
+        val br = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+        val lines = new LinkedList<String>();
         String line;
         while ((line = br.readLine()) != null) {
             if (!line.isEmpty() || !skipEmpty) {
@@ -396,7 +391,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O errors
      */
     public static void copyFile(File source, File target, int bufferSize) throws IOException {
-        try (FileInputStream in = new FileInputStream(source); FileOutputStream out = new FileOutputStream(target)) {
+        try (val in = new FileInputStream(source); FileOutputStream out = new FileOutputStream(target)) {
             copy(in, out, -1, bufferSize);
         }
     }
@@ -414,7 +409,7 @@ public final class IOUtils {
      * @throws IOException if occur I/O errors
      */
     public static void write(File file, CharSequence cs, String encoding) throws IOException {
-        try (BufferedWriter writer = openWriter(file, encoding)) {
+        try (val writer = openWriter(file, encoding)) {
             writer.write(cs.toString());
         }
     }
@@ -455,7 +450,7 @@ public final class IOUtils {
     }
 
     @AllArgsConstructor
-    private static class ISWrapper implements ByteInput {
+    private static class ISWrapper implements Reading {
         @NonNull
         private final InputStream stream;
 
@@ -466,7 +461,7 @@ public final class IOUtils {
     }
 
     @AllArgsConstructor
-    private static class OSWrapper implements ByteOutput {
+    private static class OSWrapper implements Writing {
         @NonNull
         private final OutputStream stream;
 
@@ -482,7 +477,7 @@ public final class IOUtils {
     }
 
     @AllArgsConstructor
-    private static class RAFWrapper implements ByteInput, ByteOutput {
+    private static class RAFWrapper implements Reading, Writing {
         @NonNull
         private final RandomAccessFile raf;
 
