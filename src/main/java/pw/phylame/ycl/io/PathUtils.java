@@ -18,6 +18,7 @@ package pw.phylame.ycl.io;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.ycl.util.CollectionUtils;
 import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
@@ -67,17 +68,12 @@ public final class PathUtils {
         return extsep != path.length() ? path.substring(extsep + 1) : "";
     }
 
-    private static final String MIME_MAPPING_FILE = "/pw/phylame/ycl/io/mime.properties";
+    private static final String MIME_MAPPING_FILE = "!pw/phylame/ycl/io/mime.properties";
 
     private static final Lazy<Properties> mimeMap = new Lazy<>(new Provider<Properties>() {
         @Override
         public Properties provide() throws Exception {
-            val prop = new Properties();
-            val in = PathUtils.class.getResourceAsStream(MIME_MAPPING_FILE);
-            if (in != null) {
-                prop.load(in);
-            }
-            return prop;
+            return CollectionUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
         }
     }, new Properties());
 

@@ -17,21 +17,19 @@
 package pw.phylame.ycl.util;
 
 import lombok.NonNull;
+import lombok.val;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class MultiValueMap<K, V> implements Map<K, V> {
+public class MultiValueMap<K, V> implements Map<K, Collection<V>> {
     @NonNull
-    private final Map<K, V> m;
+    private final Map<K, Collection<V>> m;
 
     public MultiValueMap() {
         m = new HashMap<>();
     }
 
-    public MultiValueMap(Map<K, V> m) {
+    public MultiValueMap(Map<K, Collection<V>> m) {
         this.m = m;
     }
 
@@ -52,27 +50,62 @@ public class MultiValueMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        return m.containsValue(value);
+        if (value instanceof Collection) {
+            return m.containsValue(value);
+        } else {
+            for (Collection<?> c : m.values()) {
+                if (c != null && c.contains(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     @Override
-    public V get(Object key) {
+    public Collection<V> get(Object key) {
         return m.get(key);
     }
 
-    @Override
-    public V put(K key, V value) {
-        return m.put(key, value);
+    public V getOne(K key) {
+        val c = m.get(key);
+        return CollectionUtils.isNotEmpty(c) ? CollectionUtils.firstOf(c) : null;
     }
 
     @Override
-    public V remove(Object key) {
+    public Collection<V> put(K key, Collection<V> value) {
+        return m.put(key, value);
+    }
+
+    public Collection<V> putOne(K key, V value) {
+        final Collection<V> prev = m.get(key), list = new LinkedList<V>();
+        list.add(value);
+        m.put(key, list);
+        return prev;
+    }
+
+    public void addOne(K key, V value) {
+        Collection<V> c = m.get(key);
+        if (c == null) {
+            m.put(key, c = new LinkedList<>());
+        }
+        c.add(value);
+    }
+
+    @Override
+    public Collection<V> remove(Object key) {
         return m.remove(key);
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(Map<? extends K, ? extends Collection<V>> m) {
         this.m.putAll(m);
+    }
+
+    public void update(Map<? extends K, ? extends V> m) {
+        for (val e : m.entrySet()) {
+            addOne(e.getKey(), e.getValue());
+        }
     }
 
     @Override
@@ -86,12 +119,12 @@ public class MultiValueMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public Collection<V> values() {
+    public Collection<Collection<V>> values() {
         return m.values();
     }
 
     @Override
-    public Set<Entry<K, V>> entrySet() {
+    public Set<Entry<K, Collection<V>>> entrySet() {
         return m.entrySet();
     }
 
