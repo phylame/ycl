@@ -46,7 +46,13 @@ public final class CollectionUtils {
     }
 
     public static <E> E firstOf(Iterable<E> i) {
-        return i != null ? firstOf(i.iterator()) : null;
+        if (i == null) {
+            return null;
+        } else if (i instanceof List) {
+            val list = (List<E>) i;
+            return list.isEmpty() ? null : list.get(0);
+        }
+        return firstOf(i.iterator());
     }
 
     public static <E> E firstOf(Iterator<E> i) {
