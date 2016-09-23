@@ -29,28 +29,36 @@ import java.io.StringWriter;
  */
 public class Exceptions {
     public static IllegalArgumentException forIllegalArgument(String format, Object... args) {
-        return new IllegalArgumentException(String.format(format, args));
+        return new IllegalArgumentException(_(format, args));
     }
 
     public static IllegalStateException forIllegalState(String format, Object... args) {
-        return new IllegalStateException(String.format(format, args));
+        return new IllegalStateException(_(format, args));
     }
 
     public static RuntimeException forRuntime(String format, Object... args) {
-        return new RuntimeException(String.format(format, args));
+        return new RuntimeException(_(format, args));
     }
 
     public static IOException forIO(String format, Object... args) {
-        return new IOException(String.format(format, args));
+        return new IOException(_(format, args));
     }
 
     public static FileNotFoundException forFileNotFound(String format, Object... args) {
-        return new FileNotFoundException(String.format(format, args));
+        return new FileNotFoundException(_(format, args));
+    }
+
+    public static UnsupportedOperationException forUnsupportedOperation(String format, Object... args) {
+        return new UnsupportedOperationException(_(format, args));
     }
 
     public static String dumpThrowable(@NonNull Throwable t) {
         val out = new StringWriter();
         t.printStackTrace(new PrintWriter(out));
         return out.toString();
+    }
+
+    private static String _(String format, Object... args) {
+        return String.format(format, args);
     }
 }
