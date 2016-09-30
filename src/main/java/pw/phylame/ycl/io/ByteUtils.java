@@ -16,9 +16,13 @@
 
 package pw.phylame.ycl.io;
 
+import lombok.NonNull;
+import lombok.Value;
+
 /**
  * Utility class for byte operations.
- * <p>This class contains a number of static methods perform byte operations.
+ * <p>
+ * This class contains a number of static methods perform byte operations.
  */
 public final class ByteUtils {
 
@@ -35,20 +39,10 @@ public final class ByteUtils {
     /**
      * Inner type to bytes.
      */
-    public static class Render {
+    @Value
+    public static final class Render {
+        @NonNull
         private Endian endian;
-
-        public Render(Endian endian) {
-            setEndian(endian);
-        }
-
-        public Endian getEndian() {
-            return endian;
-        }
-
-        public void setEndian(Endian endian) {
-            this.endian = endian;
-        }
 
         public byte[] putInt8(byte x) {
             return ByteUtils.putInt8(x);
@@ -81,23 +75,13 @@ public final class ByteUtils {
     /**
      * Bytes to inner type.
      */
-    public static class Parser {
+    @Value
+    public static final class Parser {
+        @NonNull
         private Endian endian;
 
-        public Parser(Endian endian) {
-            setEndian(endian);
-        }
-
-        public Endian getEndian() {
-            return endian;
-        }
-
-        public void setEndian(Endian endian) {
-            this.endian = endian;
-        }
-
         public byte getInt8(byte[] b, int index) {
-            return ByteUtils.getInt8(b, index);
+            return getInt8(b, index);
         }
 
         public int getUInt8(byte[] b, int index) {
@@ -318,7 +302,7 @@ public final class ByteUtils {
             s += b[index + 1];
         else
             s += 256 + b[index];
-        s <<= 8;    // * 256
+        s <<= 8; // * 256
         if (b[index] > 0)
             s += b[index + 1];
         else

@@ -16,16 +16,16 @@
 
 package pw.phylame.ycl.io;
 
+import java.util.Map;
+import java.util.Properties;
+
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.ycl.util.CollectionUtils;
+import pw.phylame.ycl.util.CollectUtils;
 import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;
-
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Utilities for file name operations.
@@ -42,8 +42,9 @@ public final class PathUtils {
 
     public static Pair<Integer, Integer> split(@NonNull String path) {
         int extpos = path.length(), seppos;
+        char ch;
         for (seppos = extpos - 1; seppos >= 0; --seppos) {
-            char ch = path.charAt(seppos);
+            ch = path.charAt(seppos);
             if (ch == '.') {
                 extpos = seppos;
             } else if (ch == '/' || ch == '\\') {
@@ -73,7 +74,7 @@ public final class PathUtils {
     private static final Lazy<Properties> mimeMap = new Lazy<>(new Provider<Properties>() {
         @Override
         public Properties provide() throws Exception {
-            return CollectionUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
+            return CollectUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
         }
     }, new Properties());
 

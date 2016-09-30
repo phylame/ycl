@@ -16,14 +16,18 @@
 
 package pw.phylame.ycl.vam;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.util.Consumer;
 import pw.phylame.ycl.util.Exceptions;
-
-import java.io.*;
-import java.util.LinkedList;
 
 public class FileArchive implements Archive<FileItem> {
     private final File file;

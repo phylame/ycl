@@ -16,14 +16,14 @@
 
 package pw.phylame.ycl.vam;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import pw.phylame.ycl.util.Exceptions;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
 
 @ToString
 public class FileItem implements Item {

@@ -16,15 +16,20 @@
 
 package pw.phylame.ycl.vam;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Exceptions;
-
-import java.io.*;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class FileArchiveWriter implements ArchiveWriter<FileItem> {
     private static final String TAG = "FAW";
@@ -73,9 +78,13 @@ public class FileArchiveWriter implements ArchiveWriter<FileItem> {
         return new FileOutputStream(file);
     }
 
+    private String itemKey(FileItem item) {
+        return item.getFile().getPath();
+    }
+
     @Override
     public OutputStream begin(@NonNull FileItem item) throws IOException {
-        val name = item.getFile().getPath();
+        val name = itemKey(item);
         val out = openOutput(name);
         streams.put(name, out);
         return out;
@@ -83,10 +92,12 @@ public class FileArchiveWriter implements ArchiveWriter<FileItem> {
 
     @Override
     public void end(@NonNull FileItem item) throws IOException {
-        val out = streams.get(item.getFile().getPath());
+        val name = itemKey(item);
+        val out = streams.get(name);
         if (out != null) {
             out.flush();
             out.close();
+            streams.remove(name);
         }
     }
 

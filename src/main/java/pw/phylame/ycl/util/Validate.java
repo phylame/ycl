@@ -29,17 +29,29 @@ public final class Validate {
         }
     }
 
-    public static void requireNotNull(Object o) {
-        requireNotNull(o, "object cannot be null");
+    public static void require(boolean condition, String format, Object... args) {
+        if (!condition) {
+            throw Exceptions.forIllegalArgument(format, args);
+        }
     }
 
-    public static void requireNotNull(Object o, String msg) {
-        require(o != null, msg);
+    public static void requireNotNull(Object obj) {
+        requireNotNull(obj, "object cannot be null");
+    }
+
+    public static void requireNotNull(Object obj, String msg) {
+        require(obj != null, msg);
     }
 
     public static void check(boolean condition, String msg) {
         if (!condition) {
             throw new IllegalStateException(msg);
+        }
+    }
+
+    public static void check(boolean condition, String format, Object... args) {
+        if (!condition) {
+            throw Exceptions.forIllegalState(format, args);
         }
     }
 

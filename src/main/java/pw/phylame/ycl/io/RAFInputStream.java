@@ -16,19 +16,19 @@
 
 package pw.phylame.ycl.io;
 
-import lombok.NonNull;
-import pw.phylame.ycl.util.Validate;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+
+import lombok.NonNull;
+import pw.phylame.ycl.util.Validate;
 
 /**
  * Wrapper for block of <code>RandomAccessFile</code> as <code>InputStream</code>.
  */
 public class RAFInputStream extends InputStream {
     private final RandomAccessFile source;
-    private final long endpos;    // value: curpos + size
+    private final long endpos; // value: curpos + size
     private long curpos;
 
     public RAFInputStream(RandomAccessFile source, long size) throws IOException {

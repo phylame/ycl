@@ -16,16 +16,16 @@
 
 package pw.phylame.ycl.vam;
 
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.CollectionUtils;
-import pw.phylame.ycl.util.Function;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.CollectUtils;
+import pw.phylame.ycl.util.Function;
 
 public class ZipArchive implements Archive<ZipItem> {
     private final ZipFile zip;
@@ -70,7 +70,7 @@ public class ZipArchive implements Archive<ZipItem> {
 
     @Override
     public Iterable<? extends ZipItem> items() {
-        return CollectionUtils.iterable(zip.entries(), new Function<Object, ZipItem>() {
+        return CollectUtils.iterable(zip.entries(), new Function<Object, ZipItem>() {
             @Override
             public ZipItem apply(Object i) {
                 return new ZipItem((ZipEntry) i);

@@ -19,15 +19,14 @@ package pw.phylame.ycl.value;
 import lombok.Getter;
 import lombok.ToString;
 
+@Getter
 @ToString
 public final class Pair<A, B> {
-    @Getter
     private final A first;
 
-    @Getter
     private final B second;
 
-    public <AX extends A, BX extends B> Pair(AX first, BX second) {
+    public <X extends A, Y extends B> Pair(X first, Y second) {
         this.first = first;
         this.second = second;
     }

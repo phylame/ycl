@@ -16,40 +16,40 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.val;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import lombok.NonNull;
+import lombok.val;
 
 /**
  * Utilities for creating exception.
  */
 public class Exceptions {
     public static IllegalArgumentException forIllegalArgument(String format, Object... args) {
-        return new IllegalArgumentException(_(format, args));
+        return new IllegalArgumentException(fmt(format, args));
     }
 
     public static IllegalStateException forIllegalState(String format, Object... args) {
-        return new IllegalStateException(_(format, args));
+        return new IllegalStateException(fmt(format, args));
     }
 
     public static RuntimeException forRuntime(String format, Object... args) {
-        return new RuntimeException(_(format, args));
+        return new RuntimeException(fmt(format, args));
     }
 
     public static IOException forIO(String format, Object... args) {
-        return new IOException(_(format, args));
+        return new IOException(fmt(format, args));
     }
 
     public static FileNotFoundException forFileNotFound(String format, Object... args) {
-        return new FileNotFoundException(_(format, args));
+        return new FileNotFoundException(fmt(format, args));
     }
 
     public static UnsupportedOperationException forUnsupportedOperation(String format, Object... args) {
-        return new UnsupportedOperationException(_(format, args));
+        return new UnsupportedOperationException(fmt(format, args));
     }
 
     public static String dumpThrowable(@NonNull Throwable t) {
@@ -58,7 +58,7 @@ public class Exceptions {
         return out.toString();
     }
 
-    private static String _(String format, Object... args) {
+    private static String fmt(String format, Object... args) {
         return String.format(format, args);
     }
 }

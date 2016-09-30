@@ -16,15 +16,21 @@
 
 package pw.phylame.ycl.log;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import pw.phylame.ycl.util.Exceptions;
+import static pw.phylame.ycl.log.Level.DEBUG;
+import static pw.phylame.ycl.log.Level.DEFAULT_LEVEL;
+import static pw.phylame.ycl.log.Level.ERROR;
+import static pw.phylame.ycl.log.Level.FATAL;
+import static pw.phylame.ycl.log.Level.INFO;
+import static pw.phylame.ycl.log.Level.TRACE;
+import static pw.phylame.ycl.log.Level.WARN;
 
 import java.io.PrintStream;
 import java.text.MessageFormat;
 
-import static pw.phylame.ycl.log.Level.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import pw.phylame.ycl.util.Exceptions;
 
 public final class Log {
     private Log() {
@@ -110,7 +116,8 @@ public final class Log {
     }
 
     private static String formatText(String tag, String level, String format, Object... args) {
-        return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag, MessageFormat.format(format, args));
+        return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag,
+                MessageFormat.format(format, args));
     }
 
 }

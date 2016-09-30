@@ -16,11 +16,11 @@
 
 package pw.phylame.ycl.vam;
 
+import java.util.zip.ZipEntry;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-
-import java.util.zip.ZipEntry;
 
 @ToString
 public class ZipItem implements Item {

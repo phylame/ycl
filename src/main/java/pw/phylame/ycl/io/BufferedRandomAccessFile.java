@@ -146,7 +146,8 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             if ((pos >= 0) && (pos <= this.fileendpos) && (this.fileendpos != 0)) { // write pos is modify file
                 this.buf[(int) (pos - this.bufstartpos)] = bw;
 
-            } else if (((pos == 0) && (this.fileendpos == 0)) || (pos == this.fileendpos + 1)) { // write pos is append pos
+            } else if (((pos == 0) && (this.fileendpos == 0)) || (pos == this.fileendpos + 1)) { // write pos is append
+                                                                                                 // pos
                 this.buf[0] = bw;
                 this.fileendpos++;
                 this.bufusedsize = 1;
@@ -166,7 +167,8 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
         if (writeendpos <= this.bufendpos) { // b[] in cur buf
             System.arraycopy(b, off, this.buf, (int) (this.curpos - this.bufstartpos), len);
             this.bufdirty = true;
-            this.bufusedsize = (int) (writeendpos - this.bufstartpos + 1);//(int)(this.curpos - this.bufstartpos + len - 1);
+            this.bufusedsize = (int) (writeendpos - this.bufstartpos + 1);// (int)(this.curpos - this.bufstartpos + len
+                                                                          // - 1);
 
         } else { // b[] not in cur buf
             super.seek(this.curpos);
@@ -230,11 +232,13 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
         if ((pos < this.bufstartpos) || (pos > this.bufendpos)) { // seek pos not in buf
             this.flushbuf();
 
-            if ((pos >= 0) && (pos <= this.fileendpos) && (this.fileendpos != 0)) { // seek pos in file (file length > 0)
+            if ((pos >= 0) && (pos <= this.fileendpos) && (this.fileendpos != 0)) { // seek pos in file (file length >
+                                                                                    // 0)
                 this.bufstartpos = pos & this.bufmask;
                 this.bufusedsize = this.fillbuf();
 
-            } else if (((pos == 0) && (this.fileendpos == 0)) || (pos == this.fileendpos + 1)) { // seek pos is append pos
+            } else if (((pos == 0) && (this.fileendpos == 0)) || (pos == this.fileendpos + 1)) { // seek pos is append
+                                                                                                 // pos
 
                 this.bufstartpos = pos;
                 this.bufusedsize = 0;
@@ -265,7 +269,8 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     }
 
     private long max(long a, long b) {
-        if (a > b) return a;
+        if (a > b)
+            return a;
         return b;
     }
 

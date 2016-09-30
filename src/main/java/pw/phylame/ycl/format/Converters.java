@@ -16,28 +16,30 @@
 
 package pw.phylame.ycl.format;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.DateUtils;
 import pw.phylame.ycl.util.StringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 public final class Converters {
     private Converters() {
     }
 
-    private static final Map<Class<?>, Converter<?>> converters = new HashMap<>();
+    private static final ConcurrentMap<Class<?>, Converter<?>> converters = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T> Converter<T> set(@NonNull Class<T> clazz, @NonNull Converter<? extends T> converter) {
         return (Converter<T>) converters.put(clazz, converter);
     }
 
-    public static <T> boolean contains(Class<T> clazz) {
+    public static <T> boolean has(Class<T> clazz) {
         return converters.containsKey(clazz);
     }
 
@@ -46,14 +48,22 @@ public final class Converters {
         return (Converter<T>) converters.get(clazz);
     }
 
-    public static <T> String render(@NonNull T o, Class<T> clazz) {
-        val conv = get(clazz);
-        return conv != null ? conv.render(o) : null;
+    public static <T> String render(@NonNull T o, @NonNull Class<T> clazz) {
+        return render(o, clazz, null);
     }
 
-    public static <T> T parse(@NonNull String str, Class<T> clazz) {
+    public static <T> String render(@NonNull T o, @NonNull Class<T> clazz, String fallback) {
         val conv = get(clazz);
-        return conv != null ? conv.parse(str) : null;
+        return conv != null ? conv.render(o) : fallback;
+    }
+
+    public static <T> T parse(@NonNull String str, @NonNull Class<T> clazz) {
+        return parse(str, clazz, null);
+    }
+
+    public static <T> T parse(@NonNull String str, @NonNull Class<T> clazz, T fallback) {
+        val conv = get(clazz);
+        return conv != null ? conv.parse(str) : fallback;
     }
 
     static {
@@ -130,6 +140,18 @@ public final class Converters {
             @Override
             public String render(@NonNull Date o) {
                 return DateUtils.toISO(o);
+            }
+        });
+        set(BigInteger.class, new AbstractConverter<BigInteger>() {
+            @Override
+            public BigInteger parse(@NonNull String str) {
+                return new BigInteger(str);
+            }
+        });
+        set(BigDecimal.class, new AbstractConverter<BigDecimal>() {
+            @Override
+            public BigDecimal parse(@NonNull String str) {
+                return new BigDecimal(str);
             }
         });
         set(Locale.class, new Converter<Locale>() {
