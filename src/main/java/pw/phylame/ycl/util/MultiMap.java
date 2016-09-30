@@ -31,24 +31,21 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
     private final Map<K, Collection<V>> map;
 
     @NonNull
-    private final Class<? extends Collection<V>> type;
+    private final Class<?> type;
 
-    @SuppressWarnings("unchecked")
     public MultiMap() {
         map = new HashMap<>();
-        type = (Class<? extends Collection<V>>) ArrayList.class;
+        type = ArrayList.class;
     }
 
-    @SuppressWarnings("unchecked")
     public MultiMap(Map<K, Collection<V>> m) {
         this.map = m;
-        type = (Class<? extends Collection<V>>) ArrayList.class;
+        type = ArrayList.class;
     }
 
-    @SuppressWarnings("unchecked")
     public MultiMap(Map<K, Collection<V>> m, Class<?> type) {
         this.map = m;
-        this.type = (Class<? extends Collection<V>>) type;
+        this.type = type;
     }
 
     @Override
@@ -95,19 +92,21 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
         return map.put(key, value);
     }
 
+    @SuppressWarnings("unchecked")
     @SneakyThrows({InstantiationException.class, IllegalAccessException.class})
     public Collection<V> putOne(K key, V value) {
-        final Collection<V> prev = map.get(key), c = type.newInstance();
+        final Collection<V> prev = map.get(key), c = (Collection<V>) type.newInstance();
         c.add(value);
         map.put(key, c);
         return prev;
     }
 
+    @SuppressWarnings("unchecked")
     @SneakyThrows({InstantiationException.class, IllegalAccessException.class})
     public void addOne(K key, V value) {
         Collection<V> c = map.get(key);
         if (c == null) {
-            map.put(key, c = type.newInstance());
+            map.put(key, c = (Collection<V>) type.newInstance());
         }
         c.add(value);
     }
