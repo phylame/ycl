@@ -39,9 +39,16 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
         type = (Class<? extends Collection<V>>) ArrayList.class;
     }
 
-    public MultiMap(Map<K, Collection<V>> m, Class<? extends Collection<V>> type) {
+    @SuppressWarnings("unchecked")
+    public MultiMap(Map<K, Collection<V>> m) {
         this.map = m;
-        this.type = type;
+        type = (Class<? extends Collection<V>>) ArrayList.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    public MultiMap(Map<K, Collection<V>> m, Class<?> type) {
+        this.map = m;
+        this.type = (Class<? extends Collection<V>>) type;
     }
 
     @Override
