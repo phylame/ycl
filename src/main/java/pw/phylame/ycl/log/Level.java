@@ -29,7 +29,7 @@ public enum Level {
     ERROR(2, "error"),
     FATAL(1, "fatal"),
     OFF(0, "off"),
-    DEFAULT_LEVEL(INFO.code, "default");
+    DEFAULT(INFO.code, "default");
 
     @Getter
     private final int code;

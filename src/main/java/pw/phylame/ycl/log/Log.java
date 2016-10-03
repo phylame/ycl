@@ -17,7 +17,7 @@
 package pw.phylame.ycl.log;
 
 import static pw.phylame.ycl.log.Level.DEBUG;
-import static pw.phylame.ycl.log.Level.DEFAULT_LEVEL;
+import static pw.phylame.ycl.log.Level.DEFAULT;
 import static pw.phylame.ycl.log.Level.ERROR;
 import static pw.phylame.ycl.log.Level.FATAL;
 import static pw.phylame.ycl.log.Level.INFO;
@@ -39,7 +39,7 @@ public final class Log {
     @Getter
     @Setter
     @NonNull
-    private static Level level = DEFAULT_LEVEL;
+    private static Level level = DEFAULT;
 
     @Getter
     @Setter
