@@ -16,35 +16,35 @@
 
 package pw.phylame.ycl.format;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.DateUtils;
 import pw.phylame.ycl.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public final class Converters {
     private Converters() {
     }
 
-    private static final ConcurrentMap<Class<?>, Converter<?>> converters = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Converter<?>> converters = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> Converter<T> set(@NonNull Class<T> clazz, @NonNull Converter<? extends T> converter) {
+    public static <T> Converter<T> register(@NonNull Class<T> clazz, @NonNull Converter<? extends T> converter) {
         return (Converter<T>) converters.put(clazz, converter);
     }
 
-    public static <T> boolean has(Class<T> clazz) {
+    public static <T> boolean isRegistered(Class<T> clazz) {
         return converters.containsKey(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Converter<T> get(@NonNull Class<T> clazz) {
+    public static <T> Converter<T> forClass(@NonNull Class<T> clazz) {
         return (Converter<T>) converters.get(clazz);
     }
 
@@ -53,7 +53,7 @@ public final class Converters {
     }
 
     public static <T> String render(@NonNull T o, @NonNull Class<T> clazz, String fallback) {
-        val conv = get(clazz);
+        val conv = forClass(clazz);
         return conv != null ? conv.render(o) : fallback;
     }
 
@@ -62,7 +62,7 @@ public final class Converters {
     }
 
     public static <T> T parse(@NonNull String str, @NonNull Class<T> clazz, T fallback) {
-        val conv = get(clazz);
+        val conv = forClass(clazz);
         return conv != null ? conv.parse(str) : fallback;
     }
 
@@ -73,65 +73,65 @@ public final class Converters {
                 return str;
             }
         };
-        set(String.class, sc);
-        set(CharSequence.class, sc);
+        register(String.class, sc);
+        register(CharSequence.class, sc);
         val bc = new AbstractConverter<Boolean>() {
             @Override
             public Boolean parse(String str) {
                 return Boolean.parseBoolean(str);
             }
         };
-        set(Boolean.class, bc);
-        set(boolean.class, bc);
+        register(Boolean.class, bc);
+        register(boolean.class, bc);
         val yc = new AbstractConverter<Byte>() {
             @Override
             public Byte parse(String str) {
                 return Byte.parseByte(str);
             }
         };
-        set(Byte.class, yc);
-        set(byte.class, yc);
+        register(Byte.class, yc);
+        register(byte.class, yc);
         val hc = new AbstractConverter<Short>() {
             @Override
             public Short parse(String str) {
                 return Short.parseShort(str);
             }
         };
-        set(Short.class, hc);
-        set(short.class, hc);
+        register(Short.class, hc);
+        register(short.class, hc);
         val ic = new AbstractConverter<Integer>() {
             @Override
             public Integer parse(String str) {
                 return Integer.parseInt(str);
             }
         };
-        set(Integer.class, ic);
-        set(int.class, ic);
+        register(Integer.class, ic);
+        register(int.class, ic);
         val lc = new AbstractConverter<Long>() {
             @Override
             public Long parse(String str) {
                 return Long.parseLong(str);
             }
         };
-        set(Long.class, lc);
-        set(long.class, lc);
+        register(Long.class, lc);
+        register(long.class, lc);
         val fc = new AbstractConverter<Float>() {
             @Override
             public Float parse(String str) {
                 return Float.parseFloat(str);
             }
         };
-        set(Float.class, fc);
-        set(float.class, fc);
+        register(Float.class, fc);
+        register(float.class, fc);
         val dc = new AbstractConverter<Double>() {
             @Override
             public Double parse(String str) {
                 return Double.parseDouble(str);
             }
         };
-        set(Double.class, dc);
-        set(double.class, dc);
-        set(Date.class, new Converter<Date>() {
+        register(Double.class, dc);
+        register(double.class, dc);
+        register(Date.class, new Converter<Date>() {
             @Override
             public Date parse(@NonNull String str) {
                 return DateUtils.parseDate(str, null);
@@ -142,19 +142,19 @@ public final class Converters {
                 return DateUtils.toISO(o);
             }
         });
-        set(BigInteger.class, new AbstractConverter<BigInteger>() {
+        register(BigInteger.class, new AbstractConverter<BigInteger>() {
             @Override
             public BigInteger parse(@NonNull String str) {
                 return new BigInteger(str);
             }
         });
-        set(BigDecimal.class, new AbstractConverter<BigDecimal>() {
+        register(BigDecimal.class, new AbstractConverter<BigDecimal>() {
             @Override
             public BigDecimal parse(@NonNull String str) {
                 return new BigDecimal(str);
             }
         });
-        set(Locale.class, new Converter<Locale>() {
+        register(Locale.class, new Converter<Locale>() {
             @Override
             public Locale parse(@NonNull String str) {
                 int index = str.indexOf('-');

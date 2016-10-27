@@ -134,7 +134,7 @@ public final class Reflections {
             return null;
         }
         name = normalizedName(name);
-        val method = findMethod(clazz, "get" + name);
+        val method = findMethod(clazz, "forClass" + name);
         if (method != null) {
             return method;
         } else {
@@ -145,14 +145,14 @@ public final class Reflections {
     public static Method findGetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, (type == boolean.class ? "is" : "get") + normalizedName(name));
+                : findMethod(clazz, (type == boolean.class ? "is" : "forClass") + normalizedName(name));
     }
 
     public static Method findSetter(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
-        name = "set" + normalizedName(name);
+        name = "register" + normalizedName(name);
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
                 if (name.equals(method.getName()) && method.getParameterTypes().length == 1) {
@@ -166,11 +166,11 @@ public final class Reflections {
     public static Method findSetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, "set" + normalizedName(name), type);
+                : findMethod(clazz, "register" + normalizedName(name), type);
     }
 
     @SneakyThrows(IllegalAccessException.class)
-    public static Object getField(@NonNull Object target, String name) {
+    public static Object getFieldValue(@NonNull Object target, String name) {
         val field = findField(target.getClass(), name);
         if (field == null) {
             return null;
@@ -180,7 +180,7 @@ public final class Reflections {
     }
 
     @SneakyThrows(IllegalAccessException.class)
-    public static void setField(@NonNull Object target, String name, Object value) {
+    public static void setFieldValue(@NonNull Object target, String name, Object value) {
         val field = findField(target.getClass(), name);
         if (field == null) {
             return;
