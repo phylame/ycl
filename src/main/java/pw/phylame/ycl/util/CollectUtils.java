@@ -16,24 +16,14 @@
 
 package pw.phylame.ycl.util;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 public final class CollectUtils {
     private CollectUtils() {
@@ -73,9 +63,48 @@ public final class CollectUtils {
         return new SimpleIterable<>(new EnumerationIterator<>(e, transformer));
     }
 
+    public static <E> void extend(@NonNull Collection<E> c, Iterable<E> i) {
+        if (i != null) {
+            extend(c, i.iterator());
+        }
+    }
+
+    public static <E> void extend(@NonNull Collection<E> c, Iterator<E> i) {
+        if (i != null) {
+            while (i.hasNext()) {
+                c.add(i.next());
+            }
+        }
+    }
+
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterable<Map.Entry<K, V>> i) {
+        if (i != null) {
+            update(m, i.iterator());
+        }
+    }
+
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterator<Map.Entry<K, V>> i) {
+        if (i != null) {
+            while (i.hasNext()) {
+                val e = i.next();
+                m.put(e.getKey(), e.getValue());
+            }
+        }
+    }
+
     @SafeVarargs
     public static <E> List<E> listOf(E... objects) {
         return Arrays.asList(objects);
+    }
+
+    public static <E> List<E> listOf(Iterator<E> i) {
+        if (i == null) {
+            return Collections.emptyList();
+        } else {
+            val list = new ArrayList<E>();
+            extend(list, i);
+            return list;
+        }
     }
 
     @SafeVarargs
@@ -83,6 +112,16 @@ public final class CollectUtils {
         val set = new HashSet<E>();
         Collections.addAll(set, objects);
         return Collections.unmodifiableSet(set);
+    }
+
+    public static <E> Set<E> setOf(Iterator<E> i) {
+        if (i == null) {
+            return Collections.emptySet();
+        } else {
+            val set = new HashSet<E>();
+            extend(set, i);
+            return set;
+        }
     }
 
     public static <K, V> Map<K, V> mapOf(Object... objects) {
@@ -125,7 +164,7 @@ public final class CollectUtils {
 
     @SneakyThrows(IOException.class)
     public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path,
-            ClassLoader loader) {
+                                          ClassLoader loader) {
         val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {

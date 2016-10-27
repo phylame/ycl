@@ -19,15 +19,32 @@ package pw.phylame.ycl.value;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Getter
 @ToString
-public final class Pair<A, B> {
-    private final A first;
+public final class Pair<A, B> implements Map.Entry<A, B> {
+    private A first;
 
-    private final B second;
+    private B second;
 
     public <X extends A, Y extends B> Pair(X first, Y second) {
         this.first = first;
         this.second = second;
+    }
+
+    @Override
+    public final A getKey() {
+        return first;
+    }
+
+    @Override
+    public final B getValue() {
+        return second;
+    }
+
+    @Override
+    public B setValue(B value) {
+        throw new UnsupportedOperationException();
     }
 }
