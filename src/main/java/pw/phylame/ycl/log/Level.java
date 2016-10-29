@@ -37,7 +37,7 @@ public enum Level {
     @Getter
     private final String name;
 
-    private Level(int code, String name) {
+    Level(int code, String name) {
         this.code = code;
         this.name = name;
     }

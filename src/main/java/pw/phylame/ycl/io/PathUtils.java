@@ -16,9 +16,6 @@
 
 package pw.phylame.ycl.io;
 
-import java.util.Map;
-import java.util.Properties;
-
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.CollectUtils;
@@ -26,6 +23,9 @@ import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Utilities for file name operations.
@@ -69,7 +69,7 @@ public final class PathUtils {
         return extsep != path.length() ? path.substring(extsep + 1) : "";
     }
 
-    private static final String MIME_MAPPING_FILE = "!pw/phylame/ycl/io/mime.properties";
+    private static final String MIME_MAPPING_FILE = IOUtils.CLASS_PATH_PREFIX + "pw/phylame/ycl/io/mime.properties";
 
     private static final Lazy<Properties> mimeMap = new Lazy<>(new Provider<Properties>() {
         @Override

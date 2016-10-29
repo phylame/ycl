@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.value;
+package pw.phylame.ycl.log;
 
-import lombok.NonNull;
+import java.text.MessageFormat;
 
-public class Observer<T> implements Value<T> {
-    protected final Value<T> value;
-
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
-    }
-
+public class DefaultFormatter implements Formatter {
     @Override
-    public final T get() {
-        return onGetting(value.get());
-    }
-
-    protected T onGetting(T value) {
-        return value;
+    public String format(String tag, String level, String format, Object... args) {
+        return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag, MessageFormat.format(format, args));
     }
 }

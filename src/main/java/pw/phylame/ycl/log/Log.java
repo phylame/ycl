@@ -16,40 +16,32 @@
 
 package pw.phylame.ycl.log;
 
-import static pw.phylame.ycl.log.Level.DEBUG;
-import static pw.phylame.ycl.log.Level.DEFAULT;
-import static pw.phylame.ycl.log.Level.ERROR;
-import static pw.phylame.ycl.log.Level.FATAL;
-import static pw.phylame.ycl.log.Level.INFO;
-import static pw.phylame.ycl.log.Level.TRACE;
-import static pw.phylame.ycl.log.Level.WARN;
-
-import java.io.PrintStream;
-import java.text.MessageFormat;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import pw.phylame.ycl.util.Exceptions;
 
+import java.io.IOException;
+
+import static pw.phylame.ycl.log.Level.*;
+
+@Getter
+@Setter
 public final class Log {
     private Log() {
     }
 
-    @Getter
-    @Setter
     @NonNull
     private static Level level = DEFAULT;
 
-    @Getter
-    @Setter
     @NonNull
-    private static PrintStream out = System.out;
+    private static Appendable out = System.out;
 
-    @Getter
-    @Setter
     @NonNull
-    private static PrintStream err = System.err;
+    private static Appendable err = System.err;
+
+    @NonNull
+    private static Formatter formatter = new DefaultFormatter();
 
     public static boolean isEnable(Level level) {
         return level.getCode() <= Log.level.getCode();
@@ -57,7 +49,7 @@ public final class Log {
 
     public static void t(String tag, String format, Object... args) {
         if (isEnable(TRACE))
-            out.println(formatText(tag, "t", format, args));
+            printToOut(formatter.format(tag, "t", format, args), true);
     }
 
     public static void t(String tag, Throwable t) {
@@ -67,7 +59,7 @@ public final class Log {
 
     public static void d(String tag, String format, Object... args) {
         if (isEnable(DEBUG))
-            out.println(formatText(tag, "d", format, args));
+            printToOut(formatter.format(tag, "d", format, args), true);
     }
 
     public static void d(String tag, Throwable t) {
@@ -77,7 +69,7 @@ public final class Log {
 
     public static void i(String tag, String format, Object... args) {
         if (isEnable(INFO))
-            out.println(formatText(tag, "i", format, args));
+            printToOut(formatter.format(tag, "i", format, args), true);
     }
 
     public static void i(String tag, Throwable t) {
@@ -87,7 +79,7 @@ public final class Log {
 
     public static void w(String tag, String format, Object... args) {
         if (isEnable(WARN))
-            out.println(formatText(tag, "w", format, args));
+            printToOut(formatter.format(tag, "w", format, args), true);
     }
 
     public static void w(String tag, Throwable t) {
@@ -97,7 +89,7 @@ public final class Log {
 
     public static void e(String tag, String format, Object... args) {
         if (isEnable(ERROR))
-            err.println(formatText(tag, "e", format, args));
+            printToErr(formatter.format(tag, "e", format, args), true);
     }
 
     public static void e(String tag, Throwable t) {
@@ -107,7 +99,7 @@ public final class Log {
 
     public static void f(String tag, String format, Object... args) {
         if (isEnable(FATAL))
-            err.println(formatText(tag, "f", format, args));
+            printToErr(formatter.format(tag, "f", format, args), true);
     }
 
     public static void f(String tag, Throwable t) {
@@ -115,9 +107,24 @@ public final class Log {
             f(tag, Exceptions.dumpThrowable(t));
     }
 
-    private static String formatText(String tag, String level, String format, Object... args) {
-        return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag,
-                MessageFormat.format(format, args));
+    private static final String LINE_SEPARATOR = System.lineSeparator();
+
+    private static void printToOut(String text, boolean withNewLine) {
+        print(out, text, withNewLine);
     }
 
+    private static void printToErr(String text, boolean withNewLine) {
+        print(err, text, withNewLine);
+    }
+
+    private static void print(Appendable out, String text, boolean withNewLine) {
+        try {
+            out.append(text);
+            if (withNewLine) {
+                out.append(LINE_SEPARATOR);
+            }
+        } catch (IOException ignored) {
+
+        }
+    }
 }

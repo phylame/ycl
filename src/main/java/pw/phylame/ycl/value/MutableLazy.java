@@ -17,20 +17,20 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
+import pw.phylame.ycl.util.Provider;
 
-public class Observer<T> implements Value<T> {
-    protected final Value<T> value;
+public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
+    public MutableLazy(Provider<T> provider) {
+        super(provider);
+    }
 
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
+    public MutableLazy(@NonNull Provider<T> provider, T fallback) {
+        super(provider, fallback);
     }
 
     @Override
-    public final T get() {
-        return onGetting(value.get());
-    }
-
-    protected T onGetting(T value) {
-        return value;
+    public void set(T value) {
+        this.value = value;
+        initialized = true;
     }
 }

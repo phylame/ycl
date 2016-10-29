@@ -24,12 +24,11 @@ public class MutableObserver<T> extends Observer<T> implements MutableValue<T> {
     }
 
     @Override
-    public void set(T value) {
+    public final void set(T value) {
         onSetting(get(), value);
-        ((MutableValue<T>) this.value).set(value);
     }
 
     protected void onSetting(T oldValue, T newValue) {
-
+        ((MutableValue<T>) this.value).set(newValue);
     }
 }

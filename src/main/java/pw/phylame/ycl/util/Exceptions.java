@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static java.lang.String.format;
+
 /**
  * Utilities for creating exception.
  */
@@ -56,9 +58,5 @@ public class Exceptions {
         val out = new StringWriter();
         t.printStackTrace(new PrintWriter(out));
         return out.toString();
-    }
-
-    public static String format(String format, Object... args) {
-        return String.format(format, args);
     }
 }

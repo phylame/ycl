@@ -16,12 +16,12 @@
 
 package pw.phylame.ycl.io;
 
+import lombok.NonNull;
+import pw.phylame.ycl.util.Validate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-
-import lombok.NonNull;
-import pw.phylame.ycl.util.Validate;
 
 /**
  * Wrapper for block of <code>RandomAccessFile</code> as <code>InputStream</code>.
@@ -58,10 +58,8 @@ public class RAFInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        if (b == null) {
-            throw new NullPointerException();
-        } else if (off < 0 || len < 0 || len > b.length - off) {
+    public int read(@NonNull byte[] b, int off, int len) throws IOException {
+        if (off < 0 || len < 0 || len > b.length - off) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return 0;

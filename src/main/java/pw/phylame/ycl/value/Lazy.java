@@ -20,10 +20,10 @@ import lombok.NonNull;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Provider;
 
-public final class Lazy<T> implements Value<T> {
-    private volatile boolean initialized = false;
+public class Lazy<T> implements Value<T> {
+    protected volatile boolean initialized = false;
 
-    private T value;
+    protected T value;
 
     private final Provider<T> provider;
 

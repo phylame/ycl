@@ -16,17 +16,19 @@
 
 package pw.phylame.ycl.value;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-public final class Triple<A, B, C> {
-    private final A first;
+@EqualsAndHashCode
+public class Triple<A, B, C> {
+    protected A first;
 
-    private final B second;
+    protected B second;
 
-    private final C third;
+    protected C third;
 
     public <X extends A, Y extends B, Z extends C> Triple(X first, Y second, Z third) {
         this.first = first;

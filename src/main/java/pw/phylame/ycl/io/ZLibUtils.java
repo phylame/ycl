@@ -16,17 +16,13 @@
 
 package pw.phylame.ycl.io;
 
+import lombok.val;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import lombok.val;
+import java.util.zip.*;
 
 /**
  * Utility class for ZLib operations.
@@ -47,8 +43,7 @@ public final class ZLibUtils {
     /**
      * Compresses specified byte data with default compression level.
      *
-     * @param data
-     *        the input byte data to be compressed
+     * @param data the input byte data to be compressed
      * @return compressed data
      */
     public static byte[] compress(byte[] data) {
@@ -58,10 +53,8 @@ public final class ZLibUtils {
     /**
      * Compresses specified input data with specified compression level.
      *
-     * @param data
-     *        the input byte data to be compressed
-     * @param level
-     *        ZLIB compression level
+     * @param data  the input byte data to be compressed
+     * @param level ZLIB compression level
      * @return compressed data
      */
     public static byte[] compress(byte[] data, int level) {
@@ -71,12 +64,9 @@ public final class ZLibUtils {
     /**
      * Compresses a specified area of input byte data with default compression level.
      *
-     * @param data
-     *        the input byte data
-     * @param offset
-     *        start index of compressing area
-     * @param length
-     *        length of compressing area
+     * @param data   the input byte data
+     * @param offset start index of compressing area
+     * @param length length of compressing area
      * @return compressed data
      */
     public static byte[] compress(byte[] data, int offset, int length) {
@@ -86,14 +76,10 @@ public final class ZLibUtils {
     /**
      * Compresses a specified area of input byte data with specified compression level.
      *
-     * @param data
-     *        the input byte data
-     * @param offset
-     *        start index of compressing area
-     * @param length
-     *        length of compressing area
-     * @param level
-     *        ZLIB compression level
+     * @param data   the input byte data
+     * @param offset start index of compressing area
+     * @param length length of compressing area
+     * @param level  ZLIB compression level
      * @return compressed data
      */
     public static byte[] compress(byte[] data, int offset, int length, int level) {
@@ -117,12 +103,9 @@ public final class ZLibUtils {
      * Compresses specified input data with default compression level
      * and writes to output.
      *
-     * @param data
-     *        the input byte data to be compressed
-     * @param output
-     *        the output stream
-     * @throws IOException
-     *         if occur IO errors
+     * @param data   the input byte data to be compressed
+     * @param output the output stream
+     * @throws IOException if occur IO errors
      */
     public static void compress(byte[] data, OutputStream output) throws IOException {
         compress(data, 0, data.length, output);
@@ -132,16 +115,11 @@ public final class ZLibUtils {
      * Compresses a specified area of input data with default compression level
      * and writes to output.
      *
-     * @param data
-     *        the input byte data
-     * @param offset
-     *        start index of compressing area
-     * @param length
-     *        length of compression area
-     * @param output
-     *        the output stream
-     * @throws IOException
-     *         if occur IO errors
+     * @param data   the input byte data
+     * @param offset start index of compressing area
+     * @param length length of compression area
+     * @param output the output stream
+     * @throws IOException if occur IO errors
      */
     public static void compress(byte[] data, int offset, int length, OutputStream output) throws IOException {
         val dos = new DeflaterOutputStream(output);
@@ -153,11 +131,9 @@ public final class ZLibUtils {
     /**
      * Decompresses specified input byte data.
      *
-     * @param data
-     *        the input byte data to be decompressed
+     * @param data the input byte data to be decompressed
      * @return decompressed data
-     * @throws DataFormatException
-     *         if the compressed data format is invalid
+     * @throws DataFormatException if the compressed data format is invalid
      */
     public static byte[] decompress(byte[] data) throws DataFormatException {
         return decompress(data, 0, data.length);
@@ -166,15 +142,11 @@ public final class ZLibUtils {
     /**
      * Decompresses a specified area of input data.
      *
-     * @param data
-     *        the input byte data
-     * @param offset
-     *        start index of decompressing area
-     * @param length
-     *        length of decompression area
+     * @param data   the input byte data
+     * @param offset start index of decompressing area
+     * @param length length of decompression area
      * @return decompressed data
-     * @throws DataFormatException
-     *         if the compressed data format is invalid
+     * @throws DataFormatException if the compressed data format is invalid
      */
     public static byte[] decompress(byte[] data, int offset, int length) throws DataFormatException {
         if (isEmpty(data)) {
@@ -195,11 +167,9 @@ public final class ZLibUtils {
     /**
      * Decompresses byte data from specified input stream.
      *
-     * @param input
-     *        the input stream
+     * @param input the input stream
      * @return decompressed data
-     * @throws IOException
-     *         if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public static byte[] decompress(InputStream input) throws IOException {
         val iis = new InflaterInputStream(input);

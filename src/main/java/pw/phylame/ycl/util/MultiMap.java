@@ -16,20 +16,22 @@
 
 package pw.phylame.ycl.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
 
+import java.util.*;
+
 public class MultiMap<K, V> implements Map<K, Collection<V>> {
+    /**
+     * Underlying map.
+     */
     @NonNull
     private final Map<K, Collection<V>> map;
 
+    /**
+     * Type of the collection.
+     */
     @NonNull
     private final Class<?> type;
 
@@ -149,12 +151,19 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
 
     @Override
     public boolean equals(Object o) {
-        return map.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MultiMap<?, ?> multiMap = (MultiMap<?, ?>) o;
+
+        return map.equals(multiMap.map) && type.equals(multiMap.type);
     }
 
     @Override
     public int hashCode() {
-        return map.hashCode();
+        int result = map.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
     }
 
     @Override

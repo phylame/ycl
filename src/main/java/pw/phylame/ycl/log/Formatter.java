@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.value;
+package pw.phylame.ycl.log;
 
-import lombok.NonNull;
-
-public class Observer<T> implements Value<T> {
-    protected final Value<T> value;
-
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
-    }
-
-    @Override
-    public final T get() {
-        return onGetting(value.get());
-    }
-
-    protected T onGetting(T value) {
-        return value;
-    }
+public interface Formatter {
+    String format(String tag, String level, String format, Object... args);
 }

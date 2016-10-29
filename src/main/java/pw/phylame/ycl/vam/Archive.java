@@ -25,11 +25,11 @@ public interface Archive<I extends Item> extends Closeable {
 
     String getComment();
 
-    I itemFor(String name);
+    int size();
 
-    InputStream inputStreamOf(I item) throws IOException;
+    I itemFor(String name);
 
     Iterable<? extends I> items();
 
-    int size();
+    InputStream inputStreamOf(I item) throws IOException;
 }

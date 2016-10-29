@@ -16,21 +16,26 @@
 
 package pw.phylame.ycl.value;
 
-import lombok.NonNull;
-
-public class Observer<T> implements Value<T> {
-    protected final Value<T> value;
-
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
+public class MutableTriple<A, B, C> extends Triple<A, B, C> {
+    public <X extends A, Y extends B, Z extends C> MutableTriple(X first, Y second, Z third) {
+        super(first, second, third);
     }
 
-    @Override
-    public final T get() {
-        return onGetting(value.get());
+    public void setFirst(A first) {
+        this.first = first;
     }
 
-    protected T onGetting(T value) {
-        return value;
+    public void setSecond(B second) {
+        this.second = second;
+    }
+
+    public void setThird(C third) {
+        this.third = third;
+    }
+
+    public void set(A first, B second, C third) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
     }
 }

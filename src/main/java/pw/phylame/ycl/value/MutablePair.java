@@ -16,21 +16,30 @@
 
 package pw.phylame.ycl.value;
 
-import lombok.NonNull;
+import lombok.val;
 
-public class Observer<T> implements Value<T> {
-    protected final Value<T> value;
+public class MutablePair<A, B> extends Pair<A, B> {
+    public <X extends A, Y extends B> MutablePair(X first, Y second) {
+        super(first, second);
+    }
 
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
+    public void setFirst(A first) {
+        this.first = first;
+    }
+
+    public void setSecond(B second) {
+        this.second = second;
+    }
+
+    public void set(A first, B second) {
+        this.first = first;
+        this.second = second;
     }
 
     @Override
-    public final T get() {
-        return onGetting(value.get());
-    }
-
-    protected T onGetting(T value) {
-        return value;
+    public B setValue(B value) {
+        val oldValue = second;
+        second = value;
+        return oldValue;
     }
 }

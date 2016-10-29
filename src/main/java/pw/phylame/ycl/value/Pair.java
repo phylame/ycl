@@ -16,6 +16,7 @@
 
 package pw.phylame.ycl.value;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -23,10 +24,11 @@ import java.util.Map;
 
 @Getter
 @ToString
-public final class Pair<A, B> implements Map.Entry<A, B> {
-    private A first;
+@EqualsAndHashCode
+public class Pair<A, B> implements Map.Entry<A, B> {
+    protected A first;
 
-    private B second;
+    protected B second;
 
     public <X extends A, Y extends B> Pair(X first, Y second) {
         this.first = first;

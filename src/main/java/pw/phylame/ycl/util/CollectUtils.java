@@ -103,7 +103,7 @@ public final class CollectUtils {
         } else {
             val list = new ArrayList<E>();
             extend(list, i);
-            return list;
+            return Collections.unmodifiableList(list);
         }
     }
 
@@ -120,7 +120,7 @@ public final class CollectUtils {
         } else {
             val set = new HashSet<E>();
             extend(set, i);
-            return set;
+            return Collections.unmodifiableSet(set);
         }
     }
 
@@ -130,10 +130,10 @@ public final class CollectUtils {
         return Collections.unmodifiableMap(m);
     }
 
-    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c, int from) {
+    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c, int begin) {
         val m = new HashMap<Integer, V>();
         for (V v : c) {
-            m.put(from++, v);
+            m.put(begin++, v);
         }
         return Collections.unmodifiableMap(m);
     }
@@ -151,6 +151,10 @@ public final class CollectUtils {
         }
     }
 
+    public static Properties propertiesFor(@NonNull String path) throws IOException {
+        return propertiesFor(path, null);
+    }
+
     public static Properties propertiesFor(@NonNull String path, ClassLoader loader) throws IOException {
         val in = IOUtils.openResource(path, loader);
         if (in != null) {
@@ -162,9 +166,12 @@ public final class CollectUtils {
         return null;
     }
 
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path) {
+        updateByProperties(m, path, null);
+    }
+
     @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path,
-                                          ClassLoader loader) {
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path, ClassLoader loader) {
         val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {
