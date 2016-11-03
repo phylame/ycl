@@ -1,31 +1,32 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.util;
-
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-
-import java.lang.reflect.*;
 
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static pw.phylame.ycl.util.StringUtils.capitalized;
 import static pw.phylame.ycl.util.StringUtils.isEmpty;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
 
 public final class Reflections {
 
@@ -117,15 +118,11 @@ public final class Reflections {
 
     @SneakyThrows(IllegalAccessException.class)
     public static Object invokeMethod(@NonNull Method method, Object target, Object... args) {
-        if (method == null) {
+        makeAccessible(method);
+        try {
+            return method.invoke(target, args);
+        } catch (InvocationTargetException e) {
             return null;
-        } else {
-            makeAccessible(method);
-            try {
-                return method.invoke(target, args);
-            } catch (InvocationTargetException e) {
-                return null;
-            }
         }
     }
 

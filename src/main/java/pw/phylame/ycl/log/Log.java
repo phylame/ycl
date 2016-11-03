@@ -1,45 +1,54 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.log;
+
+import static pw.phylame.ycl.log.Level.DEBUG;
+import static pw.phylame.ycl.log.Level.DEFAULT;
+import static pw.phylame.ycl.log.Level.ERROR;
+import static pw.phylame.ycl.log.Level.FATAL;
+import static pw.phylame.ycl.log.Level.INFO;
+import static pw.phylame.ycl.log.Level.TRACE;
+import static pw.phylame.ycl.log.Level.WARN;
+
+import java.io.IOException;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import pw.phylame.ycl.util.Exceptions;
 
-import java.io.IOException;
-
-import static pw.phylame.ycl.log.Level.*;
-
-@Getter
-@Setter
 public final class Log {
     private Log() {
     }
 
+    @Getter
+    @Setter
     @NonNull
     private static Level level = DEFAULT;
 
+    @Getter
+    @Setter
     @NonNull
     private static Appendable out = System.out;
 
+    @Getter
+    @Setter
     @NonNull
     private static Appendable err = System.err;
 
+    @Getter
+    @Setter
     @NonNull
     private static Formatter formatter = new DefaultFormatter();
 
@@ -124,7 +133,6 @@ public final class Log {
                 out.append(LINE_SEPARATOR);
             }
         } catch (IOException ignored) {
-
         }
     }
 }
