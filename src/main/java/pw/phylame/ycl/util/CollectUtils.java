@@ -1,29 +1,37 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.util;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
-
-import java.io.IOException;
-import java.util.*;
 
 public final class CollectUtils {
     private CollectUtils() {
@@ -57,6 +65,34 @@ public final class CollectUtils {
 
     public static <E> E firstOf(Iterator<E> i) {
         return i == null ? null : (i.hasNext() ? i.next() : null);
+    }
+
+    public static <K, V> V getOrElse(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
+        return getOrElse(m, key, false, supplier);
+    }
+
+    public static <K, V> V getOrElse(@NonNull Map<K, V> m, K key, boolean nullabe, Function<K, ? extends V> supplier) {
+        val value = m.get(key);
+        if (value != null || (nullabe && m.containsKey(key))) {
+            return value;
+        }
+        return supplier.apply(key);
+    }
+
+    public static <K, V> V getOrPut(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
+        return getOrPut(m, key, false, supplier);
+    }
+
+    public static <K, V> V getOrPut(@NonNull Map<K, V> m, K key, boolean nullabe, Function<K, ? extends V> supplier) {
+        V value = m.get(key);
+        if (value != null || (nullabe && m.containsKey(key))) {
+            return value;
+        }
+        value = supplier.apply(key);
+        if (value != null || nullabe) {
+            m.put(key, value);
+        }
+        return value;
     }
 
     public static <E> Iterable<E> iterable(@NonNull Enumeration<?> e, final Function<Object, E> transformer) {
@@ -171,7 +207,8 @@ public final class CollectUtils {
     }
 
     @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path, ClassLoader loader) {
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path,
+            ClassLoader loader) {
         val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {

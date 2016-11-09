@@ -1,25 +1,17 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.util;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.log.Log;
-import pw.phylame.ycl.value.Lazy;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,6 +19,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.log.Log;
+import pw.phylame.ycl.value.Lazy;
 
 public final class DateUtils {
     private DateUtils() {
@@ -166,32 +163,32 @@ public final class DateUtils {
     public static Date calculate(@NonNull Date date, char unit, int amount) {
         final int field;
         switch (unit) {
-            case 'y':
-            case 'Y':
-                field = Calendar.YEAR;
-                break;
-            case 'm':
-            case 'M':
-                field = Calendar.MONTH;
-                break;
-            case 'd':
-            case 'D':
-                field = Calendar.DAY_OF_MONTH;
-                break;
-            case 'h':
-            case 'H':
-                field = Calendar.HOUR_OF_DAY;
-                break;
-            case 'n':
-            case 'N':
-                field = Calendar.MINUTE;
-                break;
-            case 's':
-            case 'S':
-                field = Calendar.SECOND;
-                break;
-            default:
-                throw Exceptions.forIllegalArgument("Invalid field type: %s, available: yYmMdDhHnNsS", unit);
+        case 'y':
+        case 'Y':
+            field = Calendar.YEAR;
+        break;
+        case 'm':
+        case 'M':
+            field = Calendar.MONTH;
+        break;
+        case 'd':
+        case 'D':
+            field = Calendar.DAY_OF_MONTH;
+        break;
+        case 'h':
+        case 'H':
+            field = Calendar.HOUR_OF_DAY;
+        break;
+        case 'n':
+        case 'N':
+            field = Calendar.MINUTE;
+        break;
+        case 's':
+        case 'S':
+            field = Calendar.SECOND;
+        break;
+        default:
+            throw Exceptions.forIllegalArgument("Invalid field type: %s, available: yYmMdDhHnNsS", unit);
         }
         val calendar = Calendar.getInstance();
         calendar.setTime(date);
