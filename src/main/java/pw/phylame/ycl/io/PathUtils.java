@@ -47,6 +47,7 @@ public final class PathUtils {
             ch = path.charAt(seppos);
             if (ch == '.') {
                 extpos = seppos;
+                break;
             } else if (ch == '/' || ch == '\\') {
                 break;
             }
