@@ -25,15 +25,15 @@ import pw.phylame.ycl.util.Exceptions;
 import java.io.*;
 import java.util.LinkedList;
 
-public class FileArchive implements Archive<FileItem> {
+public class FileVamReader implements VamReader<FileItem> {
     private final File file;
 
-    public FileArchive(@NonNull String path) throws FileNotFoundException {
+    public FileVamReader(@NonNull String path) throws FileNotFoundException {
         this.file = new File(path);
         init();
     }
 
-    public FileArchive(@NonNull File file) throws FileNotFoundException {
+    public FileVamReader(@NonNull File file) throws FileNotFoundException {
         this.file = file;
         init();
     }
@@ -77,7 +77,7 @@ public class FileArchive implements Archive<FileItem> {
     }
 
     @Override
-    public InputStream inputStreamOf(@NonNull FileItem item) throws IOException {
+    public InputStream streamOf(@NonNull FileItem item) throws IOException {
         if (item.getArchive() == null || item.getArchive().get() != this) {
             return null;
         }
@@ -91,7 +91,7 @@ public class FileArchive implements Archive<FileItem> {
             @Override
             public void consume(File value) {
                 if (!value.getName().equals(FileItem.COMMENT_FILE)) {
-                    items.add(new FileItem(value, FileArchive.this));
+                    items.add(new FileItem(value, FileVamReader.this));
                 }
             }
         });

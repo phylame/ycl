@@ -27,18 +27,18 @@ import lombok.val;
 import pw.phylame.ycl.util.CollectUtils;
 import pw.phylame.ycl.util.Function;
 
-public class ZipArchive implements Archive<ZipItem> {
+public class ZipVamReader implements VamReader<ZipItem> {
     private final ZipFile zip;
 
-    public ZipArchive(@NonNull String path) throws IOException {
+    public ZipVamReader(@NonNull String path) throws IOException {
         this(new ZipFile(path));
     }
 
-    public ZipArchive(@NonNull File file) throws IOException {
+    public ZipVamReader(@NonNull File file) throws IOException {
         this(new ZipFile(file));
     }
 
-    public ZipArchive(@NonNull ZipFile zip) {
+    public ZipVamReader(@NonNull ZipFile zip) {
         this.zip = zip;
     }
 
@@ -64,7 +64,7 @@ public class ZipArchive implements Archive<ZipItem> {
     }
 
     @Override
-    public InputStream inputStreamOf(@NonNull ZipItem item) throws IOException {
+    public InputStream streamOf(@NonNull ZipItem item) throws IOException {
         return zip.getInputStream(item.getEntry());
     }
 

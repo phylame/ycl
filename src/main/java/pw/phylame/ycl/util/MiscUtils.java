@@ -1,16 +1,36 @@
 package pw.phylame.ycl.util;
 
+import java.util.List;
+import java.util.Locale;
+
 import lombok.NonNull;
 import lombok.val;
-
-import java.util.List;
 
 public final class MiscUtils {
     private MiscUtils() {
     }
 
-    private static <T extends Hierarchical<T>> T itemAt(T item, int index) {
-        return item.items().get(index);
+    public static String renderLocale(@NonNull Locale locale) {
+        val country = locale.getCountry();
+        val language = locale.getLanguage();
+        return (StringUtils.isNotEmpty(country)) ? language + '-' + country : language;
+    }
+
+    public static Locale parseLocale(@NonNull String str) {
+        int index = str.indexOf('-');
+        if (index == -1) {
+            index = str.indexOf('_');
+        }
+        String language;
+        String country;
+        if (index == -1) {
+            language = str;
+            country = "";
+        } else {
+            language = str.substring(0, index);
+            country = str.substring(index + 1);
+        }
+        return new Locale(language, country);
     }
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
@@ -89,5 +109,9 @@ public final class MiscUtils {
         }
 
         return count;
+    }
+
+    private static <T extends Hierarchical<T>> T itemAt(T item, int index) {
+        return item.items().get(index);
     }
 }

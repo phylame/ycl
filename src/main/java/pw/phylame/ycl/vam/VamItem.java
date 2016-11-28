@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.format;
+package pw.phylame.ycl.vam;
 
-import lombok.NonNull;
+public interface VamItem {
+    String getName();
 
-public abstract class AbstractConverter<T> implements Converter<T> {
-    @Override
-    public String render(@NonNull T o) {
-        return o.toString();
-    }
+    String getComment();
+
+    boolean isDirectory();
 }

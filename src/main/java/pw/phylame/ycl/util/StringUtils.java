@@ -1,29 +1,26 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.util;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.value.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.value.Pair;
 
 public final class StringUtils {
     private StringUtils() {
@@ -66,10 +63,19 @@ public final class StringUtils {
         return o != null ? o.toString() : null;
     }
 
+    public static <T extends CharSequence> T notEmptyOr(T source, T fallback) {
+        return isNotEmpty(source) ? source : fallback;
+    }
+
+    public static String notEmptyOr(CharSequence source, @NonNull CharSequence format, Object... args) {
+        return isNotEmpty(source) ? source.toString() : String.format(format.toString(), args);
+    }
+
     /**
      * Returns a copy of {@code str} that first letter was converted to upper case.
      *
-     * @param str the string
+     * @param str
+     *            the string
      * @return string which first character is upper
      */
     public static String capitalized(String str) {
@@ -83,7 +89,8 @@ public final class StringUtils {
     /**
      * Returns a copy of {@code str} that each word was converted to capital.
      *
-     * @param str the string
+     * @param str
+     *            the string
      * @return string which each word is capital
      */
     public static String titled(String str) {
@@ -111,7 +118,8 @@ public final class StringUtils {
     /**
      * Like {@link String#trim()} but removes Chinese paragraph prefix (u3000).
      *
-     * @param str the input string
+     * @param str
+     *            the input string
      * @return the string removed space
      */
     public static String trimmed(String str) {
@@ -134,9 +142,9 @@ public final class StringUtils {
     /**
      * Tests if all characters of specified string are upper case.
      *
-     * @param cs a <tt>CharSequence</tt> represent string
-     * @return <tt>true</tt> if all characters are upper case or
-     * <tt>false</tt> if contains lower case character(s)
+     * @param cs
+     *            a <tt>CharSequence</tt> represent string
+     * @return <tt>true</tt> if all characters are upper case or <tt>false</tt> if contains lower case character(s)
      */
     public static boolean isLowerCase(@NonNull CharSequence cs) {
         val end = cs.length();
@@ -152,9 +160,9 @@ public final class StringUtils {
     /**
      * Tests if all characters of specified string are lower case.
      *
-     * @param cs a <tt>CharSequence</tt> represent string
-     * @return <tt>true</tt> if all characters are lower case or
-     * <tt>false</tt> if contains upper case character(s)
+     * @param cs
+     *            a <tt>CharSequence</tt> represent string
+     * @return <tt>true</tt> if all characters are lower case or <tt>false</tt> if contains upper case character(s)
      */
     public static boolean isUpperCase(@NonNull CharSequence cs) {
         val end = cs.length();
@@ -200,17 +208,25 @@ public final class StringUtils {
     /**
      * Returns list of lines split from text content in this object.
      *
-     * @param cs        the input string
-     * @param skipEmpty <code>true</code> to skip empty line
+     * @param cs
+     *            the input string
+     * @param skipEmpty
+     *            <code>true</code> to skip empty line
      * @return list of lines, never <code>null</code>
-     * @throws NullPointerException if the <code>cs</code> is <code>null</code>
+     * @throws NullPointerException
+     *             if the <code>cs</code> is <code>null</code>
      */
     public static List<String> splitLines(@NonNull CharSequence cs, boolean skipEmpty) {
         val lines = new LinkedList<String>();
+        splitLines(cs, lines, skipEmpty);
+        return lines;
+    }
+
+    public static void splitLines(@NonNull CharSequence cs, List<String> lines, boolean skipEmpty) {
         int i, begin = 0;
         val end = cs.length();
         CharSequence sub;
-        for (i = 0; i < end; ) {
+        for (i = 0; i < end;) {
             val ch = cs.charAt(i);
             if ('\n' == ch) { // \n
                 sub = cs.subSequence(begin, i);
@@ -238,7 +254,6 @@ public final class StringUtils {
                 lines.add(sub.toString());
             }
         }
-        return lines;
     }
 
     private static Pair<String, String> pairOf(String first, String second) {
@@ -250,8 +265,8 @@ public final class StringUtils {
     }
 
     public static List<Pair<String, String>> getNamedPairs(@NonNull String str,
-                                                           @NonNull String partSeparator,
-                                                           @NonNull String valueSeparator) {
+            @NonNull String partSeparator,
+            @NonNull String valueSeparator) {
         val pairs = new ArrayList<Pair<String, String>>();
         int index;
         for (val part : str.split(partSeparator)) {
@@ -296,10 +311,10 @@ public final class StringUtils {
     }
 
     public static String valueOfName(@NonNull String str,
-                                     @NonNull String name,
-                                     @NonNull String sep,
-                                     boolean ignoreCase,
-                                     String fallback) {
+            @NonNull String name,
+            @NonNull String sep,
+            boolean ignoreCase,
+            String fallback) {
         for (val part : str.split(sep)) {
             val index = part.trim().indexOf('=');
             if (index != -1) {
@@ -314,9 +329,9 @@ public final class StringUtils {
     }
 
     public static String[] valuesOfName(@NonNull String str,
-                                        @NonNull String name,
-                                        @NonNull String sep,
-                                        boolean ignoreCase) {
+            @NonNull String name,
+            @NonNull String sep,
+            boolean ignoreCase) {
         val result = new ArrayList<String>();
         for (val part : str.split(sep)) {
             val index = part.trim().indexOf('=');

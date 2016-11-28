@@ -13,13 +13,13 @@
 
 package pw.phylame.ycl.log;
 
-import static pw.phylame.ycl.log.Level.DEBUG;
-import static pw.phylame.ycl.log.Level.DEFAULT;
-import static pw.phylame.ycl.log.Level.ERROR;
-import static pw.phylame.ycl.log.Level.FATAL;
-import static pw.phylame.ycl.log.Level.INFO;
-import static pw.phylame.ycl.log.Level.TRACE;
-import static pw.phylame.ycl.log.Level.WARN;
+import static pw.phylame.ycl.log.LogLevel.DEBUG;
+import static pw.phylame.ycl.log.LogLevel.DEFAULT;
+import static pw.phylame.ycl.log.LogLevel.ERROR;
+import static pw.phylame.ycl.log.LogLevel.FATAL;
+import static pw.phylame.ycl.log.LogLevel.INFO;
+import static pw.phylame.ycl.log.LogLevel.TRACE;
+import static pw.phylame.ycl.log.LogLevel.WARN;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public final class Log {
     @Getter
     @Setter
     @NonNull
-    private static Level level = DEFAULT;
+    private static LogLevel level = DEFAULT;
 
     @Getter
     @Setter
@@ -50,9 +50,9 @@ public final class Log {
     @Getter
     @Setter
     @NonNull
-    private static Formatter formatter = new DefaultFormatter();
+    private static LogFormatter formatter = new DefaultLogFormatter();
 
-    public static boolean isEnable(Level level) {
+    public static boolean isEnable(LogLevel level) {
         return level.getCode() <= Log.level.getCode();
     }
 
@@ -63,7 +63,7 @@ public final class Log {
 
     public static void t(String tag, Throwable t) {
         if (isEnable(TRACE))
-            t(tag, Exceptions.dumpThrowable(t));
+            t(tag, Exceptions.dumpToString(t));
     }
 
     public static void d(String tag, String format, Object... args) {
@@ -73,7 +73,7 @@ public final class Log {
 
     public static void d(String tag, Throwable t) {
         if (isEnable(DEBUG))
-            d(tag, Exceptions.dumpThrowable(t));
+            d(tag, Exceptions.dumpToString(t));
     }
 
     public static void i(String tag, String format, Object... args) {
@@ -83,7 +83,7 @@ public final class Log {
 
     public static void i(String tag, Throwable t) {
         if (isEnable(INFO))
-            i(tag, Exceptions.dumpThrowable(t));
+            i(tag, Exceptions.dumpToString(t));
     }
 
     public static void w(String tag, String format, Object... args) {
@@ -93,7 +93,7 @@ public final class Log {
 
     public static void w(String tag, Throwable t) {
         if (isEnable(WARN))
-            w(tag, Exceptions.dumpThrowable(t));
+            w(tag, Exceptions.dumpToString(t));
     }
 
     public static void e(String tag, String format, Object... args) {
@@ -103,7 +103,7 @@ public final class Log {
 
     public static void e(String tag, Throwable t) {
         if (isEnable(ERROR))
-            e(tag, Exceptions.dumpThrowable(t));
+            e(tag, Exceptions.dumpToString(t));
     }
 
     public static void f(String tag, String format, Object... args) {
@@ -113,7 +113,7 @@ public final class Log {
 
     public static void f(String tag, Throwable t) {
         if (isEnable(FATAL))
-            f(tag, Exceptions.dumpThrowable(t));
+            f(tag, Exceptions.dumpToString(t));
     }
 
     private static final String LINE_SEPARATOR = System.lineSeparator();

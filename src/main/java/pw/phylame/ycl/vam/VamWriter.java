@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.format;
+package pw.phylame.ycl.vam;
 
-import lombok.NonNull;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public abstract class AbstractConverter<T> implements Converter<T> {
-    @Override
-    public String render(@NonNull T o) {
-        return o.toString();
-    }
+public interface VamWriter<I extends VamItem> extends Closeable {
+    void setComment(String comment);
+
+    OutputStream begin(I item) throws IOException;
+
+    void end(I item) throws IOException;
+
+    void write(I item, byte[] data, int off, int len) throws IOException;
+
+    void write(I item, byte[] data) throws IOException;
+
+    void write(I item, InputStream input) throws IOException;
+
+    I mkitem(String name);
 }

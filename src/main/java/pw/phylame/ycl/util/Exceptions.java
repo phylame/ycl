@@ -54,7 +54,7 @@ public class Exceptions {
         return new UnsupportedOperationException(format(format, args));
     }
 
-    public static String dumpThrowable(@NonNull Throwable t) {
+    public static String dumpToString(@NonNull Throwable t) {
         val out = new StringWriter();
         t.printStackTrace(new PrintWriter(out));
         return out.toString();

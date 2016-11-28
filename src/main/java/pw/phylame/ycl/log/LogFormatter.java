@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.format;
+package pw.phylame.ycl.log;
 
-import lombok.NonNull;
-
-public abstract class AbstractConverter<T> implements Converter<T> {
-    @Override
-    public String render(@NonNull T o) {
-        return o.toString();
-    }
+public interface LogFormatter {
+    String format(String tag, String level, String format, Object... args);
 }

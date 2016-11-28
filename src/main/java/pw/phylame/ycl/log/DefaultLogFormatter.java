@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.format;
+package pw.phylame.ycl.log;
 
-import lombok.NonNull;
+import java.text.MessageFormat;
 
-public abstract class AbstractConverter<T> implements Converter<T> {
+public class DefaultLogFormatter implements LogFormatter {
     @Override
-    public String render(@NonNull T o) {
-        return o.toString();
+    public String format(String tag, String level, String format, Object... args) {
+        return String.format("[%s] %s/%s: %s", Thread.currentThread().getName(), level, tag, MessageFormat.format(format, args));
     }
 }

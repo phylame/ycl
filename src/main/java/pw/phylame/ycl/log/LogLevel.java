@@ -14,39 +14,40 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.vam;
-
-import java.util.zip.ZipEntry;
+package pw.phylame.ycl.log;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
+import lombok.val;
 
-@ToString
-public class ZipItem implements VamItem {
+public enum LogLevel {
+    ALL(7, "all"),
+    TRACE(6, "trace"),
+    DEBUG(5, "debug"),
+    INFO(4, "info"),
+    WARN(3, "warn"),
+    ERROR(2, "error"),
+    FATAL(1, "fatal"),
+    OFF(0, "off"),
+    DEFAULT(INFO.code, "default");
+
     @Getter
-    private final ZipEntry entry;
+    private final int code;
 
-    public ZipItem(@NonNull String name) {
-        this.entry = new ZipEntry(name);
+    @Getter
+    private final String name;
+
+    LogLevel(int code, String name) {
+        this.code = code;
+        this.name = name;
     }
 
-    public ZipItem(ZipEntry entry) {
-        this.entry = entry;
-    }
-
-    @Override
-    public String getName() {
-        return entry.getName();
-    }
-
-    @Override
-    public String getComment() {
-        return entry.getComment();
-    }
-
-    @Override
-    public boolean isDirectory() {
-        return entry.isDirectory();
+    public static LogLevel forName(@NonNull String name, LogLevel fallback) {
+        for (val level : values()) {
+            if (level.getName().equals(name)) {
+                return level;
+            }
+        }
+        return fallback;
     }
 }

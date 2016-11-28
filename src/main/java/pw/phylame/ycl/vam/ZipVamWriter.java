@@ -27,22 +27,22 @@ import java.util.zip.ZipOutputStream;
 import lombok.NonNull;
 import pw.phylame.ycl.io.IOUtils;
 
-public class ZipArchiveWriter implements ArchiveWriter<ZipItem> {
+public class ZipVamWriter implements VamWriter<ZipItem> {
     private final ZipOutputStream zip;
 
-    public ZipArchiveWriter(@NonNull String path) throws FileNotFoundException {
+    public ZipVamWriter(@NonNull String path) throws FileNotFoundException {
         this(new FileOutputStream(path));
     }
 
-    public ZipArchiveWriter(@NonNull File file) throws FileNotFoundException {
+    public ZipVamWriter(@NonNull File file) throws FileNotFoundException {
         this(new FileOutputStream(file));
     }
 
-    public ZipArchiveWriter(@NonNull OutputStream out) {
+    public ZipVamWriter(@NonNull OutputStream out) {
         this(new ZipOutputStream(out));
     }
 
-    public ZipArchiveWriter(@NonNull ZipOutputStream zip) {
+    public ZipVamWriter(@NonNull ZipOutputStream zip) {
         this.zip = zip;
     }
 

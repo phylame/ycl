@@ -26,14 +26,14 @@ import lombok.ToString;
 import pw.phylame.ycl.util.Exceptions;
 
 @ToString
-public class FileItem implements Item {
+public class FileItem implements VamItem {
     static final String COMMENT_FILE = "__comment__";
 
     @Getter
     private final File file;
 
     @Getter(AccessLevel.PACKAGE)
-    private final WeakReference<? extends FileArchive> archive;
+    private final WeakReference<? extends FileVamReader> archive;
 
     public FileItem(@NonNull String name) {
         this(new File(name), null);
@@ -45,7 +45,7 @@ public class FileItem implements Item {
         init();
     }
 
-    FileItem(@NonNull File file, FileArchive archive) {
+    FileItem(@NonNull File file, FileVamReader archive) {
         this.file = file;
         this.archive = archive != null ? new WeakReference<>(archive) : null;
     }

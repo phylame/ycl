@@ -166,12 +166,24 @@ public final class CollectUtils {
         return Collections.unmodifiableMap(m);
     }
 
-    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c, int begin) {
+    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c) {
         val m = new HashMap<Integer, V>();
-        for (V v : c) {
-            m.put(begin++, v);
-        }
+        fillMap(m, c);
         return Collections.unmodifiableMap(m);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> void fillMap(@NonNull Map<K, V> m, Collection<?> objects) {
+        if (isEmpty(objects)) {
+            return;
+        }
+        val size = objects.size();
+        if (size % 2 != 0) {
+            throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
+        }
+        for (Iterator<?> i = objects.iterator(); i.hasNext();) {
+            m.put((K) i.next(), (V) i.next());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -179,10 +191,11 @@ public final class CollectUtils {
         if (objects == null || objects.length == 0) {
             return;
         }
-        if (objects.length % 2 != 0) {
-            throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", objects.length);
+        val size = objects.length;
+        if (size % 2 != 0) {
+            throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
         }
-        for (int i = 0; i < objects.length; i += 2) {
+        for (int i = 0; i < size; i += 2) {
             m.put((K) objects[i], (V) objects[i + 1]);
         }
     }
@@ -207,8 +220,7 @@ public final class CollectUtils {
     }
 
     @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path,
-            ClassLoader loader) {
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path, ClassLoader loader) {
         val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {

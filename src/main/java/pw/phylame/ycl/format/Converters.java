@@ -1,25 +1,17 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.format;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.DateUtils;
-import pw.phylame.ycl.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +19,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.DateUtils;
+import pw.phylame.ycl.util.MiscUtils;
 
 public final class Converters {
     private Converters() {
@@ -157,27 +154,12 @@ public final class Converters {
         register(Locale.class, new Converter<Locale>() {
             @Override
             public Locale parse(@NonNull String str) {
-                int index = str.indexOf('-');
-                if (index == -1) {
-                    index = str.indexOf('_');
-                }
-                String language;
-                String country;
-                if (index == -1) {
-                    language = str;
-                    country = "";
-                } else {
-                    language = str.substring(0, index);
-                    country = str.substring(index + 1);
-                }
-                return new Locale(language, country);
+                return MiscUtils.parseLocale(str);
             }
 
             @Override
             public String render(@NonNull Locale o) {
-                val country = o.getCountry();
-                val language = o.getLanguage();
-                return (StringUtils.isNotEmpty(country)) ? language + '-' + country : language;
+                return MiscUtils.renderLocale(o);
             }
         });
     }

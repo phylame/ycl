@@ -31,18 +31,18 @@ import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Exceptions;
 
-public class FileArchiveWriter implements ArchiveWriter<FileItem> {
+public class FileVamWriter implements VamWriter<FileItem> {
     private static final String TAG = "FAW";
 
     private final File file;
 
     private final Map<String, OutputStream> streams = new IdentityHashMap<>();
 
-    public FileArchiveWriter(@NonNull String path) throws IOException {
+    public FileVamWriter(@NonNull String path) throws IOException {
         this(new File(path));
     }
 
-    public FileArchiveWriter(@NonNull File file) throws IOException {
+    public FileVamWriter(@NonNull File file) throws IOException {
         this.file = file;
 
         if (!file.exists()) {
