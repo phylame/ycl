@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -103,6 +105,18 @@ public final class Reflections {
         return null;
     }
 
+    public static List<Field> getFields(@NonNull Class<?> clazz, Function<Field, Boolean> prediction) {
+        val fields = new ArrayList<Field>();
+        for (; clazz != null; clazz = clazz.getSuperclass()) {
+            for (val field : clazz.getDeclaredFields()) {
+                if (prediction == null || prediction.apply(field)) {
+                    fields.add(field);
+                }
+            }
+        }
+        return fields;
+    }
+
     public static Method findMethod(@NonNull Class<?> clazz, String name, Class<?>... types) {
         if (isEmpty(name)) {
             return null;
@@ -114,6 +128,18 @@ public final class Reflections {
             }
         }
         return null;
+    }
+
+    public static List<Method> getMethods(@NonNull Class<?> clazz, Function<Method, Boolean> prediction) {
+        val methods = new ArrayList<Method>();
+        for (; clazz != null; clazz = clazz.getSuperclass()) {
+            for (val method : clazz.getDeclaredMethods()) {
+                if (prediction == null || prediction.apply(method)) {
+                    methods.add(method);
+                }
+            }
+        }
+        return methods;
     }
 
     @SneakyThrows(IllegalAccessException.class)
