@@ -20,19 +20,29 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Pair<A, B> implements Map.Entry<A, B> {
+public class Pair<A, B> implements Map.Entry<A, B>, Serializable {
+    private static final long serialVersionUID = -5592516496835082752L;
+
     protected A first;
 
     protected B second;
 
-    public <X extends A, Y extends B> Pair(X first, Y second) {
+    public Pair() {
+    }
+
+    public Pair(A first, B second) {
         this.first = first;
         this.second = second;
+    }
+
+    public static <A, B> Pair<A, B> of(A first, B second) {
+        return new Pair<>(first, second);
     }
 
     @Override

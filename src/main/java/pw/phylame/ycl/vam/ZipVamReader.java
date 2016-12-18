@@ -16,16 +16,16 @@
 
 package pw.phylame.ycl.vam;
 
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.CollectUtils;
+import pw.phylame.ycl.util.Function;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.CollectUtils;
-import pw.phylame.ycl.util.Function;
 
 public class ZipVamReader implements VamReader<ZipItem> {
     private final ZipFile zip;

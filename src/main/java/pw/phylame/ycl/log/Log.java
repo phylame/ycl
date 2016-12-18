@@ -13,20 +13,14 @@
 
 package pw.phylame.ycl.log;
 
-import static pw.phylame.ycl.log.LogLevel.DEBUG;
-import static pw.phylame.ycl.log.LogLevel.DEFAULT;
-import static pw.phylame.ycl.log.LogLevel.ERROR;
-import static pw.phylame.ycl.log.LogLevel.FATAL;
-import static pw.phylame.ycl.log.LogLevel.INFO;
-import static pw.phylame.ycl.log.LogLevel.TRACE;
-import static pw.phylame.ycl.log.LogLevel.WARN;
-
-import java.io.IOException;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import pw.phylame.ycl.util.Exceptions;
+
+import java.io.IOException;
+
+import static pw.phylame.ycl.log.LogLevel.*;
 
 public final class Log {
     private Log() {

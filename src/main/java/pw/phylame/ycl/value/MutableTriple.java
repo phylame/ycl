@@ -17,8 +17,17 @@
 package pw.phylame.ycl.value;
 
 public class MutableTriple<A, B, C> extends Triple<A, B, C> {
-    public <X extends A, Y extends B, Z extends C> MutableTriple(X first, Y second, Z third) {
+    private static final long serialVersionUID = 767137123548967736L;
+
+    public MutableTriple() {
+    }
+
+    public MutableTriple(A first, B second, C third) {
         super(first, second, third);
+    }
+
+    public static <A, B, C> MutableTriple<A, B, C> of(A first, B second, C third) {
+        return new MutableTriple<>(first, second, third);
     }
 
     public void setFirst(A first) {

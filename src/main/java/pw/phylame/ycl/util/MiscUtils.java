@@ -1,10 +1,10 @@
 package pw.phylame.ycl.util;
 
-import java.util.List;
-import java.util.Locale;
-
 import lombok.NonNull;
 import lombok.val;
+
+import java.util.List;
+import java.util.Locale;
 
 public final class MiscUtils {
     private MiscUtils() {
@@ -61,7 +61,7 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Function<T, Boolean> filter, int from,
-            boolean recursion) {
+                                                     boolean recursion) {
         val end = item.size();
         val items = item.items();
 
@@ -83,15 +83,15 @@ public final class MiscUtils {
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item, @NonNull Function<T, Boolean> filter,
-            @NonNull List<T> result) {
+                                                         @NonNull List<T> result) {
         return select(item, filter, result, -1, true);
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-            @NonNull Function<T, Boolean> filter,
-            @NonNull List<T> result,
-            int limit,
-            boolean recursion) {
+                                                         @NonNull Function<T, Boolean> filter,
+                                                         @NonNull List<T> result,
+                                                         int limit,
+                                                         boolean recursion) {
         if (limit <= 0) {
             return 0;
         }

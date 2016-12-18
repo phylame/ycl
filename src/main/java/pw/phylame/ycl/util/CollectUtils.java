@@ -13,25 +13,14 @@
 
 package pw.phylame.ycl.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 public final class CollectUtils {
     private CollectUtils() {
@@ -181,7 +170,7 @@ public final class CollectUtils {
         if (size % 2 != 0) {
             throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
         }
-        for (Iterator<?> i = objects.iterator(); i.hasNext();) {
+        for (Iterator<?> i = objects.iterator(); i.hasNext(); ) {
             m.put((K) i.next(), (V) i.next());
         }
     }

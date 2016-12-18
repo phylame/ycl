@@ -19,8 +19,18 @@ package pw.phylame.ycl.value;
 import lombok.val;
 
 public class MutablePair<A, B> extends Pair<A, B> {
-    public <X extends A, Y extends B> MutablePair(X first, Y second) {
+    private static final long serialVersionUID = -7871583557712920496L;
+
+    public MutablePair() {
+
+    }
+
+    public MutablePair(A first, B second) {
         super(first, second);
+    }
+
+    public static <A, B> MutablePair<A, B> of(A first, B second) {
+        return new MutablePair<>(first, second);
     }
 
     public void setFirst(A first) {

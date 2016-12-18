@@ -36,10 +36,8 @@ public class Implementor<T> {
     /**
      * Constructs object with specified class type.
      *
-     * @param type
-     *            class of the interface
-     * @param reusable
-     *            <code>true</code> to reuse instance
+     * @param type     class of the interface
+     * @param reusable <code>true</code> to reuse instance
      */
     public Implementor(@NonNull Class<T> type, boolean reusable, ClassLoader loader) {
         this.type = type;
@@ -51,10 +49,8 @@ public class Implementor<T> {
      * Registers new implementation with name and class path. <strong>NOTE:</strong> old implementation will be
      * overwritten
      *
-     * @param name
-     *            name of the implementation
-     * @param path
-     *            full class path of the implementation
+     * @param name name of the implementation
+     * @param path full class path of the implementation
      */
     public void register(String name, String path) {
         Validate.require(name != null && !name.isEmpty(), "name cannot be null or empty");
@@ -72,10 +68,8 @@ public class Implementor<T> {
     /**
      * Registers new implementation with name and class. <strong>NOTE:</strong> old implementation will be overwritten
      *
-     * @param name
-     *            name of the implementation
-     * @param clazz
-     *            class of the implementation
+     * @param name  name of the implementation
+     * @param clazz class of the implementation
      */
     public void register(String name, @NonNull Class<? extends T> clazz) {
         Validate.require(name != null && !name.isEmpty(), "name cannot be null or empty");
@@ -110,15 +104,11 @@ public class Implementor<T> {
     /**
      * Returns an instance for specified implementation name.
      *
-     * @param name
-     *            name of the implementation
+     * @param name name of the implementation
      * @return instance for the implementation
-     * @throws IllegalAccessException
-     *             if the class cannot access
-     * @throws InstantiationException
-     *             if the instance cannot be created
-     * @throws ClassNotFoundException
-     *             if the class path is invalid
+     * @throws IllegalAccessException if the class cannot access
+     * @throws InstantiationException if the instance cannot be created
+     * @throws ClassNotFoundException if the class path is invalid
      */
     public T getInstance(@NonNull String name)
             throws IllegalAccessException, InstantiationException, ClassNotFoundException {
@@ -152,12 +142,9 @@ public class Implementor<T> {
          * Creates a new instance of implement for <code>T</code>.
          *
          * @return the new instance or <code>null</code> if class for path does not extends from <code>T</code>.
-         * @throws ClassNotFoundException
-         *             if the class of <code>path</code> is not found
-         * @throws IllegalAccessException
-         *             if the class of <code>path</code> is inaccessible
-         * @throws InstantiationException
-         *             if cannot create instance of the class
+         * @throws ClassNotFoundException if the class of <code>path</code> is not found
+         * @throws IllegalAccessException if the class of <code>path</code> is inaccessible
+         * @throws InstantiationException if cannot create instance of the class
          */
         @SuppressWarnings("unchecked")
         private T instantiate() throws ClassNotFoundException, IllegalAccessException, InstantiationException {

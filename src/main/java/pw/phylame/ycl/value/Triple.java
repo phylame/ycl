@@ -20,19 +20,30 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Triple<A, B, C> {
+public class Triple<A, B, C> implements Serializable {
+    private static final long serialVersionUID = -8063111170681621221L;
+
     protected A first;
 
     protected B second;
 
     protected C third;
 
-    public <X extends A, Y extends B, Z extends C> Triple(X first, Y second, Z third) {
+    public Triple() {
+    }
+
+    public Triple(A first, B second, C third) {
         this.first = first;
         this.second = second;
         this.third = third;
+    }
+
+    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
+        return new Triple<>(first, second, third);
     }
 }
