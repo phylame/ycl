@@ -232,4 +232,51 @@ public final class Reflections {
             invokeMethod(setter, target, value);
         }
     }
+
+    public static Object i(Object target, String name, Object... args) {
+        Class<?>[] types = typesOf(args);
+        val method = findMethod(target.getClass(), name, types);
+        if (method == null) {
+            throw new RuntimeException("no such method: " + name);
+        }
+        makeAccessible(method);
+        try {
+            return method.invoke(target, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object i(Class<?> target, String name, Object... args) {
+        Class<?>[] types = typesOf(args);
+        val method = findMethod(target, name, types);
+        if (method == null) {
+            throw new RuntimeException("no such method: " + name);
+        }
+        makeAccessible(method);
+        try {
+            return method.invoke(null, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object p(Object target, String name) {
+        return getProperty(target, name);
+    }
+
+    public static void p(Object target, String name, Object value) {
+        setProperty(target, name, value);
+    }
+
+    private static Class<?>[] typesOf(Object[] args) {
+        Class<?>[] types = null;
+        if (args.length > 0) {
+            types = new Class[args.length];
+            for (int i = 0; i < types.length; ++i) {
+                types[i] = args[i].getClass();
+            }
+        }
+        return types;
+    }
 }
