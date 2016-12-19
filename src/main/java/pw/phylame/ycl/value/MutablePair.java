@@ -25,7 +25,7 @@ public class MutablePair<A, B> extends Pair<A, B> {
 
     }
 
-    public MutablePair(A first, B second) {
+    public <X extends A, Y extends B> MutablePair(X first, Y second) {
         super(first, second);
     }
 

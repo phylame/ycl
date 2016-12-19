@@ -36,7 +36,7 @@ public class Pair<A, B> implements Map.Entry<A, B>, Serializable {
     public Pair() {
     }
 
-    public Pair(A first, B second) {
+    public <X extends A, Y extends B> Pair(X first, Y second) {
         this.first = first;
         this.second = second;
     }

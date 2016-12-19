@@ -37,7 +37,7 @@ public class Triple<A, B, C> implements Serializable {
     public Triple() {
     }
 
-    public Triple(A first, B second, C third) {
+    public <X extends A, Y extends B, Z extends C> Triple(X first, Y second, Z third) {
         this.first = first;
         this.second = second;
         this.third = third;

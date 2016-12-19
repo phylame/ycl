@@ -22,7 +22,7 @@ public class MutableTriple<A, B, C> extends Triple<A, B, C> {
     public MutableTriple() {
     }
 
-    public MutableTriple(A first, B second, C third) {
+    public <X extends A, Y extends B, Z extends C> MutableTriple(X first, Y second, Z third) {
         super(first, second, third);
     }
 
