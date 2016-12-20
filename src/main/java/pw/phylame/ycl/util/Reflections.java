@@ -303,6 +303,10 @@ public final class Reflections {
         setProperty(target, name, value);
     }
 
+    public static <T> void p(Object target, String name, Class<? super T> type, T value) {
+        setProperty(target, name, type, value);
+    }
+
     private static Class<?>[] typesOf(Object[] args) {
         Class<?>[] types = null;
         if (args.length > 0) {
