@@ -144,10 +144,19 @@ public final class Reflections {
         if (isEmpty(name)) {
             return null;
         }
+        Class<?> copy = clazz;
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             try {
                 return clazz.getDeclaredMethod(name, types);
             } catch (NoSuchMethodException | SecurityException ignored) {
+            }
+        }
+        if (Versions.jvmVersion >= 8) { // for Java 8 default methods
+            for (val iface : copy.getInterfaces()) {
+                try {
+                    return iface.getMethod(name, types);
+                } catch (NoSuchMethodException | SecurityException ignored) {
+                }
             }
         }
         return null;
@@ -155,10 +164,20 @@ public final class Reflections {
 
     public static List<Method> getMethods(@NonNull Class<?> clazz, Function<Method, Boolean> prediction) {
         val methods = new ArrayList<Method>();
+        Class<?> copy = clazz;
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
                 if (prediction == null || prediction.apply(method)) {
                     methods.add(method);
+                }
+            }
+        }
+        if (Versions.jvmVersion >= 8) { // for Java 8 default methods
+            for (val iface : copy.getInterfaces()) {
+                for (val method : iface.getMethods()) {
+                    if (prediction == null || prediction.apply(method)) {
+                        methods.add(method);
+                    }
                 }
             }
         }

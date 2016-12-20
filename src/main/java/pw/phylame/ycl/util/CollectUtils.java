@@ -103,7 +103,6 @@ public final class CollectUtils {
         return value;
     }
 
-    @SuppressWarnings("unchecked")
     public static <E> void extend(@NonNull Collection<E> c, Iterable<? extends E> i) {
         if (i == null) {
             return;
