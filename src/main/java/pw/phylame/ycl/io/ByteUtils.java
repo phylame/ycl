@@ -1,17 +1,14 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.io;
@@ -35,78 +32,6 @@ public final class ByteUtils {
     public enum Endian {
         BIG, LITTLE
     }
-
-    /**
-     * Inner type to bytes.
-     */
-    @Value
-    public static final class Render {
-        @NonNull
-        private Endian endian;
-
-        public byte[] putInt8(byte x) {
-            return ByteUtils.putInt8(x);
-        }
-
-        public byte[] putUInt8(int x) {
-            return ByteUtils.putUInt8(x);
-        }
-
-        public byte[] putInt16(short x) {
-            return ByteUtils.putInt16(x, endian);
-        }
-
-        public byte[] putUInt16(int x) {
-            return ByteUtils.putUInt16(x, endian);
-        }
-
-        public byte[] putInt32(int x) {
-            return ByteUtils.putInt32(x, endian);
-        }
-
-        public byte[] putUInt32(long x) {
-            return ByteUtils.putUInt32(x, endian);
-        }
-    }
-
-    public static final Render bigRender = new Render(Endian.BIG);
-    public static final Render littleRender = new Render(Endian.LITTLE);
-
-    /**
-     * Bytes to inner type.
-     */
-    @Value
-    public static final class Parser {
-        @NonNull
-        private Endian endian;
-
-        public byte getInt8(byte[] b, int index) {
-            return getInt8(b, index);
-        }
-
-        public int getUInt8(byte[] b, int index) {
-            return ByteUtils.getUInt8(b, index);
-        }
-
-        public short getInt16(byte[] b, int index) {
-            return ByteUtils.getInt16(b, index, endian);
-        }
-
-        public int getUInt16(byte[] b, int index) {
-            return ByteUtils.getUInt16(b, index, endian);
-        }
-
-        public int getInt32(byte[] b, int index) {
-            return ByteUtils.getInt32(b, index, endian);
-        }
-
-        public long getUInt32(byte[] b, int index) {
-            return ByteUtils.getUInt32(b, index, endian);
-        }
-    }
-
-    public static final Parser bigParser = new Parser(Endian.BIG);
-    public static final Parser littleParser = new Parser(Endian.LITTLE);
 
     public static final Endian defaultEndian = Endian.BIG;
 
@@ -289,7 +214,7 @@ public final class ByteUtils {
     }
 
     public static void putChar(char ch, byte[] b, int index) {
-        int temp = (int) ch;
+        int temp = ch;
         for (int i = 0; i < 2; i++) {
             b[index + i] = new Integer(temp & 0xFF).byteValue();
             temp = temp >> 8;
@@ -369,4 +294,76 @@ public final class ByteUtils {
         n |= ((long) b[index] << 56);
         return Double.longBitsToDouble(n);
     }
+
+    /**
+     * Inner type to bytes.
+     */
+    @Value
+    public static final class Render {
+        @NonNull
+        private Endian endian;
+
+        public byte[] putInt8(byte x) {
+            return ByteUtils.putInt8(x);
+        }
+
+        public byte[] putUInt8(int x) {
+            return ByteUtils.putUInt8(x);
+        }
+
+        public byte[] putInt16(short x) {
+            return ByteUtils.putInt16(x, endian);
+        }
+
+        public byte[] putUInt16(int x) {
+            return ByteUtils.putUInt16(x, endian);
+        }
+
+        public byte[] putInt32(int x) {
+            return ByteUtils.putInt32(x, endian);
+        }
+
+        public byte[] putUInt32(long x) {
+            return ByteUtils.putUInt32(x, endian);
+        }
+    }
+
+    public static final Render bigRender = new Render(Endian.BIG);
+    public static final Render littleRender = new Render(Endian.LITTLE);
+
+    /**
+     * Bytes to inner type.
+     */
+    @Value
+    public static final class Parser {
+        @NonNull
+        private Endian endian;
+
+        public byte getInt8(byte[] b, int index) {
+            return getInt8(b, index);
+        }
+
+        public int getUInt8(byte[] b, int index) {
+            return ByteUtils.getUInt8(b, index);
+        }
+
+        public short getInt16(byte[] b, int index) {
+            return ByteUtils.getInt16(b, index, endian);
+        }
+
+        public int getUInt16(byte[] b, int index) {
+            return ByteUtils.getUInt16(b, index, endian);
+        }
+
+        public int getInt32(byte[] b, int index) {
+            return ByteUtils.getInt32(b, index, endian);
+        }
+
+        public long getUInt32(byte[] b, int index) {
+            return ByteUtils.getUInt32(b, index, endian);
+        }
+    }
+
+    public static final Parser bigParser = new Parser(Endian.BIG);
+    public static final Parser littleParser = new Parser(Endian.LITTLE);
 }

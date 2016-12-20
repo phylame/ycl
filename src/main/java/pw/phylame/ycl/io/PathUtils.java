@@ -1,17 +1,14 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.io;
@@ -70,7 +67,7 @@ public final class PathUtils {
         return extsep != path.length() ? path.substring(extsep + 1) : "";
     }
 
-    private static final String MIME_MAPPING_FILE = IOUtils.CLASS_PATH_PREFIX + "pw/phylame/ycl/io/mime.properties";
+    private static final String MIME_MAPPING_FILE = "!pw/phylame/ycl/io/mime.properties";
 
     private static final Lazy<Properties> mimeMap = new Lazy<>(new Provider<Properties>() {
         @Override

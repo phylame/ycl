@@ -13,18 +13,22 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static pw.phylame.ycl.util.StringUtils.capitalized;
 import static pw.phylame.ycl.util.StringUtils.isEmpty;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
 
 public final class Reflections {
 
@@ -113,6 +117,26 @@ public final class Reflections {
         return fields;
     }
 
+    @SneakyThrows(IllegalAccessException.class)
+    public static Object getFieldValue(@NonNull Object target, String name) {
+        val field = findField(target.getClass(), name);
+        if (field == null) {
+            throw new IllegalStateException("no such field: " + name);
+        }
+        makeAccessible(field);
+        return field.get(target);
+    }
+
+    @SneakyThrows(IllegalAccessException.class)
+    public static void setFieldValue(@NonNull Object target, String name, Object value) {
+        val field = findField(target.getClass(), name);
+        if (field == null) {
+            throw new IllegalStateException("no such field: " + name);
+        }
+        makeAccessible(field);
+        field.set(target, value);
+    }
+
     public static Method findMethod(@NonNull Class<?> clazz, String name, Class<?>... types) {
         if (isEmpty(name)) {
             return null;
@@ -138,22 +162,12 @@ public final class Reflections {
         return methods;
     }
 
-    @SneakyThrows(IllegalAccessException.class)
-    public static Object invokeMethod(@NonNull Method method, Object target, Object... args) {
-        makeAccessible(method);
-        try {
-            return method.invoke(target, args);
-        } catch (InvocationTargetException e) {
-            return null;
-        }
-    }
-
     public static Method findGetter(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
         name = normalizedName(name);
-        val method = findMethod(clazz, "forClass" + name);
+        val method = findMethod(clazz, "get" + name);
         if (method != null) {
             return method;
         } else {
@@ -164,14 +178,14 @@ public final class Reflections {
     public static Method findGetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, (type == boolean.class ? "is" : "forClass") + normalizedName(name));
+                : findMethod(clazz, (type == boolean.class ? "is" : "get") + normalizedName(name));
     }
 
     public static Method findSetter(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
-        name = "register" + normalizedName(name);
+        name = "set" + normalizedName(name);
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
                 if (name.equals(method.getName()) && method.getParameterTypes().length == 1) {
@@ -185,65 +199,63 @@ public final class Reflections {
     public static Method findSetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, "register" + normalizedName(name), type);
+                : findMethod(clazz, "set" + normalizedName(name), type);
     }
 
     @SneakyThrows(IllegalAccessException.class)
-    public static Object getFieldValue(@NonNull Object target, String name) {
-        val field = findField(target.getClass(), name);
-        if (field == null) {
-            return null;
+    public static Object invokeMethod(@NonNull Method method, Object target, Object... args) {
+        makeAccessible(method);
+        try {
+            return method.invoke(target, args);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e.getTargetException());
         }
-        makeAccessible(field);
-        return field.get(target);
-    }
-
-    @SneakyThrows(IllegalAccessException.class)
-    public static void setFieldValue(@NonNull Object target, String name, Object value) {
-        val field = findField(target.getClass(), name);
-        if (field == null) {
-            return;
-        }
-        makeAccessible(field);
-        field.set(target, value);
     }
 
     public static Object getProperty(@NonNull Object target, String name) {
         val getter = findGetter(target.getClass(), name);
-        return getter != null ? invokeMethod(getter, target) : null;
+        if (getter == null) {
+            throw new IllegalStateException("no such getter for : " + name);
+        }
+        return invokeMethod(getter, target);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T getProperty(@NonNull Object target, String name, @NonNull Class<? extends T> type) {
         val getter = findGetter(target.getClass(), type, name);
-        return getter != null ? (T) invokeMethod(getter, target) : null;
+        if (getter == null) {
+            throw new IllegalStateException("no such getter for : " + name);
+        }
+        return (T) invokeMethod(getter, target);
     }
 
     public static void setProperty(@NonNull Object target, String name, Object value) {
         val setter = findSetter(target.getClass(), value.getClass(), name);
-        if (setter != null) {
-            invokeMethod(setter, target, value);
+        if (setter == null) {
+            throw new IllegalStateException("no such setter for : " + name);
         }
+        invokeMethod(setter, target, value);
     }
 
     public static <T> void setProperty(@NonNull Object target, String name, @NonNull Class<? super T> type, T value) {
         val setter = findSetter(target.getClass(), type, name);
-        if (setter != null) {
-            invokeMethod(setter, target, value);
+        if (setter == null) {
+            throw new IllegalStateException("no such setter for : " + name);
         }
+        invokeMethod(setter, target, value);
     }
 
     public static Object i(Object target, String name, Object... args) {
         Class<?>[] types = typesOf(args);
         val method = findMethod(target.getClass(), name, types);
         if (method == null) {
-            throw new RuntimeException("no such method: " + name);
+            throw new IllegalStateException("no such method: " + name);
         }
         makeAccessible(method);
         try {
             return method.invoke(target, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -251,13 +263,13 @@ public final class Reflections {
         Class<?>[] types = typesOf(args);
         val method = findMethod(target, name, types);
         if (method == null) {
-            throw new RuntimeException("no such method: " + name);
+            throw new IllegalStateException("no such method: " + name);
         }
         makeAccessible(method);
         try {
             return method.invoke(null, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

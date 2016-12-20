@@ -13,14 +13,14 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.value.Pair;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.value.Pair;
 
 public final class StringUtils {
     private StringUtils() {
@@ -74,26 +74,36 @@ public final class StringUtils {
     /**
      * Returns a copy of {@code str} that first letter was converted to upper case.
      *
-     * @param str the string
+     * @param str
+     *            the string
      * @return string which first character is upper
      */
     public static String capitalized(String str) {
-        return isEmpty(str) ? str : Character.toUpperCase(str.charAt(0)) + str.substring(1, str.length()).toLowerCase();
+        return isEmpty(str) ? str : new StringBuilder(str.length())
+                .append(Character.toTitleCase(str.charAt(0)))
+                .append(str.substring(1)).toString();
+    }
+
+    public static String uncapitalized(String str) {
+        return isEmpty(str) ? str : new StringBuilder(str.length())
+                .append(Character.toLowerCase(str.charAt(0)))
+                .append(str.substring(1)).toString();
     }
 
     public static String camelized(String str) {
-        return isEmpty(str) ? str : Character.toLowerCase(str.charAt(0)) + str.substring(1, str.length());
+        return uncapitalized(str);
     }
 
     /**
      * Returns a copy of {@code str} that each word was converted to capital.
      *
-     * @param str the string
+     * @param str
+     *            the string
      * @return string which each word is capital
      */
     public static String titled(String str) {
         if (isEmpty(str)) {
-            return toString(str);
+            return str;
         }
         val b = new StringBuilder(str.length());
         boolean isFirst = true;
@@ -103,7 +113,7 @@ public final class StringUtils {
             if (!Character.isLetter(ch)) {
                 isFirst = true;
             } else if (isFirst) {
-                ch = Character.toUpperCase(ch);
+                ch = Character.toTitleCase(ch);
                 isFirst = false;
             } else {
                 ch = Character.toLowerCase(ch);
@@ -116,7 +126,8 @@ public final class StringUtils {
     /**
      * Like {@link String#trim()} but removes Chinese paragraph prefix (u3000).
      *
-     * @param str the input string
+     * @param str
+     *            the input string
      * @return the string removed space
      */
     public static String trimmed(String str) {
@@ -133,19 +144,19 @@ public final class StringUtils {
         while ((st < len) && (((ch = str.charAt(len - 1)) <= ' ') || (ch == CHINESE_SPACE))) {
             len--;
         }
-        return toString(((st > 0) || (len < str.length())) ? str.subSequence(st, len) : str);
+        return ((st > 0) || (len < str.length())) ? str.substring(st, len) : str;
     }
 
     /**
      * Tests if all characters of specified string are upper case.
      *
-     * @param cs a <tt>CharSequence</tt> represent string
+     * @param cs
+     *            a <tt>CharSequence</tt> represent string
      * @return <tt>true</tt> if all characters are upper case or <tt>false</tt> if contains lower case character(s)
      */
     public static boolean isLowerCase(@NonNull CharSequence cs) {
         val end = cs.length();
         for (int i = 0; i < end; ++i) {
-            /* found upper case */
             if (Character.isUpperCase(cs.charAt(i))) {
                 return false;
             }
@@ -156,13 +167,13 @@ public final class StringUtils {
     /**
      * Tests if all characters of specified string are lower case.
      *
-     * @param cs a <tt>CharSequence</tt> represent string
+     * @param cs
+     *            a <tt>CharSequence</tt> represent string
      * @return <tt>true</tt> if all characters are lower case or <tt>false</tt> if contains upper case character(s)
      */
     public static boolean isUpperCase(@NonNull CharSequence cs) {
         val end = cs.length();
         for (int i = 0; i < end; ++i) {
-            /* found lower case */
             if (Character.isLowerCase(cs.charAt(i))) {
                 return false;
             }
@@ -170,8 +181,8 @@ public final class StringUtils {
         return true;
     }
 
-    public static <T> String join(@NonNull CharSequence separator, @NonNull T[] objects) {
-        val b = new StringBuilder(objects.length * 8);
+    public static String join(@NonNull CharSequence separator, Object... objects) {
+        val b = new StringBuilder(objects.length << 3);
         val end = objects.length - 1;
         for (int i = 0; i < end; ++i) {
             b.append(objects[i].toString()).append(separator);
@@ -179,11 +190,11 @@ public final class StringUtils {
         return b.append(objects[end].toString()).toString();
     }
 
-    public static <T> String join(@NonNull CharSequence separator, @NonNull Collection<T> elements) {
+    public static String join(@NonNull CharSequence separator, @NonNull Collection<?> elements) {
         val b = new StringBuilder(elements.size() * 8);
         val end = elements.size();
         int i = 1;
-        for (T object : elements) {
+        for (Object object : elements) {
             b.append(object.toString());
             if (i++ != end) {
                 b.append(separator);
@@ -192,7 +203,8 @@ public final class StringUtils {
         return b.toString();
     }
 
-    public static String multiplyOf(String str, int count) {
+    public static String multiplyOf(Object obj, int count) {
+        val str = String.valueOf(obj);
         val b = new StringBuilder();
         for (int i = 0; i < count; i++) {
             b.append(str);
@@ -203,10 +215,13 @@ public final class StringUtils {
     /**
      * Returns list of lines split from text content in this object.
      *
-     * @param cs        the input string
-     * @param skipEmpty <code>true</code> to skip empty line
+     * @param cs
+     *            the input string
+     * @param skipEmpty
+     *            <code>true</code> to skip empty line
      * @return list of lines, never <code>null</code>
-     * @throws NullPointerException if the <code>cs</code> is <code>null</code>
+     * @throws NullPointerException
+     *             if the <code>cs</code> is <code>null</code>
      */
     public static List<String> splitLines(@NonNull CharSequence cs, boolean skipEmpty) {
         val lines = new LinkedList<String>();
@@ -218,7 +233,7 @@ public final class StringUtils {
         int i, begin = 0;
         val end = cs.length();
         CharSequence sub;
-        for (i = 0; i < end; ) {
+        for (i = 0; i < end;) {
             val ch = cs.charAt(i);
             if ('\n' == ch) { // \n
                 sub = cs.subSequence(begin, i);
@@ -257,8 +272,8 @@ public final class StringUtils {
     }
 
     public static List<Pair<String, String>> getNamedPairs(@NonNull String str,
-                                                           @NonNull String partSeparator,
-                                                           @NonNull String valueSeparator) {
+            @NonNull String partSeparator,
+            @NonNull String valueSeparator) {
         val pairs = new ArrayList<Pair<String, String>>();
         int index;
         for (val part : str.split(partSeparator)) {
@@ -303,10 +318,10 @@ public final class StringUtils {
     }
 
     public static String valueOfName(@NonNull String str,
-                                     @NonNull String name,
-                                     @NonNull String sep,
-                                     boolean ignoreCase,
-                                     String fallback) {
+            @NonNull String name,
+            @NonNull String sep,
+            boolean ignoreCase,
+            String fallback) {
         for (val part : str.split(sep)) {
             val index = part.trim().indexOf('=');
             if (index != -1) {
@@ -321,9 +336,9 @@ public final class StringUtils {
     }
 
     public static String[] valuesOfName(@NonNull String str,
-                                        @NonNull String name,
-                                        @NonNull String sep,
-                                        boolean ignoreCase) {
+            @NonNull String name,
+            @NonNull String sep,
+            boolean ignoreCase) {
         val result = new ArrayList<String>();
         for (val part : str.split(sep)) {
             val index = part.trim().indexOf('=');

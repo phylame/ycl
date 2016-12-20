@@ -1,17 +1,14 @@
 /*
  * Copyright 2016 Peng Wan <phylame@163.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package pw.phylame.ycl.io;
@@ -54,9 +51,10 @@ public final class IOUtils {
     public static final int EOF = -1;
 
     /**
-     * Close specified <code>Closeable</code> quietly.
+     * Close specified {@code Closeable} quietly.
      *
-     * @param c the <code>Closeable</code> instance
+     * @param c
+     *            the {@code Closeable} instance
      */
     public static void closeQuietly(Closeable c) {
         if (c != null) {
@@ -117,12 +115,17 @@ public final class IOUtils {
     /**
      * Copies bytes from <code>InputStream</code> to <code>OutputStream</code>.
      *
-     * @param in         source stream
-     * @param out        destination stream
-     * @param limit      size of bytes to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            source stream
+     * @param out
+     *            destination stream
+     * @param limit
+     *            size of bytes to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied bytes
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(InputStream in, OutputStream out, int limit, int bufferSize) throws IOException {
         return copy(readingFor(in), writingFor(out), limit, bufferSize);
@@ -135,12 +138,17 @@ public final class IOUtils {
     /**
      * Copies bytes from <code>InputSteam</code> to <code>RandomAccessFile</code>.
      *
-     * @param in         source stream
-     * @param out        destination file
-     * @param limit      size of bytes to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            source stream
+     * @param out
+     *            destination file
+     * @param limit
+     *            size of bytes to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied bytes
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(InputStream in, RandomAccessFile out, int limit, int bufferSize) throws IOException {
         return copy(readingFor(in), writingFor(out), limit, bufferSize);
@@ -149,12 +157,17 @@ public final class IOUtils {
     /**
      * Copies bytes from <code>RandomAccessFile</code> to <code>OutputStream</code>.
      *
-     * @param in         source file
-     * @param out        destination stream
-     * @param limit      size of bytes to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            source file
+     * @param out
+     *            destination stream
+     * @param limit
+     *            size of bytes to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied bytes
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(RandomAccessFile in, OutputStream out, int limit, int bufferSize) throws IOException {
         return copy(readingFor(in), writingFor(out), limit, bufferSize);
@@ -171,12 +184,17 @@ public final class IOUtils {
     /**
      * Copies bytes from <code>RandomAccessFile</code> to <code>RandomAccessFile</code>.
      *
-     * @param in         source file
-     * @param out        destination file
-     * @param limit      size of bytes to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            source file
+     * @param out
+     *            destination file
+     * @param limit
+     *            size of bytes to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied bytes
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(RandomAccessFile in, RandomAccessFile out, int limit, int bufferSize) throws IOException {
         return copy(readingFor(in), writingFor(out), limit, bufferSize);
@@ -189,12 +207,17 @@ public final class IOUtils {
     /**
      * Copies bytes from <code>Reading</code> to <code>Writing</code>.
      *
-     * @param in         input source
-     * @param out        destination output
-     * @param limit      size of bytes to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            input source
+     * @param out
+     *            destination output
+     * @param limit
+     *            size of bytes to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied bytes
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(@NonNull Reading in, @NonNull Writing out, long limit, int bufferSize) throws IOException {
         if (bufferSize < 0) {
@@ -220,9 +243,11 @@ public final class IOUtils {
     /**
      * Gets all bytes of specified input.
      *
-     * @param in the input
+     * @param in
+     *            the input
      * @return the bytes
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static byte[] toBytes(InputStream in) throws IOException {
         return toBytes(readingFor(buffered(in)));
@@ -231,9 +256,11 @@ public final class IOUtils {
     /**
      * Gets all bytes of specified input.
      *
-     * @param raf the input
+     * @param raf
+     *            the input
      * @return the bytes
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static byte[] toBytes(RandomAccessFile raf) throws IOException {
         return toBytes(readingFor(raf));
@@ -242,9 +269,11 @@ public final class IOUtils {
     /**
      * Gets all bytes of specified input.
      *
-     * @param in the input
+     * @param in
+     *            the input
      * @return the bytes
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static byte[] toBytes(Reading in) throws IOException {
         val out = new ByteArrayOutputStream();
@@ -259,10 +288,13 @@ public final class IOUtils {
     /**
      * Opens a reader for specified file with encoding.
      *
-     * @param file     the input file
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param file
+     *            the input file
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the reader
-     * @throws IOException if occur I/O errors
+     * @throws IOException
+     *             if occur I/O errors
      */
     public static Reader readerFor(File file, String encoding) throws IOException {
         return readerFor(new FileInputStream(file), encoding);
@@ -276,10 +308,13 @@ public final class IOUtils {
     /**
      * Open a reader for specified input stream with specified encoding.
      *
-     * @param in       the input stream
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param in
+     *            the input stream
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the reader
-     * @throws UnsupportedEncodingException if specified encoding is unsupported
+     * @throws UnsupportedEncodingException
+     *             if specified encoding is unsupported
      */
     public static Reader readerFor(InputStream in, String encoding) throws UnsupportedEncodingException {
         return encoding != null ? new InputStreamReader(in, encoding) : new InputStreamReader(in);
@@ -292,10 +327,13 @@ public final class IOUtils {
     /**
      * Opens a writer for specified file with encoding.
      *
-     * @param file     the output file
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param file
+     *            the output file
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the writer
-     * @throws IOException if occur I/O errors
+     * @throws IOException
+     *             if occur I/O errors
      */
     public static Writer writerFor(File file, String encoding) throws IOException {
         return writerFor(new FileOutputStream(file), encoding);
@@ -309,10 +347,13 @@ public final class IOUtils {
     /**
      * Open a writer for specified output stream with specified encoding.
      *
-     * @param out      the out stream
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param out
+     *            the out stream
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the writer
-     * @throws UnsupportedEncodingException if specified encoding is unsupported
+     * @throws UnsupportedEncodingException
+     *             if specified encoding is unsupported
      */
     public static Writer writerFor(OutputStream out, String encoding) throws UnsupportedEncodingException {
         return encoding != null ? new OutputStreamWriter(out, encoding) : new OutputStreamWriter(out);
@@ -325,12 +366,17 @@ public final class IOUtils {
     /**
      * Copies characters from <code>Reader</code> to <code>Reader</code>.
      *
-     * @param in         source reader
-     * @param out        destination writer
-     * @param limit      size of characters to copy, <code>-1</code> to copy all
-     * @param bufferSize size of buffer area
+     * @param in
+     *            source reader
+     * @param out
+     *            destination writer
+     * @param limit
+     *            size of characters to copy, <code>-1</code> to copy all
+     * @param bufferSize
+     *            size of buffer area
      * @return number of copied characters
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static long copy(@NonNull Reader in, @NonNull Writer out, long limit, int bufferSize) throws IOException {
         if (bufferSize < 0) {
@@ -356,9 +402,11 @@ public final class IOUtils {
     /**
      * Gets all characters of specified reader.
      *
-     * @param reader the input reader
+     * @param reader
+     *            the input reader
      * @return the string
-     * @throws IOException if occur I/O error.
+     * @throws IOException
+     *             if occur I/O error.
      */
     public static String toString(Reader reader) throws IOException {
         val out = new StringWriter();
@@ -369,10 +417,13 @@ public final class IOUtils {
     /**
      * Gets string from specified input with specified encoding.
      *
-     * @param in       the input
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param in
+     *            the input
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the string
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static String toString(InputStream in, String encoding) throws IOException {
         return toString(readingFor(buffered(in)), encoding);
@@ -381,10 +432,13 @@ public final class IOUtils {
     /**
      * Gets string from specified input with specified encoding.
      *
-     * @param in       the input
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param in
+     *            the input
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
      * @return the string
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static String toString(Reading in, String encoding) throws IOException {
         val out = new ByteArrayOutputStream();
@@ -395,11 +449,15 @@ public final class IOUtils {
     /**
      * Gets all lines of specified input stream.
      *
-     * @param in        the input stream
-     * @param encoding  encoding of the bytes or <code>null</code> to use default encoding
-     * @param skipEmpty <code>true</code> to skip empty lines
+     * @param in
+     *            the input stream
+     * @param encoding
+     *            encoding of the bytes or <code>null</code> to use default encoding
+     * @param skipEmpty
+     *            <code>true</code> to skip empty lines
      * @return list of lines
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static List<String> toLines(InputStream in, String encoding, boolean skipEmpty) throws IOException {
         return toLines(readerFor(buffered(in), encoding), skipEmpty);
@@ -408,10 +466,13 @@ public final class IOUtils {
     /**
      * Gets all lines of specified reader.
      *
-     * @param reader    the input reader
-     * @param skipEmpty <code>true</code> to skip empty lines
+     * @param reader
+     *            the input reader
+     * @param skipEmpty
+     *            <code>true</code> to skip empty lines
      * @return list of lines
-     * @throws IOException if occur I/O error
+     * @throws IOException
+     *             if occur I/O error
      */
     public static List<String> toLines(@NonNull Reader reader, boolean skipEmpty) throws IOException {
         val br = buffered(reader);
@@ -440,10 +501,14 @@ public final class IOUtils {
     /**
      * Copies source file to target file.
      *
-     * @param source     the source file
-     * @param target     the target file
-     * @param bufferSize size of buffer area
-     * @throws IOException if occur I/O errors
+     * @param source
+     *            the source file
+     * @param target
+     *            the target file
+     * @param bufferSize
+     *            size of buffer area
+     * @throws IOException
+     *             if occur I/O errors
      */
     public static void copyFile(File source, File target, int bufferSize) throws IOException {
         try (val in = new FileInputStream(source); FileOutputStream out = new FileOutputStream(target)) {
@@ -454,10 +519,14 @@ public final class IOUtils {
     /**
      * Writes specified char sequence to file.
      *
-     * @param file     the output file
-     * @param cs       the char sequence
-     * @param encoding the encoding, if <code>null</code> use default encoding
-     * @throws IOException if occur I/O errors
+     * @param file
+     *            the output file
+     * @param cs
+     *            the char sequence
+     * @param encoding
+     *            the encoding, if <code>null</code> use default encoding
+     * @throws IOException
+     *             if occur I/O errors
      */
     public static void write(File file, CharSequence cs, String encoding) throws IOException {
         try (val writer = writerFor(file, encoding)) {

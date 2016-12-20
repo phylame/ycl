@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pw.phylame.util</groupId>
@@ -16,18 +15,10 @@
         <maven.compiler.debug>true</maven.compiler.debug>
         <maven.compiler.optimize>true</maven.compiler.optimize>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <testng.version>6.9.10</testng.version>
         <lombok.version>1.16.10</lombok.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

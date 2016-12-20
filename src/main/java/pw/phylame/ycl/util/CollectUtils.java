@@ -13,14 +13,26 @@
 
 package pw.phylame.ycl.util;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.RandomAccess;
+import java.util.Set;
+
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
-
-import java.io.IOException;
-import java.util.*;
 
 public final class CollectUtils {
     private CollectUtils() {
@@ -45,7 +57,7 @@ public final class CollectUtils {
     public static <E> E firstOf(Iterable<E> i) {
         if (i == null) {
             return null;
-        } else if (i instanceof List) {
+        } else if (i instanceof RandomAccess) {
             val list = (List<E>) i;
             return list.isEmpty() ? null : list.get(0);
         }
@@ -54,6 +66,10 @@ public final class CollectUtils {
 
     public static <E> E firstOf(Iterator<E> i) {
         return i == null ? null : (i.hasNext() ? i.next() : null);
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull Enumeration<?> e, final Function<Object, ? extends E> transformer) {
+        return new IterableWrapper<>(new EnumerationWrapper<>(e, transformer));
     }
 
     public static <K, V> V getOrElse(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
@@ -84,36 +100,51 @@ public final class CollectUtils {
         return value;
     }
 
-    public static <E> Iterable<E> iterable(@NonNull Enumeration<?> e, final Function<Object, E> transformer) {
-        return new SimpleIterable<>(new EnumerationIterator<>(e, transformer));
-    }
-
-    public static <E> void extend(@NonNull Collection<E> c, Iterable<E> i) {
-        if (i != null) {
+    public static <E> void extend(@NonNull Collection<E> c, Iterable<? extends E> i) {
+        if (i == null) {
+            return;
+        }
+        if (i instanceof RandomAccess) {
+            val list = (List<? extends E>) i;
+            for (int j = 0, end = list.size(); j < end; ++j) {
+                c.add(list.get(j));
+            }
+        } else {
             extend(c, i.iterator());
         }
     }
 
-    public static <E> void extend(@NonNull Collection<E> c, Iterator<E> i) {
-        if (i != null) {
-            while (i.hasNext()) {
-                c.add(i.next());
-            }
+    public static <E> void extend(@NonNull Collection<E> c, Iterator<? extends E> i) {
+        if (i == null) {
+            return;
+        }
+        while (i.hasNext()) {
+            c.add(i.next());
         }
     }
 
-    public static <K, V> void update(@NonNull Map<K, V> m, Iterable<Map.Entry<K, V>> i) {
-        if (i != null) {
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterable<Map.Entry<? extends K, ? extends V>> i) {
+        if (i == null) {
+            return;
+        }
+        if (i instanceof RandomAccess) {
+            val list = (List<Map.Entry<? extends K, ? extends V>>) i;
+            for (int j = 0, end = list.size(); j < end; ++j) {
+                val e = list.get(j);
+                m.put(e.getKey(), e.getValue());
+            }
+        } else {
             update(m, i.iterator());
         }
     }
 
-    public static <K, V> void update(@NonNull Map<K, V> m, Iterator<Map.Entry<K, V>> i) {
-        if (i != null) {
-            while (i.hasNext()) {
-                val e = i.next();
-                m.put(e.getKey(), e.getValue());
-            }
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterator<Map.Entry<? extends K, ? extends V>> i) {
+        if (i == null) {
+            return;
+        }
+        while (i.hasNext()) {
+            val e = i.next();
+            m.put(e.getKey(), e.getValue());
         }
     }
 
@@ -122,7 +153,7 @@ public final class CollectUtils {
         return Arrays.asList(objects);
     }
 
-    public static <E> List<E> listOf(Iterator<E> i) {
+    public static <E> List<E> listOf(Iterator<? extends E> i) {
         if (i == null) {
             return Collections.emptyList();
         } else {
@@ -139,7 +170,7 @@ public final class CollectUtils {
         return Collections.unmodifiableSet(set);
     }
 
-    public static <E> Set<E> setOf(Iterator<E> i) {
+    public static <E> Set<E> setOf(Iterator<? extends E> i) {
         if (i == null) {
             return Collections.emptySet();
         } else {
@@ -155,8 +186,8 @@ public final class CollectUtils {
         return Collections.unmodifiableMap(m);
     }
 
-    public static <V> Map<Integer, V> mapOf(@NonNull Collection<V> c) {
-        val m = new HashMap<Integer, V>();
+    public static <K, V> Map<K, V> mapOf(@NonNull Collection<V> c) {
+        val m = new HashMap<K, V>();
         fillMap(m, c);
         return Collections.unmodifiableMap(m);
     }
@@ -170,7 +201,7 @@ public final class CollectUtils {
         if (size % 2 != 0) {
             throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
         }
-        for (Iterator<?> i = objects.iterator(); i.hasNext(); ) {
+        for (Iterator<?> i = objects.iterator(); i.hasNext();) {
             m.put((K) i.next(), (V) i.next());
         }
     }
@@ -209,7 +240,7 @@ public final class CollectUtils {
     }
 
     @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path, ClassLoader loader) {
+    public static void updateByProperties(@NonNull Map<String, ? super String> m, String path, ClassLoader loader) {
         val prop = propertiesFor(path, loader);
         if (prop != null) {
             for (val e : prop.entrySet()) {
@@ -219,7 +250,7 @@ public final class CollectUtils {
     }
 
     @Value
-    private static class SimpleIterable<E> implements Iterable<E> {
+    private static class IterableWrapper<E> implements Iterable<E> {
         private final Iterator<E> i;
 
         @Override
@@ -229,9 +260,10 @@ public final class CollectUtils {
     }
 
     @Value
-    private static class EnumerationIterator<E> implements Iterator<E> {
+    private static class EnumerationWrapper<E> implements Iterator<E> {
         private final Enumeration<?> e;
-        private final Function<Object, E> transformer;
+
+        private final Function<Object, ? extends E> transformer;
 
         @Override
         public boolean hasNext() {
