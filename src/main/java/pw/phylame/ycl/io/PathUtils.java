@@ -18,7 +18,7 @@ package pw.phylame.ycl.io;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.ycl.util.CollectUtils;
+import pw.phylame.ycl.util.CollectionUtils;
 import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
@@ -75,7 +75,7 @@ public final class PathUtils {
     private static final Lazy<Properties> mimeMap = new Lazy<>(new Provider<Properties>() {
         @Override
         public Properties provide() throws Exception {
-            return CollectUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
+            return CollectionUtils.propertiesFor(MIME_MAPPING_FILE, PathUtils.class.getClassLoader());
         }
     }, new Properties());
 

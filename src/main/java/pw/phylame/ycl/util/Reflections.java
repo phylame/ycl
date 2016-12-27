@@ -124,7 +124,7 @@ public final class Reflections {
     public static Object getFieldValue(@NonNull Object target, String name) {
         val field = findField(target.getClass(), name);
         if (field == null) {
-            throw new IllegalStateException("no such field: " + name);
+            throw new RuntimeException("no such field: " + name);
         }
         makeAccessible(field);
         return field.get(target);
@@ -134,7 +134,7 @@ public final class Reflections {
     public static void setFieldValue(@NonNull Object target, String name, Object value) {
         val field = findField(target.getClass(), name);
         if (field == null) {
-            throw new IllegalStateException("no such field: " + name);
+            throw new RuntimeException("no such field: " + name);
         }
         makeAccessible(field);
         field.set(target, value);
@@ -230,14 +230,14 @@ public final class Reflections {
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e.getTargetException());
+            throw new RuntimeException(e.getTargetException());
         }
     }
 
     public static Object getProperty(@NonNull Object target, String name) {
         val getter = findGetter(target.getClass(), name);
         if (getter == null) {
-            throw new IllegalStateException("no such getter for : " + name);
+            throw new RuntimeException("no such getter for : " + name);
         }
         return invokeMethod(getter, target);
     }
@@ -246,7 +246,7 @@ public final class Reflections {
     public static <T> T getProperty(@NonNull Object target, String name, @NonNull Class<? extends T> type) {
         val getter = findGetter(target.getClass(), type, name);
         if (getter == null) {
-            throw new IllegalStateException("no such getter for : " + name);
+            throw new RuntimeException("no such getter for : " + name);
         }
         return (T) invokeMethod(getter, target);
     }
@@ -254,7 +254,7 @@ public final class Reflections {
     public static void setProperty(@NonNull Object target, String name, Object value) {
         val setter = findSetter(target.getClass(), value.getClass(), name);
         if (setter == null) {
-            throw new IllegalStateException("no such setter for : " + name);
+            throw new RuntimeException("no such setter for : " + name);
         }
         invokeMethod(setter, target, value);
     }
@@ -262,7 +262,7 @@ public final class Reflections {
     public static <T> void setProperty(@NonNull Object target, String name, @NonNull Class<? super T> type, T value) {
         val setter = findSetter(target.getClass(), type, name);
         if (setter == null) {
-            throw new IllegalStateException("no such setter for : " + name);
+            throw new RuntimeException("no such setter for : " + name);
         }
         invokeMethod(setter, target, value);
     }
@@ -271,13 +271,13 @@ public final class Reflections {
         Class<?>[] types = typesOf(args);
         val method = findMethod(target.getClass(), name, types);
         if (method == null) {
-            throw new IllegalStateException("no such method: " + name);
+            throw new RuntimeException("no such method: " + name);
         }
         makeAccessible(method);
         try {
             return method.invoke(target, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -285,13 +285,13 @@ public final class Reflections {
         Class<?>[] types = typesOf(args);
         val method = findMethod(target, name, types);
         if (method == null) {
-            throw new IllegalStateException("no such method: " + name);
+            throw new RuntimeException("no such method: " + name);
         }
         makeAccessible(method);
         try {
             return method.invoke(null, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException(e);
+            throw new RuntimeException(e);
         }
     }
 

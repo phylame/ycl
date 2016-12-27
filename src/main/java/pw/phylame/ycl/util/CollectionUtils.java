@@ -37,8 +37,8 @@ import lombok.Value;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 
-public final class CollectUtils {
-    private CollectUtils() {
+public final class CollectionUtils {
+    private CollectionUtils() {
     }
 
     public static boolean isEmpty(Collection<?> c) {

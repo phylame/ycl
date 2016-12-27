@@ -86,7 +86,7 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
 
     public V getOne(K key) {
         val c = map.get(key);
-        return CollectUtils.isNotEmpty(c) ? CollectUtils.firstOf(c) : null;
+        return CollectionUtils.isNotEmpty(c) ? CollectionUtils.firstOf(c) : null;
     }
 
     @Override
