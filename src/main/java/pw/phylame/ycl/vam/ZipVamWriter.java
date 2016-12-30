@@ -16,13 +16,18 @@
 
 package pw.phylame.ycl.vam;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.ZipOutputStream;
+
 import lombok.NonNull;
 import pw.phylame.ycl.io.IOUtils;
 
-import java.io.*;
-import java.util.zip.ZipOutputStream;
-
-public class ZipVamWriter implements VamWriter<ZipItem> {
+public class ZipVamWriter implements VamWriter {
     private final ZipOutputStream zip;
 
     public ZipVamWriter(@NonNull String path) throws FileNotFoundException {
@@ -47,36 +52,36 @@ public class ZipVamWriter implements VamWriter<ZipItem> {
     }
 
     @Override
-    public OutputStream begin(@NonNull ZipItem item) throws IOException {
-        zip.putNextEntry(item.getEntry());
+    public OutputStream begin(@NonNull VamItem item) throws IOException {
+        zip.putNextEntry(((ZipItem)item).getEntry());
         return zip;
     }
 
     @Override
-    public void end(@NonNull ZipItem item) throws IOException {
+    public void end(@NonNull VamItem item) throws IOException {
         zip.flush();
         zip.closeEntry();
     }
 
     @Override
-    public void write(@NonNull ZipItem item, @NonNull byte[] data, int off, int len) throws IOException {
-        zip.putNextEntry(item.getEntry());
+    public void write(@NonNull VamItem item, @NonNull byte[] data, int off, int len) throws IOException {
+        zip.putNextEntry(((ZipItem)item).getEntry());
         zip.write(data, off, len);
         zip.flush();
         zip.closeEntry();
     }
 
     @Override
-    public void write(@NonNull ZipItem item, @NonNull byte[] data) throws IOException {
-        zip.putNextEntry(item.getEntry());
+    public void write(@NonNull VamItem item, @NonNull byte[] data) throws IOException {
+        zip.putNextEntry(((ZipItem)item).getEntry());
         zip.write(data, 0, data.length);
         zip.flush();
         zip.closeEntry();
     }
 
     @Override
-    public void write(@NonNull ZipItem item, @NonNull InputStream input) throws IOException {
-        zip.putNextEntry(item.getEntry());
+    public void write(@NonNull VamItem item, @NonNull InputStream input) throws IOException {
+        zip.putNextEntry(((ZipItem)item).getEntry());
         IOUtils.copy(input, zip, -1);
         zip.flush();
         zip.closeEntry();

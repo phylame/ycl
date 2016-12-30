@@ -20,16 +20,16 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface VamReader<I extends VamItem> extends Closeable {
+public interface VamReader extends Closeable {
     String getName();
 
     String getComment();
 
     int size();
 
-    I itemFor(String name);
+    VamItem itemFor(String name);
 
-    Iterable<? extends I> items();
+    Iterable<? extends VamItem> items();
 
-    InputStream streamOf(I item) throws IOException;
+    InputStream streamOf(VamItem item) throws IOException;
 }

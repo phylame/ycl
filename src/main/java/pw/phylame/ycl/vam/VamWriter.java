@@ -21,18 +21,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface VamWriter<I extends VamItem> extends Closeable {
+public interface VamWriter extends Closeable {
     void setComment(String comment);
 
-    OutputStream begin(I item) throws IOException;
+    OutputStream begin(VamItem item) throws IOException;
 
-    void end(I item) throws IOException;
+    void end(VamItem item) throws IOException;
 
-    void write(I item, byte[] data, int off, int len) throws IOException;
+    void write(VamItem item, byte[] data, int off, int len) throws IOException;
 
-    void write(I item, byte[] data) throws IOException;
+    void write(VamItem item, byte[] data) throws IOException;
 
-    void write(I item, InputStream input) throws IOException;
+    void write(VamItem item, InputStream input) throws IOException;
 
-    I mkitem(String name);
+    VamItem mkitem(String name);
 }

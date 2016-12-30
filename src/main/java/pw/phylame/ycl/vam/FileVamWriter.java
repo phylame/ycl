@@ -16,17 +16,22 @@
 
 package pw.phylame.ycl.vam;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Exceptions;
 
-import java.io.*;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-public class FileVamWriter implements VamWriter<FileItem> {
+public class FileVamWriter implements VamWriter {
     private static final String TAG = "FAW";
 
     private final File file;
@@ -78,16 +83,16 @@ public class FileVamWriter implements VamWriter<FileItem> {
     }
 
     @Override
-    public OutputStream begin(@NonNull FileItem item) throws IOException {
-        val name = itemKey(item);
+    public OutputStream begin(@NonNull VamItem item) throws IOException {
+        val name = itemKey((FileItem) item);
         val out = openOutput(name);
         streams.put(name, out);
         return out;
     }
 
     @Override
-    public void end(@NonNull FileItem item) throws IOException {
-        val name = itemKey(item);
+    public void end(@NonNull VamItem item) throws IOException {
+        val name = itemKey((FileItem) item);
         val out = streams.get(name);
         if (out != null) {
             out.flush();
@@ -97,20 +102,20 @@ public class FileVamWriter implements VamWriter<FileItem> {
     }
 
     @Override
-    public void write(@NonNull FileItem item, @NonNull byte[] data, int off, int len) throws IOException {
-        try (val out = openOutput(item.getFile().getPath())) {
+    public void write(@NonNull VamItem item, @NonNull byte[] data, int off, int len) throws IOException {
+        try (val out = openOutput(((FileItem) item).getFile().getPath())) {
             out.write(data, off, len);
         }
     }
 
     @Override
-    public void write(@NonNull FileItem item, @NonNull byte[] data) throws IOException {
+    public void write(@NonNull VamItem item, @NonNull byte[] data) throws IOException {
         write(item, data, 0, data.length);
     }
 
     @Override
-    public void write(FileItem item, InputStream input) throws IOException {
-        try (val out = openOutput(item.getFile().getPath())) {
+    public void write(VamItem item, InputStream input) throws IOException {
+        try (val out = openOutput(((FileItem) item).getFile().getPath())) {
             IOUtils.copy(input, out, -1);
         }
     }

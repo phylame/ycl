@@ -16,18 +16,18 @@
 
 package pw.phylame.ycl.vam;
 
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.CollectionUtils;
-import pw.phylame.ycl.util.Function;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipVamReader implements VamReader<ZipItem> {
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.CollectionUtils;
+import pw.phylame.ycl.util.Function;
+
+public class ZipVamReader implements VamReader {
     private final ZipFile zip;
 
     public ZipVamReader(@NonNull String path) throws IOException {
@@ -64,8 +64,8 @@ public class ZipVamReader implements VamReader<ZipItem> {
     }
 
     @Override
-    public InputStream streamOf(@NonNull ZipItem item) throws IOException {
-        return zip.getInputStream(item.getEntry());
+    public InputStream streamOf(@NonNull VamItem item) throws IOException {
+        return zip.getInputStream(((ZipItem) item).getEntry());
     }
 
     @Override
