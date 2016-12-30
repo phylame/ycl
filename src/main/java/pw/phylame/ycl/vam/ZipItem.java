@@ -18,14 +18,14 @@ package pw.phylame.ycl.vam;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
-
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-@ToString
 public class ZipItem implements VamItem {
     @Getter
     private final ZipEntry entry;
+
+    ZipFile zip;
 
     public ZipItem(@NonNull String name) {
         this.entry = new ZipEntry(name);
@@ -49,4 +49,10 @@ public class ZipItem implements VamItem {
     public boolean isDirectory() {
         return entry.isDirectory();
     }
+
+    @Override
+    public String toString() {
+        return zip != null ? "zip://" + zip.getName() + '!' + entry.getName() : entry.getName();
+    }
+
 }

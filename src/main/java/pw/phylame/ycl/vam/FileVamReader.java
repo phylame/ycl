@@ -130,4 +130,10 @@ public class FileVamReader implements VamReader {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "file://" + file.getPath();
+    }
+
 }

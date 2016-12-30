@@ -16,6 +16,9 @@
 
 package pw.phylame.ycl.io;
 
+import java.util.Map;
+import java.util.Properties;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.CollectionUtils;
@@ -23,9 +26,6 @@ import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;
-
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Utilities for file name operations.
@@ -41,18 +41,22 @@ public final class PathUtils {
     public static final String UNKNOWN_MIME = "application/octet-stream";
 
     public static Pair<Integer, Integer> split(@NonNull String path) {
-        int extpos = path.length(), seppos;
+        int extpos = path.length() - 1, seppos;
         char ch;
-        for (seppos = extpos - 1; seppos >= 0; --seppos) {
+        for (seppos = extpos; seppos >= 0; --seppos) {
             ch = path.charAt(seppos);
             if (ch == '.') {
                 extpos = seppos;
-                break;
+                continue;
             } else if (ch == '/' || ch == '\\') {
                 break;
             }
         }
         return new Pair<>(seppos, extpos);
+    }
+
+    public static String dirName(@NonNull String path) {
+        return path.substring(0, split(path).getFirst());
     }
 
     public static String fullName(@NonNull String path) {

@@ -60,7 +60,12 @@ public class ZipVamReader implements VamReader {
     @Override
     public ZipItem itemFor(@NonNull String name) {
         val e = zip.getEntry(name);
-        return e != null ? new ZipItem(e) : null;
+        ZipItem item = null;
+        if (e != null) {
+            item = new ZipItem(e);
+            item.zip = zip;
+        }
+        return item;
     }
 
     @Override
@@ -82,4 +87,10 @@ public class ZipVamReader implements VamReader {
     public int size() {
         return zip.size();
     }
+
+    @Override
+    public String toString() {
+        return "zip://" + zip.getName();
+    }
+
 }

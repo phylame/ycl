@@ -19,13 +19,11 @@ package pw.phylame.ycl.vam;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
 import pw.phylame.ycl.util.Exceptions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-@ToString
 public class FileItem implements VamItem {
     static final String COMMENT_FILE = "__comment__";
 
@@ -70,4 +68,10 @@ public class FileItem implements VamItem {
     public boolean isDirectory() {
         return file.isDirectory();
     }
+
+    @Override
+    public String toString() {
+        return file.getPath();
+    }
+
 }
