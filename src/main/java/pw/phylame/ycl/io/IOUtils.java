@@ -69,6 +69,10 @@ public final class IOUtils {
         }
     }
 
+    public static byte[] ensureLength(byte[] b, int length) {
+        return b.length >= length ? b : Arrays.copyOf(b, length);
+    }
+
     public static BufferedInputStream buffered(@NonNull InputStream in) {
         return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
     }
