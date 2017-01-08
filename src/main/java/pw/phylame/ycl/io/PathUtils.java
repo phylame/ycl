@@ -41,13 +41,12 @@ public final class PathUtils {
     public static final String UNKNOWN_MIME = "application/octet-stream";
 
     public static Pair<Integer, Integer> split(@NonNull String path) {
-        int extpos = path.length() - 1, seppos;
+        int extpos = path.length(), seppos;
         char ch;
-        for (seppos = extpos; seppos >= 0; --seppos) {
+        for (seppos = extpos - 1; seppos >= 0; --seppos) {
             ch = path.charAt(seppos);
             if (ch == '.') {
                 extpos = seppos;
-                continue;
             } else if (ch == '/' || ch == '\\') {
                 break;
             }
@@ -56,7 +55,8 @@ public final class PathUtils {
     }
 
     public static String dirName(@NonNull String path) {
-        return path.substring(0, split(path).getFirst());
+        val index = split(path).getFirst();
+        return index != -1 ? path.substring(0, index) : StringUtils.EMPTY_TEXT;
     }
 
     public static String fullName(@NonNull String path) {
@@ -69,7 +69,7 @@ public final class PathUtils {
         return path.substring(pair.getFirst() + 1, pair.getSecond());
     }
 
-    public static String extensionName(@NonNull String path) {
+    public static String extName(@NonNull String path) {
         int extsep = split(path).getSecond();
         return extsep != path.length() ? path.substring(extsep + 1) : "";
     }
@@ -95,7 +95,7 @@ public final class PathUtils {
         if (name.isEmpty()) {
             return "";
         }
-        val ext = extensionName(name);
+        val ext = extName(name);
         if (ext.isEmpty()) {
             return UNKNOWN_MIME;
         }
