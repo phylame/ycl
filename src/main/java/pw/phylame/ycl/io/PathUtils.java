@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package pw.phylame.ycl.io;
 
-import java.util.Map;
-import java.util.Properties;
-
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.CollectionUtils;
@@ -26,6 +23,9 @@ import pw.phylame.ycl.util.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Utilities for file name operations.

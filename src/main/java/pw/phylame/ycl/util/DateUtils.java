@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -166,32 +166,32 @@ public final class DateUtils {
     public static Date calculate(@NonNull Date date, char unit, int amount) {
         final int field;
         switch (unit) {
-        case 'y':
-        case 'Y':
-            field = Calendar.YEAR;
-        break;
-        case 'm':
-        case 'M':
-            field = Calendar.MONTH;
-        break;
-        case 'd':
-        case 'D':
-            field = Calendar.DAY_OF_MONTH;
-        break;
-        case 'h':
-        case 'H':
-            field = Calendar.HOUR_OF_DAY;
-        break;
-        case 'n':
-        case 'N':
-            field = Calendar.MINUTE;
-        break;
-        case 's':
-        case 'S':
-            field = Calendar.SECOND;
-        break;
-        default:
-            throw Exceptions.forIllegalArgument("Invalid field type: %s, available: yYmMdDhHnNsS", unit);
+            case 'y':
+            case 'Y':
+                field = Calendar.YEAR;
+                break;
+            case 'm':
+            case 'M':
+                field = Calendar.MONTH;
+                break;
+            case 'd':
+            case 'D':
+                field = Calendar.DAY_OF_MONTH;
+                break;
+            case 'h':
+            case 'H':
+                field = Calendar.HOUR_OF_DAY;
+                break;
+            case 'n':
+            case 'N':
+                field = Calendar.MINUTE;
+                break;
+            case 's':
+            case 'S':
+                field = Calendar.SECOND;
+                break;
+            default:
+                throw Exceptions.forIllegalArgument("Invalid field type: %s, available: yYmMdDhHnNsS", unit);
         }
         val calendar = Calendar.getInstance();
         calendar.setTime(date);

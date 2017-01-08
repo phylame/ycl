@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,11 @@
 
 package pw.phylame.ycl.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.RandomAccess;
-import java.util.Set;
-
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.Value;
-import lombok.val;
+import lombok.*;
 import pw.phylame.ycl.io.IOUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 public final class CollectionUtils {
     private CollectionUtils() {
@@ -151,6 +136,14 @@ public final class CollectionUtils {
         }
     }
 
+    public static <I, O> Iterator<O> map(@NonNull Iterable<I> i, @NonNull Function<I, O> filter) {
+        return new IteratorMapping<>(i.iterator(), filter);
+    }
+
+    public static <I, O> Iterator<O> map(@NonNull Iterator<I> i, @NonNull Function<I, O> filter) {
+        return new IteratorMapping<>(i, filter);
+    }
+
     @SafeVarargs
     public static <E> List<E> listOf(E... objects) {
         return Arrays.asList(objects);
@@ -249,6 +242,27 @@ public final class CollectionUtils {
             for (val e : prop.entrySet()) {
                 m.put(e.getKey().toString(), e.getValue().toString());
             }
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static class IteratorMapping<I, O> implements Iterator<O> {
+        private final Iterator<I> i;
+        private final Function<I, O> filter;
+
+        @Override
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        @Override
+        public O next() {
+            return filter.apply(i.next());
+        }
+
+        @Override
+        public void remove() {
+            i.remove();
         }
     }
 

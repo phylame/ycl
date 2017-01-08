@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,15 @@
 
 package pw.phylame.ycl.vam;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.util.Exceptions;
+
+import java.io.*;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class FileVamWriter implements VamWriter {
     private static final String TAG = "FAW";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,15 @@
 
 package pw.phylame.ycl.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public class Implementor<T> {
     private static final String TAG = "IMPs";
@@ -39,10 +42,8 @@ public class Implementor<T> {
     /**
      * Constructs object with specified class type.
      *
-     * @param type
-     *            class of the interface
-     * @param reusable
-     *            <code>true</code> to reuse instance
+     * @param type     class of the interface
+     * @param reusable <code>true</code> to reuse instance
      */
     public Implementor(@NonNull Class<T> type, boolean reusable, ClassLoader loader) {
         this.type = type;
@@ -54,10 +55,8 @@ public class Implementor<T> {
      * Registers new implementation with name and class path. <strong>NOTE:</strong> old implementation will be
      * overwritten
      *
-     * @param name
-     *            name of the implementation
-     * @param path
-     *            full class path of the implementation
+     * @param name name of the implementation
+     * @param path full class path of the implementation
      */
     public void register(String name, String path) {
         Validate.requireNotEmpty(name, "name cannot be null or empty");
@@ -75,10 +74,8 @@ public class Implementor<T> {
     /**
      * Registers new implementation with name and class. <strong>NOTE:</strong> old implementation will be overwritten
      *
-     * @param name
-     *            name of the implementation
-     * @param clazz
-     *            class of the implementation
+     * @param name  name of the implementation
+     * @param clazz class of the implementation
      */
     public void register(String name, @NonNull Class<? extends T> clazz) {
         Validate.requireNotEmpty(name, "name cannot be null or empty");
@@ -113,21 +110,56 @@ public class Implementor<T> {
     /**
      * Returns an instance for specified implementation name.
      *
-     * @param name
-     *            name of the implementation
+     * @param name name of the implementation
      * @return instance for the implementation
-     * @throws IllegalAccessException
-     *             if the class cannot access
-     * @throws InstantiationException
-     *             if the instance cannot be created
-     * @throws ClassNotFoundException
-     *             if the class path is invalid
+     * @throws IllegalAccessException if the class cannot access
+     * @throws InstantiationException if the instance cannot be created
+     * @throws ClassNotFoundException if the class path is invalid
      */
     public T getInstance(@NonNull String name)
             throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         synchronized (this) {
             val imp = impHolders.get(name);
             return imp != null ? imp.instantiate() : null;
+        }
+    }
+
+    /**
+     * Loads registry from specified input.
+     * <p>The content of the input must be: [name]=[path to class].
+     *
+     * @param path   path to input
+     * @param parser the parser for parse the value in each line
+     */
+    public void load(String path, BiFunction<String, String, String> parser) {
+        load(path, parser, loader);
+    }
+
+    /**
+     * Loads registry from specified input.
+     * <p>The content of the input must be: [name]=[path to class].
+     *
+     * @param path   path to input
+     * @param parser the parser for parse the value in each line
+     * @param loader the class loader for load resources
+     */
+    public void load(String path, BiFunction<String, String, String> parser, ClassLoader loader) {
+        val urls = IOUtils.resourcesFor(path, loader);
+        if (urls == null) {
+            return;
+        }
+        while (urls.hasMoreElements()) {
+            try (val in = urls.nextElement().openStream()) {
+                val prop = new Properties();
+                prop.load(in);
+                for (val e : prop.entrySet()) {
+                    val name = e.getKey().toString();
+                    val value = e.getValue().toString();
+                    register(name, parser == null ? value.trim() : parser.apply(name, value));
+                }
+            } catch (IOException e) {
+                Log.e(TAG, e);
+            }
         }
     }
 
@@ -155,12 +187,9 @@ public class Implementor<T> {
          * Creates a new instance of implement for <code>T</code>.
          *
          * @return the new instance or <code>null</code> if class for path does not extends from <code>T</code>.
-         * @throws ClassNotFoundException
-         *             if the class of <code>path</code> is not found
-         * @throws IllegalAccessException
-         *             if the class of <code>path</code> is inaccessible
-         * @throws InstantiationException
-         *             if cannot create instance of the class
+         * @throws ClassNotFoundException if the class of <code>path</code> is not found
+         * @throws IllegalAccessException if the class of <code>path</code> is inaccessible
+         * @throws InstantiationException if cannot create instance of the class
          */
         @SuppressWarnings("unchecked")
         private T instantiate() throws ClassNotFoundException, IllegalAccessException, InstantiationException {

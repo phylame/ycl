@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,18 @@
 
 package pw.phylame.ycl.util;
 
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
+
+import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static pw.phylame.ycl.util.StringUtils.capitalized;
 import static pw.phylame.ycl.util.StringUtils.isEmpty;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
 
 public final class Reflections {
 

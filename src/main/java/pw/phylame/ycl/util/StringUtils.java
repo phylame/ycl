@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.value.Pair;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public final class StringUtils {
     private StringUtils() {
@@ -51,7 +48,7 @@ public final class StringUtils {
         char ch;
         for (int i = 0, end = cs.length(); i < end; ++i) {
             ch = cs.charAt(i);
-            if (!Character.isWhitespace(ch) && ch != CHINESE_SPACE) {
+            if (ch != CHINESE_SPACE && !Character.isWhitespace(ch)) {
                 return false;
             }
         }
@@ -62,16 +59,20 @@ public final class StringUtils {
         return !isBlank(cs);
     }
 
-    public static String toString(Object o) {
-        return o != null ? o.toString() : null;
+    public static String toString(Object obj) {
+        return obj != null ? obj.toString() : null;
     }
 
-    public static <T extends CharSequence> T notEmptyOr(T source, T fallback) {
-        return isNotEmpty(source) ? source : fallback;
+    public static String toString(Object obj, @NonNull Object fallback) {
+        return obj != null ? obj.toString() : fallback.toString();
     }
 
-    public static String notEmptyOr(CharSequence source, @NonNull CharSequence format, Object... args) {
-        return isNotEmpty(source) ? source.toString() : String.format(format.toString(), args);
+    public static String notEmptyOr(CharSequence cs, @NonNull Object fallback) {
+        return isNotEmpty(cs) ? cs.toString() : fallback.toString();
+    }
+
+    public static String notEmptyOr(CharSequence cs, @NonNull CharSequence format, Object... args) {
+        return isNotEmpty(cs) ? cs.toString() : String.format(format.toString(), args);
     }
 
     /**
@@ -104,8 +105,7 @@ public final class StringUtils {
         }
         val b = new StringBuilder(str.length());
         boolean isFirst = true;
-        val end = str.length();
-        for (int i = 0; i < end; ++i) {
+        for (int i = 0, end = str.length(); i < end; ++i) {
             char ch = str.charAt(i);
             if (!Character.isLetter(ch)) {
                 isFirst = true;
@@ -149,9 +149,11 @@ public final class StringUtils {
      * @param cs a <tt>CharSequence</tt> represent string
      * @return <tt>true</tt> if all characters are upper case or <tt>false</tt> if contains lower case character(s)
      */
-    public static boolean isLowerCase(@NonNull CharSequence cs) {
-        val end = cs.length();
-        for (int i = 0; i < end; ++i) {
+    public static boolean isLowerCase(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        for (int i = 0, end = cs.length(); i < end; ++i) {
             if (Character.isUpperCase(cs.charAt(i))) {
                 return false;
             }
@@ -165,9 +167,11 @@ public final class StringUtils {
      * @param cs a <tt>CharSequence</tt> represent string
      * @return <tt>true</tt> if all characters are lower case or <tt>false</tt> if contains upper case character(s)
      */
-    public static boolean isUpperCase(@NonNull CharSequence cs) {
-        val end = cs.length();
-        for (int i = 0; i < end; ++i) {
+    public static boolean isUpperCase(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        for (int i = 0, end = cs.length(); i < end; ++i) {
             if (Character.isLowerCase(cs.charAt(i))) {
                 return false;
             }
@@ -176,7 +180,7 @@ public final class StringUtils {
     }
 
     public static String join(@NonNull CharSequence separator, Object... objects) {
-        val b = new StringBuilder(objects.length << 3);
+        val b = new StringBuilder(objects.length * 8);
         val end = objects.length - 1;
         for (int i = 0; i < end; ++i) {
             b.append(objects[i].toString()).append(separator);
@@ -191,6 +195,21 @@ public final class StringUtils {
         for (Object object : elements) {
             b.append(object.toString());
             if (i++ != end) {
+                b.append(separator);
+            }
+        }
+        return b.toString();
+    }
+
+    public static String join(@NonNull CharSequence separator, @NonNull Iterable<?> i) {
+        return join(separator, i.iterator());
+    }
+
+    public static String join(@NonNull CharSequence separator, @NonNull Iterator<?> i) {
+        val b = new StringBuilder();
+        while (i.hasNext()) {
+            b.append(i.next().toString());
+            if (i.hasNext()) {
                 b.append(separator);
             }
         }
@@ -258,6 +277,21 @@ public final class StringUtils {
         return new Pair<>(first, second);
     }
 
+    public static Pair<String, String> partition(@NonNull String str, @NonNull String separator) {
+        val index = str.indexOf(separator);
+        return index < 0
+                ? pairOf(str, EMPTY_TEXT)
+                : pairOf(str.substring(0, index), str.substring(index + separator.length()));
+    }
+
+    public static String firstPartOf(String str, String separator) {
+        return partition(str, separator).getFirst();
+    }
+
+    public static String secondPartOf(String str, String separator) {
+        return partition(str, separator).getSecond();
+    }
+
     public static List<Pair<String, String>> getNamedPairs(String str, String partSeparator) {
         return getNamedPairs(str, partSeparator, "=");
     }
@@ -278,61 +312,47 @@ public final class StringUtils {
         return pairs;
     }
 
-    public static Pair<String, String> partition(@NonNull String str, @NonNull String sep) {
-        val index = str.indexOf(sep);
-        return index < 0
-                ? pairOf(str, EMPTY_TEXT)
-                : pairOf(str.substring(0, index), str.substring(index + sep.length()));
+    public static String valueOfName(String str, String name, String partSeparator) {
+        return valueOfName(str, name, partSeparator, "=", true);
     }
 
-    public static Pair<String, String> partition(@NonNull String str, char sep) {
-        val index = str.indexOf(sep);
-        return index < 0
-                ? pairOf(str, EMPTY_TEXT)
-                : pairOf(str.substring(0, index), str.substring(index + 1));
-    }
-
-    public static String firstPartOf(@NonNull String str, @NonNull String sep) {
-        return partition(str, sep).getFirst();
-    }
-
-    public static String firstPartOf(@NonNull String str, char sep) {
-        return partition(str, sep).getFirst();
-    }
-
-    public static String secondPartOf(@NonNull String str, @NonNull String sep) {
-        return partition(str, sep).getSecond();
-    }
-
-    public static String secondPartOf(@NonNull String str, char sep) {
-        return partition(str, sep).getSecond();
+    public static String valueOfName(String str, String name, String partSeparator, boolean ignoreCase) {
+        return valueOfName(str, name, partSeparator, "=", ignoreCase);
     }
 
     public static String valueOfName(@NonNull String str,
                                      @NonNull String name,
-                                     @NonNull String sep,
-                                     boolean ignoreCase,
-                                     String fallback) {
-        for (val part : str.split(sep)) {
-            val index = part.trim().indexOf('=');
+                                     @NonNull String partSeparator,
+                                     @NonNull String valueSeparator,
+                                     boolean ignoreCase) {
+        for (val part : str.split(partSeparator)) {
+            val index = part.trim().indexOf(valueSeparator);
             if (index != -1) {
                 val tag = part.substring(0, index);
                 if (ignoreCase && tag.equalsIgnoreCase(name) || tag.equals(name)) {
-                    val value = part.substring(index + 1);
-                    return isNotEmpty(value) ? value : fallback;
+                    return part.substring(index + 1);
                 }
             }
         }
         return null;
     }
 
+    public static String[] valuesOfName(String str, String name, String partSeparator) {
+        return valuesOfName(str, name, partSeparator, "=", true);
+    }
+
+    public static String[] valuesOfName(String str, String name, String partSeparator, boolean ignoreCase) {
+        return valuesOfName(str, name, partSeparator, "=", ignoreCase);
+    }
+
     public static String[] valuesOfName(@NonNull String str,
                                         @NonNull String name,
-                                        @NonNull String sep,
+                                        @NonNull String partSeparator,
+                                        @NonNull String valueSeparator,
                                         boolean ignoreCase) {
         val result = new ArrayList<String>();
-        for (val part : str.split(sep)) {
-            val index = part.trim().indexOf('=');
+        for (val part : str.split(partSeparator)) {
+            val index = part.trim().indexOf(valueSeparator);
             if (index != -1) {
                 val tag = part.substring(0, index);
                 if (ignoreCase && tag.equalsIgnoreCase(name) || tag.equals(name)) {

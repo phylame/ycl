@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 
 package pw.phylame.ycl.vam;
 
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.CollectionUtils;
+import pw.phylame.ycl.util.Function;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.CollectionUtils;
-import pw.phylame.ycl.util.Function;
 
 public class ZipVamReader implements VamReader {
     private final ZipFile zip;

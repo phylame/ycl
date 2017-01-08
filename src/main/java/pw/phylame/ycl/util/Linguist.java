@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Peng Wan <phylame@163.com>
+ * Copyright 2017 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package pw.phylame.ycl.util;
 
+import lombok.NonNull;
+import pw.phylame.ycl.value.Lazy;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
-import lombok.NonNull;
-import pw.phylame.ycl.value.Lazy;
 
 public final class Linguist {
     private final String path;
