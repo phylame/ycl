@@ -17,5 +17,5 @@
 package pw.phylame.ycl.util;
 
 public interface Consumer<T> {
-    void consume(T value);
+    void consume(T obj);
 }

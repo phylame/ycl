@@ -16,6 +16,6 @@
 
 package pw.phylame.ycl.util;
 
-public interface Function<I, O> {
-    O apply(I i);
+public interface Function<T, R> {
+    R apply(T arg);
 }

@@ -16,17 +16,19 @@
 
 package pw.phylame.ycl.format;
 
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.DateUtils;
-import pw.phylame.ycl.util.MiscUtils;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.DateUtils;
+import pw.phylame.ycl.util.MiscUtils;
 
 public final class Converters {
     private Converters() {
@@ -44,7 +46,7 @@ public final class Converters {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Converter<T> forClass(@NonNull Class<T> clazz) {
+    public static <T> Converter<T> forClass(Class<T> clazz) {
         return (Converter<T>) converters.get(clazz);
     }
 
@@ -152,6 +154,16 @@ public final class Converters {
             @Override
             public BigDecimal parse(@NonNull String str) {
                 return new BigDecimal(str);
+            }
+        });
+        register(Number.class, new AbstractConverter<Number>() {
+            @Override
+            public Number parse(String str) {
+                try {
+                    return NumberFormat.getInstance().parse(str);
+                } catch (ParseException e) {
+                    throw new NumberFormatException(e.getMessage());
+                }
             }
         });
         register(Locale.class, new Converter<Locale>() {

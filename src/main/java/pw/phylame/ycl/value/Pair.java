@@ -16,12 +16,12 @@
 
 package pw.phylame.ycl.value;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.io.Serializable;
-import java.util.Map;
 
 @Getter
 @ToString
@@ -36,13 +36,9 @@ public class Pair<A, B> implements Map.Entry<A, B>, Serializable {
     public Pair() {
     }
 
-    public <X extends A, Y extends B> Pair(X first, Y second) {
+    public <F extends A, S extends B> Pair(F first, S second) {
         this.first = first;
         this.second = second;
-    }
-
-    public static <A, B> Pair<A, B> of(A first, B second) {
-        return new Pair<>(first, second);
     }
 
     @Override

@@ -16,11 +16,11 @@
 
 package pw.phylame.ycl.io;
 
-import lombok.NonNull;
-import lombok.SneakyThrows;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import lombok.NonNull;
+import lombok.SneakyThrows;
 
 public class ByteBuilder extends ByteArrayOutputStream {
 

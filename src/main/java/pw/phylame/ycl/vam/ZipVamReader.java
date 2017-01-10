@@ -16,16 +16,18 @@
 
 package pw.phylame.ycl.vam;
 
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.util.CollectionUtils;
-import pw.phylame.ycl.util.Function;
+import static pw.phylame.ycl.util.CollectionUtils.iterable;
+import static pw.phylame.ycl.util.CollectionUtils.map;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.util.Function;
 
 public class ZipVamReader implements VamReader {
     private final ZipFile zip;
@@ -60,12 +62,7 @@ public class ZipVamReader implements VamReader {
     @Override
     public ZipItem itemFor(@NonNull String name) {
         val e = zip.getEntry(name);
-        ZipItem item = null;
-        if (e != null) {
-            item = new ZipItem(e);
-            item.zip = zip;
-        }
-        return item;
+        return e != null ? new ZipItem(e, zip) : null;
     }
 
     @Override
@@ -75,12 +72,12 @@ public class ZipVamReader implements VamReader {
 
     @Override
     public Iterable<? extends ZipItem> items() {
-        return CollectionUtils.iterable(zip.entries(), new Function<Object, ZipItem>() {
+        return iterable(map(iterable(zip.entries()), new Function<ZipEntry, ZipItem>() {
             @Override
-            public ZipItem apply(Object i) {
-                return new ZipItem((ZipEntry) i);
+            public ZipItem apply(ZipEntry i) {
+                return new ZipItem(i, zip);
             }
-        });
+        }));
     }
 
     @Override

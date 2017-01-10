@@ -16,24 +16,25 @@
 
 package pw.phylame.ycl.vam;
 
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import lombok.Getter;
+import lombok.NonNull;
 
 public class ZipItem implements VamItem {
     @Getter
     private final ZipEntry entry;
 
-    ZipFile zip;
+    private ZipFile zip;
 
     public ZipItem(@NonNull String name) {
         this.entry = new ZipEntry(name);
     }
 
-    public ZipItem(ZipEntry entry) {
+    public ZipItem(ZipEntry entry, ZipFile zip) {
         this.entry = entry;
+        this.zip = zip;
     }
 
     @Override
@@ -53,7 +54,9 @@ public class ZipItem implements VamItem {
 
     @Override
     public String toString() {
-        return zip != null ? "zip://" + zip.getName() + '!' + entry.getName() : entry.getName();
+        return zip != null
+                ? "zip://" + zip.getName() + '!' + entry.getName()
+                : entry.getName();
     }
 
 }

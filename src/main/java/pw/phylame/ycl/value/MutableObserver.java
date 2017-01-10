@@ -17,18 +17,18 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
+import pw.phylame.ycl.util.Function;
 
 public class MutableObserver<T> extends Observer<T> implements MutableValue<T> {
-    public MutableObserver(@NonNull MutableValue<T> value) {
-        super(value);
+    private final Function<T, T> setObserver;
+
+    public MutableObserver(MutableValue<T> value, Function<T, T> getObserver, @NonNull Function<T, T> setObserver) {
+        super(value, getObserver);
+        this.setObserver = setObserver;
     }
 
     @Override
     public final void set(T value) {
-        onSetting(get(), value);
-    }
-
-    protected void onSetting(T oldValue, T newValue) {
-        ((MutableValue<T>) this.value).set(newValue);
+        ((MutableValue<T>) this.value).set(setObserver.apply(value));
     }
 }

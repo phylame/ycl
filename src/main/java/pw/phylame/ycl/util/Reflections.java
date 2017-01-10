@@ -16,18 +16,22 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static pw.phylame.ycl.util.StringUtils.capitalized;
 import static pw.phylame.ycl.util.StringUtils.isEmpty;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
 
 public final class Reflections {
 
@@ -104,11 +108,11 @@ public final class Reflections {
         return null;
     }
 
-    public static List<Field> getFields(@NonNull Class<?> clazz, Function<Field, Boolean> prediction) {
+    public static List<Field> getFields(@NonNull Class<?> clazz, Prediction<Field> filter) {
         val fields = new ArrayList<Field>();
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val field : clazz.getDeclaredFields()) {
-                if (prediction == null || prediction.apply(field)) {
+                if (filter == null || filter.apply(field)) {
                     fields.add(field);
                 }
             }
@@ -158,12 +162,12 @@ public final class Reflections {
         return null;
     }
 
-    public static List<Method> getMethods(@NonNull Class<?> clazz, Function<Method, Boolean> prediction) {
+    public static List<Method> getMethods(@NonNull Class<?> clazz, Prediction<Method> filter) {
         val methods = new ArrayList<Method>();
         Class<?> copy = clazz;
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
-                if (prediction == null || prediction.apply(method)) {
+                if (filter == null || filter.apply(method)) {
                     methods.add(method);
                 }
             }
@@ -171,7 +175,7 @@ public final class Reflections {
         if (Versions.jvmVersion >= 8) { // for Java 8 default methods
             for (val iface : copy.getInterfaces()) {
                 for (val method : iface.getMethods()) {
-                    if (prediction == null || prediction.apply(method)) {
+                    if (filter == null || filter.apply(method)) {
                         methods.add(method);
                     }
                 }

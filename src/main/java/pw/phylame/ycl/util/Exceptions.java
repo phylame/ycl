@@ -16,15 +16,15 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.val;
+import static java.lang.String.format;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static java.lang.String.format;
+import lombok.NonNull;
+import lombok.val;
 
 /**
  * Utilities for creating exception.

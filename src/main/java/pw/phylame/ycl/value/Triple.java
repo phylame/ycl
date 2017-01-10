@@ -16,11 +16,11 @@
 
 package pw.phylame.ycl.value;
 
+import java.io.Serializable;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 @Getter
 @ToString
@@ -37,13 +37,10 @@ public class Triple<A, B, C> implements Serializable {
     public Triple() {
     }
 
-    public <X extends A, Y extends B, Z extends C> Triple(X first, Y second, Z third) {
+    public <F extends A, S extends B, T extends C> Triple(F first, S second, T third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
-        return new Triple<>(first, second, third);
-    }
 }

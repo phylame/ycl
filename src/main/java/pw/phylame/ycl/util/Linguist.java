@@ -16,13 +16,13 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import pw.phylame.ycl.value.Lazy;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import lombok.NonNull;
+import pw.phylame.ycl.value.Lazy;
 
 public final class Linguist {
     private final String path;

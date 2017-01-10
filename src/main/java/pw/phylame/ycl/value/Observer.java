@@ -17,20 +17,20 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import pw.phylame.ycl.util.Function;
 
+@RequiredArgsConstructor
 public class Observer<T> implements Value<T> {
+    @NonNull
     protected final Value<T> value;
 
-    public Observer(@NonNull Value<T> value) {
-        this.value = value;
-    }
+    @NonNull
+    private final Function<T, T> getObserver;
 
     @Override
     public final T get() {
-        return onGetting(value.get());
+        return getObserver.apply(value.get());
     }
 
-    protected T onGetting(T value) {
-        return value;
-    }
 }

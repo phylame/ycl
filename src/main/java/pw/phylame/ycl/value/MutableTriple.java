@@ -22,12 +22,8 @@ public class MutableTriple<A, B, C> extends Triple<A, B, C> {
     public MutableTriple() {
     }
 
-    public <X extends A, Y extends B, Z extends C> MutableTriple(X first, Y second, Z third) {
+    public <F extends A, S extends B, T extends C> MutableTriple(F first, S second, T third) {
         super(first, second, third);
-    }
-
-    public static <A, B, C> MutableTriple<A, B, C> of(A first, B second, C third) {
-        return new MutableTriple<>(first, second, third);
     }
 
     public void setFirst(A first) {

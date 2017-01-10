@@ -16,11 +16,15 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.NonNull;
-import lombok.val;
-
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.log.Log;
 
 public final class MiscUtils {
     private MiscUtils() {
@@ -49,6 +53,13 @@ public final class MiscUtils {
         return new Locale(language, country);
     }
 
+    public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
+        for (val index : indices) {
+            item = itemAt(item, index < 0 ? item.size() + index : index);
+        }
+        return item;
+    }
+
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
         for (val index : indices) {
             item = itemAt(item, index < 0 ? item.size() + index : index);
@@ -72,15 +83,15 @@ public final class MiscUtils {
         return depth + 1;
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Function<T, Boolean> filter) {
+    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Prediction<T> filter) {
         return find(item, filter, 0, false);
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Function<T, Boolean> filter, int from,
-                                                     boolean recursion) {
+    public static <T extends Hierarchical<T>> T find(T item, Prediction<T> filter, int from, boolean recursion) {
+        Validate.requireNotNull(item);
+        Validate.requireNotNull(filter);
         val end = item.size();
         val items = item.items();
-
         T sub;
         for (int ix = from; ix < end; ++ix) {
             sub = items.get(ix);
@@ -94,24 +105,21 @@ public final class MiscUtils {
                 }
             }
         }
-
         return null;
     }
 
-    public static <T extends Hierarchical<T>> int select(@NonNull T item, @NonNull Function<T, Boolean> filter,
-                                                         @NonNull List<T> result) {
+    public static <T extends Hierarchical<T>> int select(T item, Prediction<T> filter, List<T> result) {
         return select(item, filter, result, -1, true);
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-                                                         @NonNull Function<T, Boolean> filter,
-                                                         @NonNull List<T> result,
-                                                         int limit,
-                                                         boolean recursion) {
+            @NonNull Prediction<T> filter,
+            @NonNull List<T> result,
+            int limit,
+            boolean recursion) {
         if (limit <= 0) {
             return 0;
         }
-
         int count = 0;
         for (val sub : item) {
             if (count++ == limit) {
@@ -123,11 +131,25 @@ public final class MiscUtils {
                 count += select(sub, filter, result, limit, true);
             }
         }
-
         return count;
     }
 
     private static <T extends Hierarchical<T>> T itemAt(T item, int index) {
         return item.items().get(index);
+    }
+
+    public static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                ClassLoader classLoader = null;
+                try {
+                    classLoader = Thread.currentThread().getContextClassLoader();
+                } catch (SecurityException ex) {
+                    Log.e("Misc", ex);
+                }
+                return classLoader;
+            }
+        });
     }
 }

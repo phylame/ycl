@@ -16,7 +16,6 @@
 
 package pw.phylame.ycl.value;
 
-import lombok.NonNull;
 import pw.phylame.ycl.util.Provider;
 
 public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
@@ -24,7 +23,7 @@ public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
         super(provider);
     }
 
-    public MutableLazy(@NonNull Provider<T> provider, T fallback) {
+    public MutableLazy(Provider<T> provider, T fallback) {
         super(provider, fallback);
     }
 

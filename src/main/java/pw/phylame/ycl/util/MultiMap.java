@@ -16,11 +16,15 @@
 
 package pw.phylame.ycl.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-
-import java.util.*;
 
 public class MultiMap<K, V> implements Map<K, Collection<V>> {
     /**
@@ -90,8 +94,8 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
     }
 
     @Override
-    public Collection<V> put(K key, Collection<V> value) {
-        return map.put(key, value);
+    public Collection<V> put(K key, Collection<V> values) {
+        return map.put(key, values);
     }
 
     @SuppressWarnings("unchecked")
@@ -101,6 +105,19 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
         c.add(value);
         map.put(key, c);
         return prev;
+    }
+
+    @SuppressWarnings("unchecked")
+    @SneakyThrows({InstantiationException.class, IllegalAccessException.class})
+    public void add(K key, Collection<V> values) {
+        if (CollectionUtils.isEmpty(values)) {
+            return;
+        }
+        Collection<V> c = map.get(key);
+        if (c == null) {
+            map.put(key, c = (Collection<V>) type.newInstance());
+        }
+        c.addAll(values);
     }
 
     @SuppressWarnings("unchecked")
@@ -151,8 +168,10 @@ public class MultiMap<K, V> implements Map<K, Collection<V>> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         MultiMap<?, ?> multiMap = (MultiMap<?, ?>) o;
 

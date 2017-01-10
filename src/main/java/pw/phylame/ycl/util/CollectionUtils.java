@@ -16,14 +16,37 @@
 
 package pw.phylame.ycl.util;
 
-import lombok.*;
-import pw.phylame.ycl.io.IOUtils;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.RandomAccess;
+import java.util.Set;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import pw.phylame.ycl.io.IOUtils;
 
 public final class CollectionUtils {
     private CollectionUtils() {
+    }
+
+    public static boolean isEmpty(Iterator<?> i) {
+        return i == null || !i.hasNext();
+    }
+
+    public static boolean isNotEmpty(Iterator<?> i) {
+        return !isEmpty(i);
     }
 
     public static boolean isEmpty(Collection<?> c) {
@@ -56,8 +79,39 @@ public final class CollectionUtils {
         return i == null ? null : (i.hasNext() ? i.next() : null);
     }
 
-    public static <E> Iterable<E> iterable(@NonNull Enumeration<?> e, final Function<Object, ? extends E> transformer) {
-        return new IterableWrapper<>(new EnumerationWrapper<>(e, transformer));
+    public static <E> E lastOf(Iterable<E> i) {
+        if (i == null) {
+            return null;
+        } else if (i instanceof RandomAccess) {
+            val list = (List<E>) i;
+            return list.isEmpty() ? null : list.get(list.size() - 1);
+        } else {
+            return lastOf(i.iterator());
+        }
+    }
+
+    public static <E> E lastOf(Iterator<E> i) {
+        if (i == null) {
+            return null;
+        }
+        E obj = null;
+        while (i.hasNext()) {
+            obj = i.next();
+        }
+        return obj;
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull final Enumeration<E> e) {
+        return iterable(new EnumerationIterator<>(e));
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull final Iterator<E> i) {
+        return new Iterable<E>() {
+            @Override
+            public Iterator<E> iterator() {
+                return i;
+            }
+        };
     }
 
     public static <K, V> V getOrElse(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
@@ -111,12 +165,12 @@ public final class CollectionUtils {
         }
     }
 
-    public static <K, V> void update(@NonNull Map<K, V> m, Iterable<Map.Entry<? extends K, ? extends V>> i) {
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterable<? extends Map.Entry<? extends K, ? extends V>> i) {
         if (i == null) {
             return;
         }
         if (i instanceof RandomAccess) {
-            val list = (List<Map.Entry<? extends K, ? extends V>>) i;
+            val list = (List<? extends Map.Entry<? extends K, ? extends V>>) i;
             for (int j = 0, end = list.size(); j < end; ++j) {
                 val e = list.get(j);
                 m.put(e.getKey(), e.getValue());
@@ -126,7 +180,7 @@ public final class CollectionUtils {
         }
     }
 
-    public static <K, V> void update(@NonNull Map<K, V> m, Iterator<Map.Entry<? extends K, ? extends V>> i) {
+    public static <K, V> void update(@NonNull Map<K, V> m, Iterator<? extends Map.Entry<? extends K, ? extends V>> i) {
         if (i == null) {
             return;
         }
@@ -136,17 +190,71 @@ public final class CollectionUtils {
         }
     }
 
-    public static <I, O> Iterator<O> map(@NonNull Iterable<I> i, @NonNull Function<I, O> filter) {
-        return new IteratorMapping<>(i.iterator(), filter);
+    public static void update(@NonNull Map<String, ? super String> m, Properties p) {
+        if (isEmpty(p)) {
+            return;
+        }
+        for (val e : p.entrySet()) {
+            m.put(e.getKey().toString(), StringUtils.toString(e.getValue()));
+        }
+
     }
 
-    public static <I, O> Iterator<O> map(@NonNull Iterator<I> i, @NonNull Function<I, O> filter) {
-        return new IteratorMapping<>(i, filter);
+    public static <I, O> Iterator<O> map(@NonNull Iterable<I> i, @NonNull Function<? super I, O> transformer) {
+        return new MappingIterator<>(i.iterator(), transformer);
+    }
+
+    public static <I, O> Iterator<O> map(@NonNull Iterator<I> i, @NonNull Function<? super I, O> transformer) {
+        return new MappingIterator<>(i, transformer);
+    }
+
+    public static <E> Iterator<E> filter(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
+        return new FilterIterator<>(i.iterator(), prediction);
+    }
+
+    public static <E> Iterator<E> filter(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
+        return new FilterIterator<>(i, prediction);
+    }
+
+    public static <E> boolean any(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
+        return any(i.iterator(), prediction);
+    }
+
+    public static <E> boolean any(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
+        while (i.hasNext()) {
+            if (prediction.apply(i.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <E> boolean all(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
+        return any(i.iterator(), prediction);
+    }
+
+    public static <E> boolean all(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
+        while (i.hasNext()) {
+            if (!prediction.apply(i.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @SafeVarargs
-    public static <E> List<E> listOf(E... objects) {
-        return Arrays.asList(objects);
+    public static <E> List<E> listOf(E... items) {
+        return Arrays.asList(items);
+    }
+
+    public static <E> List<E> listOf(Iterable<? extends E> i) {
+        if (i == null) {
+            return Collections.emptyList();
+        } else {
+            val list = new ArrayList<E>();
+            extend(list, i);
+            return Collections.unmodifiableList(list);
+        }
     }
 
     public static <E> List<E> listOf(Iterator<? extends E> i) {
@@ -160,10 +268,20 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <E> Set<E> setOf(E... objects) {
+    public static <E> Set<E> setOf(E... items) {
         val set = new HashSet<E>();
-        Collections.addAll(set, objects);
+        Collections.addAll(set, items);
         return Collections.unmodifiableSet(set);
+    }
+
+    public static <E> Set<E> setOf(Iterable<? extends E> i) {
+        if (i == null) {
+            return Collections.emptySet();
+        } else {
+            val set = new HashSet<E>();
+            extend(set, i);
+            return Collections.unmodifiableSet(set);
+        }
     }
 
     public static <E> Set<E> setOf(Iterator<? extends E> i) {
@@ -176,9 +294,9 @@ public final class CollectionUtils {
         }
     }
 
-    public static <K, V> Map<K, V> mapOf(Object... objects) {
+    public static <K, V> Map<K, V> mapOf(Object... items) {
         val m = new HashMap<K, V>();
-        fillMap(m, objects);
+        fillMap(m, items);
         return Collections.unmodifiableMap(m);
     }
 
@@ -189,30 +307,30 @@ public final class CollectionUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <K, V> void fillMap(@NonNull Map<K, V> m, Collection<?> objects) {
-        if (isEmpty(objects)) {
+    public static <K, V> void fillMap(@NonNull Map<K, V> m, Collection<?> c) {
+        if (isEmpty(c)) {
             return;
         }
-        val size = objects.size();
+        val size = c.size();
         if (size % 2 != 0) {
             throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
         }
-        for (Iterator<?> i = objects.iterator(); i.hasNext(); ) {
+        for (Iterator<?> i = c.iterator(); i.hasNext();) {
             m.put((K) i.next(), (V) i.next());
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... objects) {
-        if (objects == null || objects.length == 0) {
+    public static <K, V> void fillMap(@NonNull Map<K, V> m, Object... items) {
+        if (items == null || items.length == 0) {
             return;
         }
-        val size = objects.length;
+        val size = items.length;
         if (size % 2 != 0) {
             throw Exceptions.forIllegalArgument("length(%d) of objects must % 2 = 0", size);
         }
         for (int i = 0; i < size; i += 2) {
-            m.put((K) objects[i], (V) objects[i + 1]);
+            m.put((K) items[i], (V) items[i + 1]);
         }
     }
 
@@ -231,67 +349,19 @@ public final class CollectionUtils {
         return null;
     }
 
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, @NonNull String path) {
-        updateByProperties(m, path, null);
-    }
-
-    @SneakyThrows(IOException.class)
-    public static void updateByProperties(@NonNull Map<String, ? super String> m, String path, ClassLoader loader) {
-        val prop = propertiesFor(path, loader);
-        if (prop != null) {
-            for (val e : prop.entrySet()) {
-                m.put(e.getKey().toString(), e.getValue().toString());
-            }
-        }
-    }
-
     @RequiredArgsConstructor
-    private static class IteratorMapping<I, O> implements Iterator<O> {
-        private final Iterator<I> i;
-        private final Function<I, O> filter;
+    private static class MappingIterator<I, O> implements Iterator<O> {
+        private final Iterator<I> iterator;
+        private final Function<? super I, O> transformer;
 
         @Override
         public boolean hasNext() {
-            return i.hasNext();
+            return iterator.hasNext();
         }
 
         @Override
         public O next() {
-            return filter.apply(i.next());
-        }
-
-        @Override
-        public void remove() {
-            i.remove();
-        }
-    }
-
-    @Value
-    private static class IterableWrapper<E> implements Iterable<E> {
-        private final Iterator<E> i;
-
-        @Override
-        public Iterator<E> iterator() {
-            return i;
-        }
-    }
-
-    @Value
-    private static class EnumerationWrapper<E> implements Iterator<E> {
-        private final Enumeration<?> e;
-
-        private final Function<Object, ? extends E> transformer;
-
-        @Override
-        public boolean hasNext() {
-            return e.hasMoreElements();
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public E next() {
-            val item = e.nextElement();
-            return transformer != null ? transformer.apply(item) : (E) item;
+            return transformer.apply(iterator.next());
         }
 
         @Override
@@ -299,4 +369,64 @@ public final class CollectionUtils {
             throw new UnsupportedOperationException();
         }
     }
+
+    @RequiredArgsConstructor
+    private static class FilterIterator<I> implements Iterator<I> {
+        private final Iterator<I> iterator;
+        private final Prediction<? super I> filter;
+        private I nextItem = null;
+        private boolean present = false;
+
+        @Override
+        public boolean hasNext() {
+            if (nextItem == null) {
+                present = false;
+                while (iterator.hasNext()) {
+                    nextItem = iterator.next();
+                    if (filter.apply(nextItem)) {
+                        present = true;
+                        break;
+                    }
+                }
+            }
+            return present;
+        }
+
+        @Override
+        public I next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            val answer = nextItem;
+            nextItem = null;
+            return answer;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    @RequiredArgsConstructor
+    private static class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<E> e;
+
+        @Override
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        @Override
+        public E next() {
+            return e.nextElement();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
 }
