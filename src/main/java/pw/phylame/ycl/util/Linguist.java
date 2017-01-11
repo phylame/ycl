@@ -22,6 +22,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import lombok.NonNull;
+import pw.phylame.ycl.function.Provider;
 import pw.phylame.ycl.value.Lazy;
 
 public final class Linguist {

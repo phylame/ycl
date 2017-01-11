@@ -17,12 +17,13 @@
 package pw.phylame.ycl.util;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.ycl.function.BiFunction;
 import pw.phylame.ycl.io.IOUtils;
 import pw.phylame.ycl.log.Log;
 
@@ -33,7 +34,7 @@ public class Implementor<T> {
     private final boolean reusable;
     private final ClassLoader loader;
 
-    private final Map<String, ImpHolder> impHolders = new HashMap<>();
+    private final Map<String, ImpHolder> impHolders = new LinkedHashMap<>();
 
     public Implementor(@NonNull Class<T> type, boolean reusable) {
         this(type, reusable, null);

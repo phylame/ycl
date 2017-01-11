@@ -16,15 +16,16 @@
 
 package pw.phylame.ycl.util;
 
+import lombok.NonNull;
+import lombok.val;
+import pw.phylame.ycl.function.Prediction;
+import pw.phylame.ycl.log.Log;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
-import lombok.NonNull;
-import lombok.val;
-import pw.phylame.ycl.log.Log;
 
 public final class MiscUtils {
     private MiscUtils() {
@@ -55,14 +56,14 @@ public final class MiscUtils {
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull Collection<Integer> indices) {
         for (val index : indices) {
-            item = itemAt(item, index < 0 ? item.size() + index : index);
+            item = item.items().get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
 
     public static <T extends Hierarchical<T>> T locate(@NonNull T item, @NonNull int[] indices) {
         for (val index : indices) {
-            item = itemAt(item, index < 0 ? item.size() + index : index);
+            item = item.items().get(index < 0 ? item.size() + index : index);
         }
         return item;
     }
@@ -83,23 +84,23 @@ public final class MiscUtils {
         return depth + 1;
     }
 
-    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Prediction<T> filter) {
+    public static <T extends Hierarchical<T>> T find(@NonNull T item, @NonNull Prediction<? super T> filter) {
         return find(item, filter, 0, false);
     }
 
-    public static <T extends Hierarchical<T>> T find(T item, Prediction<T> filter, int from, boolean recursion) {
+    public static <T extends Hierarchical<T>> T find(T item, Prediction<? super T> prediction, int from, boolean recursion) {
         Validate.requireNotNull(item);
-        Validate.requireNotNull(filter);
+        Validate.requireNotNull(prediction);
         val end = item.size();
         val items = item.items();
         T sub;
         for (int ix = from; ix < end; ++ix) {
             sub = items.get(ix);
-            if (filter.apply(sub)) {
+            if (prediction.test(sub)) {
                 return sub;
             }
             if (sub.size() > 0 && recursion) {
-                sub = find(sub, filter, 0, true);
+                sub = find(sub, prediction, 0, true);
                 if (sub != null) {
                     return sub;
                 }
@@ -108,15 +109,15 @@ public final class MiscUtils {
         return null;
     }
 
-    public static <T extends Hierarchical<T>> int select(T item, Prediction<T> filter, List<T> result) {
-        return select(item, filter, result, -1, true);
+    public static <T extends Hierarchical<T>> int select(T item, Prediction<? super T> prediction, List<? super T> result) {
+        return select(item, prediction, result, -1, true);
     }
 
     public static <T extends Hierarchical<T>> int select(@NonNull T item,
-            @NonNull Prediction<T> filter,
-            @NonNull List<T> result,
-            int limit,
-            boolean recursion) {
+                                                         @NonNull Prediction<? super T> prediction,
+                                                         @NonNull List<? super T> result,
+                                                         int limit,
+                                                         boolean recursion) {
         if (limit <= 0) {
             return 0;
         }
@@ -124,18 +125,14 @@ public final class MiscUtils {
         for (val sub : item) {
             if (count++ == limit) {
                 break;
-            } else if (filter.apply(sub)) {
+            } else if (prediction.test(sub)) {
                 result.add(sub);
             }
             if (recursion && sub.size() > 0) {
-                count += select(sub, filter, result, limit, true);
+                count += select(sub, prediction, result, limit, true);
             }
         }
         return count;
-    }
-
-    private static <T extends Hierarchical<T>> T itemAt(T item, int index) {
-        return item.items().get(index);
     }
 
     public static ClassLoader getContextClassLoader() {

@@ -67,9 +67,11 @@ public class FileVamWriter implements VamWriter {
         }
     }
 
-    private FileOutputStream openOutput(String name) throws FileNotFoundException {
+    private FileOutputStream openOutput(String name) throws IOException {
+        if (!file.mkdirs()) {
+            throw new IOException("Cannot create dir " + file.getPath());
+        }
         val file = new File(this.file, name);
-        file.getParentFile().mkdirs();
         return new FileOutputStream(file);
     }
 

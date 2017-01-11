@@ -17,12 +17,14 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
-import pw.phylame.ycl.util.Function;
+import pw.phylame.ycl.function.Function;
 
 public class MutableObserver<T> extends Observer<T> implements MutableValue<T> {
-    private final Function<T, T> setObserver;
+    private final Function<? super T, ? extends T> setObserver;
 
-    public MutableObserver(MutableValue<T> value, Function<T, T> getObserver, @NonNull Function<T, T> setObserver) {
+    public MutableObserver(MutableValue<T> value,
+                           Function<? super T, ? extends T> getObserver,
+                           @NonNull Function<? super T, ? extends T> setObserver) {
         super(value, getObserver);
         this.setObserver = setObserver;
     }

@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.RandomAccess;
 import java.util.Set;
@@ -35,6 +34,7 @@ import java.util.Set;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import pw.phylame.ycl.function.Function;
 import pw.phylame.ycl.io.IOUtils;
 
 public final class CollectionUtils {
@@ -101,7 +101,11 @@ public final class CollectionUtils {
         return obj;
     }
 
-    public static <E> Iterable<E> iterable(@NonNull final Enumeration<E> e) {
+    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
+        return new EnumerationIterator<>(e);
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull Enumeration<E> e) {
         return iterable(new EnumerationIterator<>(e));
     }
 
@@ -200,48 +204,6 @@ public final class CollectionUtils {
 
     }
 
-    public static <I, O> Iterator<O> map(@NonNull Iterable<I> i, @NonNull Function<? super I, O> transformer) {
-        return new MappingIterator<>(i.iterator(), transformer);
-    }
-
-    public static <I, O> Iterator<O> map(@NonNull Iterator<I> i, @NonNull Function<? super I, O> transformer) {
-        return new MappingIterator<>(i, transformer);
-    }
-
-    public static <E> Iterator<E> filter(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
-        return new FilterIterator<>(i.iterator(), prediction);
-    }
-
-    public static <E> Iterator<E> filter(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
-        return new FilterIterator<>(i, prediction);
-    }
-
-    public static <E> boolean any(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
-        return any(i.iterator(), prediction);
-    }
-
-    public static <E> boolean any(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
-        while (i.hasNext()) {
-            if (prediction.apply(i.next())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static <E> boolean all(@NonNull Iterable<E> i, @NonNull Prediction<? super E> prediction) {
-        return any(i.iterator(), prediction);
-    }
-
-    public static <E> boolean all(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
-        while (i.hasNext()) {
-            if (!prediction.apply(i.next())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @SafeVarargs
     public static <E> List<E> listOf(E... items) {
         return Arrays.asList(items);
@@ -251,9 +213,7 @@ public final class CollectionUtils {
         if (i == null) {
             return Collections.emptyList();
         } else {
-            val list = new ArrayList<E>();
-            extend(list, i);
-            return Collections.unmodifiableList(list);
+            return listOf(i.iterator());
         }
     }
 
@@ -278,9 +238,7 @@ public final class CollectionUtils {
         if (i == null) {
             return Collections.emptySet();
         } else {
-            val set = new HashSet<E>();
-            extend(set, i);
-            return Collections.unmodifiableSet(set);
+            return setOf(i.iterator());
         }
     }
 
@@ -347,66 +305,6 @@ public final class CollectionUtils {
             return prop;
         }
         return null;
-    }
-
-    @RequiredArgsConstructor
-    private static class MappingIterator<I, O> implements Iterator<O> {
-        private final Iterator<I> iterator;
-        private final Function<? super I, O> transformer;
-
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
-
-        @Override
-        public O next() {
-            return transformer.apply(iterator.next());
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static class FilterIterator<I> implements Iterator<I> {
-        private final Iterator<I> iterator;
-        private final Prediction<? super I> filter;
-        private I nextItem = null;
-        private boolean present = false;
-
-        @Override
-        public boolean hasNext() {
-            if (nextItem == null) {
-                present = false;
-                while (iterator.hasNext()) {
-                    nextItem = iterator.next();
-                    if (filter.apply(nextItem)) {
-                        present = true;
-                        break;
-                    }
-                }
-            }
-            return present;
-        }
-
-        @Override
-        public I next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            val answer = nextItem;
-            nextItem = null;
-            return answer;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
     }
 
     @RequiredArgsConstructor

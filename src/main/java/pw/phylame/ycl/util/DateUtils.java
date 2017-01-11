@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.ycl.function.Provider;
 import pw.phylame.ycl.log.Log;
 import pw.phylame.ycl.value.Lazy;
 

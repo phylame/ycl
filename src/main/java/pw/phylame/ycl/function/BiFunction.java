@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Peng Wan <phylame@163.com>
+ * Copyright 2016 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.value;
+package pw.phylame.ycl.function;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pw.phylame.ycl.function.Function;
-
-@RequiredArgsConstructor
-public class Observer<T> implements Value<T> {
-    @NonNull
-    protected final Value<T> value;
-
-    @NonNull
-    private final Function<? super T, ? extends T> getObserver;
-
-    @Override
-    public final T get() {
-        return getObserver.apply(value.get());
-    }
-
+public interface BiFunction<T, U, R> {
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param t the first function argument
+     * @param u the second function argument
+     * @return the function result
+     */
+    R apply(T t, U u);
 }

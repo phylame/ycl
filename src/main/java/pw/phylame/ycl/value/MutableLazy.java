@@ -16,14 +16,14 @@
 
 package pw.phylame.ycl.value;
 
-import pw.phylame.ycl.util.Provider;
+import pw.phylame.ycl.function.Provider;
 
 public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
-    public MutableLazy(Provider<T> provider) {
+    public MutableLazy(Provider<? extends T> provider) {
         super(provider);
     }
 
-    public MutableLazy(Provider<T> provider, T fallback) {
+    public MutableLazy(Provider<? extends T> provider, T fallback) {
         super(provider, fallback);
     }
 

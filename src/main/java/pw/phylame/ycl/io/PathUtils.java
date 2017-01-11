@@ -22,7 +22,7 @@ import java.util.Properties;
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.util.CollectionUtils;
-import pw.phylame.ycl.util.Provider;
+import pw.phylame.ycl.function.Provider;
 import pw.phylame.ycl.util.StringUtils;
 import pw.phylame.ycl.value.Lazy;
 import pw.phylame.ycl.value.Pair;

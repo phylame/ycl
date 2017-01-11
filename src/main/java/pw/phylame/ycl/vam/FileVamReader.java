@@ -19,7 +19,7 @@ package pw.phylame.ycl.vam;
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.ycl.io.IOUtils;
-import pw.phylame.ycl.util.Consumer;
+import pw.phylame.ycl.function.Consumer;
 import pw.phylame.ycl.util.Exceptions;
 
 import java.io.*;
@@ -107,7 +107,11 @@ public class FileVamReader implements VamReader {
     }
 
     private void walkDir(File dir, Consumer<File> consumer) {
-        for (val item : dir.listFiles()) {
+        val items = dir.listFiles();
+        if (items == null) {
+            return;
+        }
+        for (val item : items) {
             if (item.isDirectory()) {
                 walkDir(item, consumer);
             } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Peng Wan <phylame@163.com>
+ * Copyright 2016 Peng Wan <phylame@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package pw.phylame.ycl.util;
+package pw.phylame.ycl.function;
 
-public interface Function<T, R> {
-    R apply(T arg);
+public interface Prediction<T> {
+    boolean test(T obj);
 }

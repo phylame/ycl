@@ -17,7 +17,7 @@
 package pw.phylame.ycl.vam;
 
 import static pw.phylame.ycl.util.CollectionUtils.iterable;
-import static pw.phylame.ycl.util.CollectionUtils.map;
+import static pw.phylame.ycl.util.CollectionUtils.iterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,8 @@ import java.util.zip.ZipFile;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.ycl.util.Function;
+import pw.phylame.ycl.function.Function;
+import pw.phylame.ycl.function.Functionals;
 
 public class ZipVamReader implements VamReader {
     private final ZipFile zip;
@@ -72,7 +73,7 @@ public class ZipVamReader implements VamReader {
 
     @Override
     public Iterable<? extends ZipItem> items() {
-        return iterable(map(iterable(zip.entries()), new Function<ZipEntry, ZipItem>() {
+        return iterable(Functionals.map(iterator(zip.entries()), new Function<ZipEntry, ZipItem>() {
             @Override
             public ZipItem apply(ZipEntry i) {
                 return new ZipItem(i, zip);

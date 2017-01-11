@@ -17,23 +17,23 @@
 package pw.phylame.ycl.value;
 
 import lombok.NonNull;
+import pw.phylame.ycl.function.Provider;
 import pw.phylame.ycl.log.Log;
-import pw.phylame.ycl.util.Provider;
 
 public class Lazy<T> implements Value<T> {
     protected volatile boolean initialized = false;
 
     protected T value;
 
-    private final Provider<T> provider;
+    private final Provider<? extends T> provider;
 
     private final T fallback;
 
-    public Lazy(Provider<T> provider) {
+    public Lazy(Provider<? extends T> provider) {
         this(provider, null);
     }
 
-    public Lazy(@NonNull Provider<T> provider, T fallback) {
+    public Lazy(@NonNull Provider<? extends T> provider, T fallback) {
         this.provider = provider;
         this.fallback = fallback;
     }
