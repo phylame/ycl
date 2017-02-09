@@ -35,7 +35,7 @@ public final class Reflections {
     private Reflections() {
     }
 
-    public static String normalizedName(String name) {
+    public static String normalized(String name) {
         if (isEmpty(name)) {
             return name;
         }
@@ -92,7 +92,7 @@ public final class Reflections {
         return (Class<?>) types[index];
     }
 
-    public static Field findField(@NonNull Class<?> clazz, String name) {
+    public static Field getField(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
@@ -118,8 +118,18 @@ public final class Reflections {
     }
 
     @SneakyThrows(IllegalAccessException.class)
+    public static Object getFieldValue(@NonNull Class<?> clazz, String name) {
+        val field = getField(clazz, name);
+        if (field == null) {
+            throw new RuntimeException("no such field: " + name);
+        }
+        makeAccessible(field);
+        return field.get(null);
+    }
+
+    @SneakyThrows(IllegalAccessException.class)
     public static Object getFieldValue(@NonNull Object target, String name) {
-        val field = findField(target.getClass(), name);
+        val field = getField(target.getClass(), name);
         if (field == null) {
             throw new RuntimeException("no such field: " + name);
         }
@@ -128,8 +138,18 @@ public final class Reflections {
     }
 
     @SneakyThrows(IllegalAccessException.class)
+    public static void setFieldValue(@NonNull Class<?> clazz, String name, Object value) {
+        val field = getField(clazz, name);
+        if (field == null) {
+            throw new RuntimeException("no such field: " + name);
+        }
+        makeAccessible(field);
+        field.set(null, value);
+    }
+
+    @SneakyThrows(IllegalAccessException.class)
     public static void setFieldValue(@NonNull Object target, String name, Object value) {
-        val field = findField(target.getClass(), name);
+        val field = getField(target.getClass(), name);
         if (field == null) {
             throw new RuntimeException("no such field: " + name);
         }
@@ -137,7 +157,7 @@ public final class Reflections {
         field.set(target, value);
     }
 
-    public static Method findMethod(@NonNull Class<?> clazz, String name, Class<?>... types) {
+    public static Method getMethod(@NonNull Class<?> clazz, String name, Class<?>... types) {
         if (isEmpty(name)) {
             return null;
         }
@@ -181,30 +201,30 @@ public final class Reflections {
         return methods;
     }
 
-    public static Method findGetter(@NonNull Class<?> clazz, String name) {
+    public static Method getGetter(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
-        name = normalizedName(name);
-        val method = findMethod(clazz, "get" + name);
+        name = normalized(name);
+        val method = getMethod(clazz, "get" + name);
         if (method != null) {
             return method;
         } else {
-            return findMethod(clazz, "is" + name);
+            return getMethod(clazz, "is" + name);
         }
     }
 
-    public static Method findGetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
+    public static Method getGetter(@NonNull Class<?> clazz, String name, @NonNull Class<?> type) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, (type == boolean.class ? "is" : "get") + normalizedName(name));
+                : getMethod(clazz, (type == boolean.class ? "is" : "get") + normalized(name));
     }
 
-    public static Method findSetter(@NonNull Class<?> clazz, String name) {
+    public static Method getSetter(@NonNull Class<?> clazz, String name) {
         if (isEmpty(name)) {
             return null;
         }
-        name = "set" + normalizedName(name);
+        name = "set" + normalized(name);
         for (; clazz != null; clazz = clazz.getSuperclass()) {
             for (val method : clazz.getDeclaredMethods()) {
                 if (name.equals(method.getName()) && method.getParameterTypes().length == 1) {
@@ -215,10 +235,10 @@ public final class Reflections {
         return null;
     }
 
-    public static Method findSetter(@NonNull Class<?> clazz, @NonNull Class<?> type, String name) {
+    public static Method getSetter(@NonNull Class<?> clazz, String name, @NonNull Class<?> type) {
         return isEmpty(name)
                 ? null
-                : findMethod(clazz, "set" + normalizedName(name), type);
+                : getMethod(clazz, "set" + normalized(name), type);
     }
 
     @SneakyThrows(IllegalAccessException.class)
@@ -232,7 +252,7 @@ public final class Reflections {
     }
 
     public static Object getProperty(@NonNull Object target, String name) {
-        val getter = findGetter(target.getClass(), name);
+        val getter = getGetter(target.getClass(), name);
         if (getter == null) {
             throw new RuntimeException("no such getter for : " + name);
         }
@@ -241,7 +261,7 @@ public final class Reflections {
 
     @SuppressWarnings("unchecked")
     public static <T> T getProperty(@NonNull Object target, String name, @NonNull Class<? extends T> type) {
-        val getter = findGetter(target.getClass(), type, name);
+        val getter = getGetter(target.getClass(), name, type);
         if (getter == null) {
             throw new RuntimeException("no such getter for : " + name);
         }
@@ -249,7 +269,7 @@ public final class Reflections {
     }
 
     public static void setProperty(@NonNull Object target, String name, Object value) {
-        val setter = findSetter(target.getClass(), value.getClass(), name);
+        val setter = getSetter(target.getClass(), name, value.getClass());
         if (setter == null) {
             throw new RuntimeException("no such setter for : " + name);
         }
@@ -257,7 +277,7 @@ public final class Reflections {
     }
 
     public static <T> void setProperty(@NonNull Object target, String name, @NonNull Class<? super T> type, T value) {
-        val setter = findSetter(target.getClass(), type, name);
+        val setter = getSetter(target.getClass(), name, type);
         if (setter == null) {
             throw new RuntimeException("no such setter for : " + name);
         }
@@ -266,7 +286,7 @@ public final class Reflections {
 
     public static Object i(Object target, String name, Object... args) {
         Class<?>[] types = typesOf(args);
-        val method = findMethod(target.getClass(), name, types);
+        val method = getMethod(target.getClass(), name, types);
         if (method == null) {
             throw new RuntimeException("no such method: " + name);
         }
@@ -280,7 +300,7 @@ public final class Reflections {
 
     public static Object i(Class<?> target, String name, Object... args) {
         Class<?>[] types = typesOf(args);
-        val method = findMethod(target, name, types);
+        val method = getMethod(target, name, types);
         if (method == null) {
             throw new RuntimeException("no such method: " + name);
         }

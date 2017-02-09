@@ -43,10 +43,12 @@ public final class PathUtils {
     public static Pair<Integer, Integer> split(@NonNull String path) {
         int extpos = path.length(), seppos;
         char ch;
+        boolean extFound = false;
         for (seppos = extpos - 1; seppos >= 0; --seppos) {
             ch = path.charAt(seppos);
-            if (ch == '.') {
+            if (ch == '.' && !extFound) {
                 extpos = seppos;
+                extFound = true;
             } else if (ch == '/' || ch == '\\') {
                 break;
             }
