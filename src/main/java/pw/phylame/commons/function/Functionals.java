@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Peng Wan <phylame@163.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pw.phylame.commons.function;
 
 import lombok.NonNull;
@@ -12,6 +28,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+/**
+ * Helper for functional operations.
+ */
 public final class Functionals {
     public static final int ZIP_ALL = 0;
     public static final int ZIP_LEFT = 1;
@@ -56,8 +75,7 @@ public final class Functionals {
         return reduce(i, i.next(), fun);
     }
 
-    public static <E> E reduce(@NonNull Iterator<E> i, E initial,
-                               @NonNull BiFunction<? super E, ? super E, ? extends E> fun) {
+    public static <E> E reduce(@NonNull Iterator<E> i, E initial, @NonNull BiFunction<? super E, ? super E, ? extends E> fun) {
         if (!i.hasNext()) {
             return initial;
         }
@@ -112,8 +130,7 @@ public final class Functionals {
     }
 
     @SafeVarargs
-    public static <E, R> Iterator<R> flatMap(@NonNull Function<? super E, R> transform,
-                                             Iterator<? extends E>... iterators) {
+    public static <E, R> Iterator<R> flatMap(@NonNull Function<? super E, R> transform, Iterator<? extends E>... iterators) {
         if (iterators.length == 0) {
             return Collections.emptyIterator();
         }
@@ -124,16 +141,16 @@ public final class Functionals {
     private static class FilterIterator<I> implements Iterator<I> {
         private final Iterator<I> iterator;
         private final Prediction<? super I> filter;
-        private I nextItem = null;
+        private I next = null;
         private boolean present = false;
 
         @Override
         public boolean hasNext() {
-            if (nextItem == null) {
+            if (next == null) {
                 present = false;
                 while (iterator.hasNext()) {
-                    nextItem = iterator.next();
-                    if (filter.test(nextItem)) {
+                    next = iterator.next();
+                    if (filter.test(next)) {
                         present = true;
                         break;
                     }
@@ -147,8 +164,8 @@ public final class Functionals {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            val answer = nextItem;
-            nextItem = null;
+            val answer = next;
+            next = null;
             return answer;
         }
 

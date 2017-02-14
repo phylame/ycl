@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,25 +37,25 @@ public final class Converters {
     private static final Map<Class<?>, Converter<?>> converters = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> Converter<T> register(@NonNull Class<T> clazz, @NonNull Converter<? extends T> converter) {
-        return (Converter<T>) converters.put(clazz, converter);
+    public static <T> Converter<T> register(@NonNull Class<T> type, @NonNull Converter<? extends T> converter) {
+        return (Converter<T>) converters.put(type, converter);
     }
 
-    public static <T> boolean isRegistered(Class<T> clazz) {
-        return converters.containsKey(clazz);
+    public static <T> boolean isRegistered(Class<T> type) {
+        return converters.containsKey(type);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Converter<T> forClass(Class<T> clazz) {
-        return (Converter<T>) converters.get(clazz);
+    public static <T> Converter<T> forType(Class<T> type) {
+        return (Converter<T>) converters.get(type);
     }
 
-    public static <T> String render(@NonNull T o, @NonNull Class<T> clazz) {
-        return render(o, clazz, null);
+    public static <T> String render(@NonNull T o, @NonNull Class<T> type) {
+        return render(o, type, null);
     }
 
-    public static <T> String render(@NonNull T o, @NonNull Class<T> clazz, String fallback) {
-        val conv = forClass(clazz);
+    public static <T> String render(@NonNull T o, @NonNull Class<T> type, String fallback) {
+        val conv = forType(type);
         return conv != null ? conv.render(o) : fallback;
     }
 
@@ -64,7 +64,7 @@ public final class Converters {
     }
 
     public static <T> T parse(@NonNull String str, @NonNull Class<T> clazz, T fallback) {
-        val conv = forClass(clazz);
+        val conv = forType(clazz);
         return conv != null ? conv.parse(str) : fallback;
     }
 

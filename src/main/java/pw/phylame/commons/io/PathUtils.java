@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,7 +73,7 @@ public final class PathUtils {
 
     public static String extName(@NonNull String path) {
         int extsep = split(path).getSecond();
-        return extsep != path.length() ? path.substring(extsep + 1) : "";
+        return extsep != path.length() ? path.substring(extsep + 1) : StringUtils.EMPTY_TEXT;
     }
 
     private static final String MIME_MAPPING_FILE = "!pw/phylame/commons/io/mime.properties";
@@ -89,13 +89,13 @@ public final class PathUtils {
         mimeMap.get().put(extension, mime);
     }
 
-    public static void updateMimes(@NonNull Map<?, ?> m) {
+    public static void mapMimes(@NonNull Map<?, ?> m) {
         mimeMap.get().putAll(m);
     }
 
     public static String mimeFor(@NonNull String name) {
         if (name.isEmpty()) {
-            return "";
+            return StringUtils.EMPTY_TEXT;
         }
         val ext = extName(name);
         if (ext.isEmpty()) {
