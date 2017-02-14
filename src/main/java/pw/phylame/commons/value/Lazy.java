@@ -16,11 +16,13 @@
 
 package pw.phylame.commons.value;
 
+import lombok.Getter;
 import lombok.NonNull;
 import pw.phylame.commons.function.Provider;
 import pw.phylame.commons.log.Log;
 
 public class Lazy<T> implements Value<T> {
+    @Getter
     protected volatile boolean initialized = false;
 
     protected T value;
