@@ -37,10 +37,19 @@ public class TextCache implements Closeable {
     private Lazy<BufferedRandomAccessFile> raf = new Lazy<>(new Provider<BufferedRandomAccessFile>() {
         @Override
         public BufferedRandomAccessFile provide() throws Exception {
-            cache = File.createTempFile("_text_cache_", ".tmp");
+            if (cache == null) {
+                cache = File.createTempFile("_text_cache_", ".tmp");
+            }
             return new BufferedRandomAccessFile(cache, "rw");
         }
     });
+
+    public TextCache() {
+    }
+
+    public TextCache(File cache) {
+        this.cache = cache;
+    }
 
     public Object add(@NonNull String text) {
         if (text.isEmpty()) {
