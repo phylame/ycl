@@ -16,6 +16,7 @@
 
 package pw.phylame.commons.util;
 
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -333,5 +334,48 @@ public final class Reflections {
             }
         }
         return types;
+    }
+
+    @Builder
+    public static class Invocation {
+        /**
+         * Target of the invocation.
+         */
+        @NonNull
+        private Object target;
+
+        /**
+         * Name of the method.
+         */
+        @NonNull
+        private String name;
+
+        /**
+         * Types of method parameters.
+         */
+        private Class<?>[] types;
+
+        /**
+         * Arguments for the method.
+         */
+        private Object[] arguments;
+
+        /**
+         * Invokes the method.
+         *
+         * @return the return value
+         */
+        @SneakyThrows({IllegalAccessException.class})
+        public Object invoke() throws InvocationTargetException, NoSuchMethodException {
+            if (types == null && arguments != null && arguments.length > 0) {
+                types = typesOf(arguments);
+            }
+            val method = getMethod(target instanceof Class ? (Class<?>) target : target.getClass(), name, types);
+            if (method == null) {
+                throw new NoSuchMethodException(name);
+            }
+            makeAccessible(method);
+            return method.invoke(target, arguments);
+        }
     }
 }
