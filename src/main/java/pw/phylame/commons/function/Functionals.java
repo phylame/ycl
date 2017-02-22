@@ -42,6 +42,13 @@ public final class Functionals {
         }
     }
 
+    public static <E> void foreachIndexed(@NonNull Iterator<E> i, @NonNull BiConsumer<Integer, ? super E> consumer) {
+        int index = 0;
+        while (i.hasNext()) {
+            consumer.consume(index++, i.next());
+        }
+    }
+
     public static <E> boolean any(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
         while (i.hasNext()) {
             if (prediction.test(i.next())) {
@@ -112,13 +119,19 @@ public final class Functionals {
     }
 
     public static <E> Optional<E> find(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
+        return findIndexed(i, prediction).getSecond();
+    }
+
+    public static <E> Pair<Integer, Optional<E>> findIndexed(@NonNull Iterator<E> i, @NonNull Prediction<? super E> prediction) {
+        int index = 0;
         while (i.hasNext()) {
             E obj = i.next();
             if (prediction.test(obj)) {
-                return Optional.of(obj);
+                return new Pair<>(index, Optional.of(obj));
             }
+            ++index;
         }
-        return Optional.empty();
+        return new Pair<>(-1, Optional.<E>empty());
     }
 
     @SafeVarargs
@@ -147,14 +160,7 @@ public final class Functionals {
         @Override
         public boolean hasNext() {
             if (next == null) {
-                present = false;
-                while (iterator.hasNext()) {
-                    next = iterator.next();
-                    if (filter.test(next)) {
-                        present = true;
-                        break;
-                    }
-                }
+                present = find(iterator, filter).isPresent();
             }
             return present;
         }
