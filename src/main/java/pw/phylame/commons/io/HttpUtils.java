@@ -17,6 +17,7 @@
 package pw.phylame.commons.io;
 
 import lombok.Builder;
+import lombok.Singular;
 import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.util.CollectionUtils;
@@ -72,7 +73,9 @@ public final class HttpUtils {
         private String url;
         private String method;
         private String encoding;
+        @Singular
         private Map<String, ?> parameters;
+        @Singular
         private Map<String, ?> properties;
         private byte[] payload;
 

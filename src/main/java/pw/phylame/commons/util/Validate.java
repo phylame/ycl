@@ -36,7 +36,7 @@ public final class Validate {
     }
 
     public static void requireNotNull(Object obj) {
-        requireNotNull(obj, "object cannot be null");
+        require(obj != null, "object cannot be null");
     }
 
     public static void requireNotNull(Object obj, String msg) {
@@ -48,7 +48,7 @@ public final class Validate {
     }
 
     public static void requireNotEmpty(CharSequence cs) {
-        requireNotEmpty(cs, "object cannot be null");
+        require(StringUtils.isNotEmpty(cs), "string cannot be null or empty");
     }
 
     public static void requireNotEmpty(CharSequence cs, String msg) {
@@ -72,7 +72,7 @@ public final class Validate {
     }
 
     public static void checkNotNull(Object o) {
-        checkNotNull(o, "object cannot be null");
+        check(o != null, "object cannot be null");
     }
 
     public static void checkNotNull(Object o, String msg) {
@@ -81,5 +81,17 @@ public final class Validate {
 
     public static void checkNotNull(Object o, String msg, Object... args) {
         check(o != null, msg, args);
+    }
+
+    public static void checkNotEmpty(CharSequence cs) {
+        check(StringUtils.isNotEmpty(cs), "string cannot be null or empty");
+    }
+
+    public static void checkNotEmpty(CharSequence cs, String msg) {
+        check(StringUtils.isNotEmpty(cs), msg);
+    }
+
+    public static void checkNotEmpty(CharSequence cs, String msg, Object... args) {
+        check(StringUtils.isNotEmpty(cs), msg, args);
     }
 }

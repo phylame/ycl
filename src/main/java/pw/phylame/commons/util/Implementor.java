@@ -16,16 +16,19 @@
 
 package pw.phylame.commons.util;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.function.BiFunction;
 import pw.phylame.commons.io.IOUtils;
 import pw.phylame.commons.log.Log;
-
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
 
 public class Implementor<T> {
     private static final String TAG = "IMPs";
@@ -34,17 +37,40 @@ public class Implementor<T> {
     private final boolean reusable;
     private final ClassLoader loader;
 
+    private final ReentrantLock lock = new ReentrantLock();
     private final Map<String, ImpHolder> impHolders = new LinkedHashMap<>();
 
+    /**
+     * Constructs reusable instance for specified type.
+     *
+     * @param type
+     *            class of the type
+     */
+    public Implementor(@NonNull Class<T> type) {
+        this(type, true, null);
+    }
+
+    /**
+     * Constructs instance for specified class type.
+     *
+     * @param type
+     *            class of the type
+     * @param reusable
+     *            <code>true</code> to reuse instance
+     */
     public Implementor(@NonNull Class<T> type, boolean reusable) {
         this(type, reusable, null);
     }
 
     /**
-     * Constructs object with specified class type.
+     * Constructs object for specified class type.
      *
-     * @param type     class of the interface
-     * @param reusable <code>true</code> to reuse instance
+     * @param type
+     *            class of the type
+     * @param reusable
+     *            <code>true</code> to reuse instance
+     * @param loader
+     *            the class loader for loading implementation class
      */
     public Implementor(@NonNull Class<T> type, boolean reusable, ClassLoader loader) {
         this.type = type;
@@ -56,72 +82,98 @@ public class Implementor<T> {
      * Registers new implementation with name and class path. <strong>NOTE:</strong> old implementation will be
      * overwritten
      *
-     * @param name name of the implementation
-     * @param path full class path of the implementation
+     * @param name
+     *            name of the implementation
+     * @param path
+     *            full class path of the implementation
      */
     public void register(String name, String path) {
         Validate.requireNotEmpty(name, "name cannot be null or empty");
         Validate.requireNotEmpty(path, "path cannot be null or empty");
-        synchronized (this) {
+        lock.lock();
+        try {
             val imp = impHolders.get(name);
             if (imp != null) {
                 imp.reset().path = path;
             } else {
                 impHolders.put(name, new ImpHolder(path));
             }
+        } finally {
+            lock.unlock();
         }
     }
 
     /**
      * Registers new implementation with name and class. <strong>NOTE:</strong> old implementation will be overwritten
      *
-     * @param name  name of the implementation
-     * @param clazz class of the implementation
+     * @param name
+     *            name of the implementation
+     * @param clazz
+     *            class of the implementation
      */
     public void register(String name, @NonNull Class<? extends T> clazz) {
         Validate.requireNotEmpty(name, "name cannot be null or empty");
-        synchronized (this) {
+        lock.lock();
+        try {
             val imp = impHolders.get(name);
             if (imp != null) {
                 imp.reset().clazz = clazz;
             } else {
                 impHolders.put(name, new ImpHolder(clazz));
             }
+        } finally {
+            lock.unlock();
         }
     }
 
-    public String[] names() {
-        synchronized (this) {
-            return impHolders.keySet().toArray(new String[impHolders.size()]);
+    public Set<String> names() {
+        lock.lock();
+        try {
+            return Collections.unmodifiableSet(impHolders.keySet());
+        } finally {
+            lock.unlock();
         }
     }
 
     public boolean contains(String name) {
-        synchronized (this) {
+        lock.lock();
+        try {
             return impHolders.containsKey(name);
+        } finally {
+            lock.unlock();
         }
     }
 
     public void remove(String name) {
-        synchronized (this) {
+        lock.lock();
+        try {
             impHolders.remove(name);
+        } finally {
+            lock.unlock();
         }
     }
 
     /**
      * Returns an instance for specified implementation name.
      *
-     * @param name name of the implementation
+     * @param name
+     *            name of the implementation
      * @return instance for the implementation, return {@literal null} if no implementation found
-     * @throws IllegalAccessException if the class cannot access
-     * @throws InstantiationException if the instance cannot be created
-     * @throws ClassNotFoundException if the class path is invalid
+     * @throws IllegalAccessException
+     *             if the class cannot access
+     * @throws InstantiationException
+     *             if the instance cannot be created
+     * @throws ClassNotFoundException
+     *             if the class path is invalid
      */
     public T getInstance(@NonNull String name)
             throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        synchronized (this) {
+        lock.lock();
+        try {
             val imp = impHolders.get(name);
             return imp != null ? imp.instantiate() : null;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -130,11 +182,18 @@ public class Implementor<T> {
      * <p>
      * The content of the input must be: [name]=[path to class].
      *
-     * @param path   path to input
-     * @param parser the parser for parse the value in each line
+     * @param path
+     *            path to input
+     * @param parser
+     *            the parser for parse the value in each line
      */
     public void load(String path, BiFunction<String, String, String> parser) {
-        load(path, loader, parser);
+        lock.lock();
+        try {
+            load(path, loader, parser);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -142,27 +201,35 @@ public class Implementor<T> {
      * <p>
      * The content of the input must be: [name]=[path to class].
      *
-     * @param path   path to input
-     * @param loader the class loader for load resources
-     * @param parser the parser for parse the value in each line
+     * @param path
+     *            path to input
+     * @param loader
+     *            the class loader for load resources
+     * @param parser
+     *            the parser for parse the value in each line
      */
     public void load(String path, ClassLoader loader, BiFunction<String, String, String> parser) {
-        val urls = IOUtils.resourcesFor(path, loader);
-        if (urls == null) {
-            return;
-        }
-        for (val url : urls) {
-            try (val in = url.openStream()) {
-                val prop = new Properties();
-                prop.load(in);
-                for (val e : prop.entrySet()) {
-                    val name = e.getKey().toString();
-                    val value = e.getValue().toString();
-                    register(name, parser == null ? value.trim() : parser.apply(name, value));
-                }
-            } catch (IOException e) {
-                Log.e(TAG, e);
+        lock.lock();
+        try {
+            val urls = IOUtils.resourcesFor(path, loader);
+            if (urls == null) {
+                return;
             }
+            for (val url : urls) {
+                try (val in = url.openStream()) {
+                    val prop = new Properties();
+                    prop.load(in);
+                    for (val e : prop.entrySet()) {
+                        val name = e.getKey().toString();
+                        val value = e.getValue().toString();
+                        register(name, parser == null ? value.trim() : parser.apply(name, value));
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, e);
+                }
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -190,9 +257,12 @@ public class Implementor<T> {
          * Creates a new instance of implement for <code>T</code>.
          *
          * @return the new instance or <code>null</code> if class for path does not extends from <code>T</code>.
-         * @throws ClassNotFoundException if the class of <code>path</code> is not found
-         * @throws IllegalAccessException if the class of <code>path</code> is inaccessible
-         * @throws InstantiationException if cannot create instance of the class
+         * @throws ClassNotFoundException
+         *             if the class of <code>path</code> is not found
+         * @throws IllegalAccessException
+         *             if the class of <code>path</code> is inaccessible
+         * @throws InstantiationException
+         *             if cannot create instance of the class
          */
         @SuppressWarnings("unchecked")
         private T instantiate() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
