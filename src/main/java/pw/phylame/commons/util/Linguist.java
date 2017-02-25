@@ -18,12 +18,11 @@ package pw.phylame.commons.util;
 
 import lombok.NonNull;
 import pw.phylame.commons.function.Provider;
+import pw.phylame.commons.log.Log;
 import pw.phylame.commons.value.Lazy;
 
 import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public final class Linguist {
     private final String path;
@@ -41,7 +40,12 @@ public final class Linguist {
     private final Lazy<ResourceBundle> bundle = new Lazy<>(new Provider<ResourceBundle>() {
         @Override
         public ResourceBundle provide() throws Exception {
-            return locale != null ? ResourceBundle.getBundle(path, locale) : ResourceBundle.getBundle(path);
+            try {
+                return locale != null ? ResourceBundle.getBundle(path, locale) : ResourceBundle.getBundle(path);
+            } catch (MissingResourceException e) {
+                Log.d("Linguist", "not found resource for %s", path);
+                return EmptyBundle.EMPTY_BUNDLE;
+            }
         }
     });
 
@@ -70,6 +74,20 @@ public final class Linguist {
             return MessageFormat.format(getBundle().getString(key), args);
         } catch (MissingResourceException e) {
             return MessageFormat.format(fallback, args);
+        }
+    }
+
+    private static class EmptyBundle extends ResourceBundle {
+        private static final EmptyBundle EMPTY_BUNDLE = new EmptyBundle();
+
+        @Override
+        protected Object handleGetObject(String key) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getKeys() {
+            return Collections.emptyEnumeration();
         }
     }
 }

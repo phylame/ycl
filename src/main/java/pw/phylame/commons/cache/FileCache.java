@@ -1,12 +1,5 @@
 package pw.phylame.commons.cache;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.charset.Charset;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.function.Provider;
@@ -14,6 +7,13 @@ import pw.phylame.commons.log.Log;
 import pw.phylame.commons.util.StringUtils;
 import pw.phylame.commons.util.Validate;
 import pw.phylame.commons.value.Lazy;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FileCache implements Cacheable {
     private static final String TAG = FileCache.class.getSimpleName();
@@ -48,7 +48,7 @@ public class FileCache implements Cacheable {
         val writeLock = lock.writeLock();
         writeLock.lock();
         try {
-            val raf = raf.get();
+            val raf = this.raf.get();
             Validate.checkNotNull(raf, "failed to create cache file");
             val tag = new RangeTag(raf.getFilePointer(), text.length() * 2);
             raf.write(text.getBytes(ENCODING));
@@ -69,7 +69,7 @@ public class FileCache implements Cacheable {
             val readLock = lock.readLock();
             readLock.lock();
             try {
-                val raf = raf.get();
+                val raf = this.raf.get();
                 Validate.checkNotNull(raf, "failed to create cache file");
                 raf.seek(rt.offset);
                 byte[] b = new byte[(int) rt.length];
