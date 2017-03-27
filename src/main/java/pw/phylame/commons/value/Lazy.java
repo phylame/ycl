@@ -19,7 +19,6 @@ package pw.phylame.commons.value;
 import lombok.Getter;
 import lombok.NonNull;
 import pw.phylame.commons.function.Provider;
-import pw.phylame.commons.log.Log;
 
 public class Lazy<T> implements Value<T> {
     @Getter
@@ -29,7 +28,11 @@ public class Lazy<T> implements Value<T> {
 
     private final Provider<? extends T> provider;
 
+    @Getter
     private final T fallback;
+
+    @Getter
+    protected Exception error;
 
     public Lazy(Provider<? extends T> provider) {
         this(provider, null);
@@ -48,7 +51,7 @@ public class Lazy<T> implements Value<T> {
                     try {
                         value = provider.provide();
                     } catch (Exception e) {
-                        Log.d("Lazy", e);
+                        error = e;
                         value = fallback;
                     }
                     initialized = true;

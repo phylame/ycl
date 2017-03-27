@@ -156,6 +156,28 @@ public final class IOUtils {
         }
     }
 
+    public static void writeLines(File file, Collection<?> items) throws IOException {
+        writeLines(file, items, System.lineSeparator());
+    }
+
+    public static void writeLines(File file, Collection<?> items, String lineSeparator) throws IOException {
+        writeLines(file, items, lineSeparator, null);
+    }
+
+    /**
+     * Writes specified char sequence to file.
+     *
+     * @param file     the output file
+     * @param cs       the char sequence
+     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @throws IOException if occur I/O errors
+     */
+    public static void writeLines(File file, Collection<?> items, String lineSeparator, String encoding) throws IOException {
+        try (val writer = writerFor(file, encoding)) {
+            dumpLines(writer, items, lineSeparator);
+        }
+    }
+
     /**
      * Copies bytes from <code>InputStream</code> to <code>OutputStream</code>.
      *
@@ -509,6 +531,18 @@ public final class IOUtils {
 
     public static Iterator<String> linesOf(@NonNull Reader reader, boolean skipEmpty) {
         return new LineIterator(skipEmpty, buffered(reader));
+    }
+
+    public static void dumpLines(@NonNull Writer writer, Collection<?> items) throws IOException {
+        dumpLines(writer, items, System.lineSeparator());
+    }
+
+    public static void dumpLines(@NonNull Writer writer, Collection<?> items, String lineSeparator) throws IOException {
+        val bw = buffered(writer);
+        for (val item : items) {
+            bw.append(item.toString()).append(lineSeparator);
+        }
+        bw.flush();
     }
 
     public static URL resourceFor(@NonNull String path) throws MalformedURLException {

@@ -30,6 +30,7 @@ public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
     @Override
     public void set(T value) {
         this.value = value;
+        this.error = null;
         initialized = true;
     }
 }
