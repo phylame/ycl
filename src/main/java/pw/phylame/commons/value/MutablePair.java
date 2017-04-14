@@ -18,17 +18,15 @@ package pw.phylame.commons.value;
 
 import lombok.val;
 
-public class MutablePair<A, B> extends Pair<A, B> {
+public class MutablePair<A, B> extends Pair<A, B> implements MutableValue<B> {
     private static final long serialVersionUID = -7871583557712920496L;
 
     public MutablePair() {
-
     }
 
     public <F extends A, S extends B> MutablePair(F first, S second) {
         super(first, second);
     }
-
 
     public void setFirst(A first) {
         this.first = first;
@@ -48,5 +46,10 @@ public class MutablePair<A, B> extends Pair<A, B> {
         val oldValue = second;
         second = value;
         return oldValue;
+    }
+
+    @Override
+    public B set(B value) {
+        return setValue(value);
     }
 }

@@ -19,7 +19,6 @@ package pw.phylame.commons.vam;
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.function.Function;
-import pw.phylame.commons.function.Functionals;
 
 import java.io.File;
 import java.io.IOException;

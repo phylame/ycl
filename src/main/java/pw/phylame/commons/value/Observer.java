@@ -26,11 +26,10 @@ public class Observer<T> implements Value<T> {
     protected final Value<T> value;
 
     @NonNull
-    private final Function<? super T, ? extends T> getObserver;
+    private final Function<? super T, ? extends T> readObserver;
 
     @Override
     public final T get() {
-        return getObserver.apply(value.get());
+        return readObserver.apply(value.get());
     }
-
 }

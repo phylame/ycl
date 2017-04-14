@@ -20,17 +20,17 @@ import lombok.NonNull;
 import pw.phylame.commons.function.Function;
 
 public class MutableObserver<T> extends Observer<T> implements MutableValue<T> {
-    private final Function<? super T, ? extends T> setObserver;
+    private final Function<? super T, ? extends T> writeObserver;
 
     public MutableObserver(MutableValue<T> value,
-                           Function<? super T, ? extends T> getObserver,
-                           @NonNull Function<? super T, ? extends T> setObserver) {
-        super(value, getObserver);
-        this.setObserver = setObserver;
+                           Function<? super T, ? extends T> readObserver,
+                           @NonNull Function<? super T, ? extends T> writeObserver) {
+        super(value, readObserver);
+        this.writeObserver = writeObserver;
     }
 
     @Override
-    public final void set(T value) {
-        ((MutableValue<T>) this.value).set(setObserver.apply(value));
+    public final T set(T value) {
+        return ((MutableValue<T>) this.value).set(writeObserver.apply(value));
     }
 }

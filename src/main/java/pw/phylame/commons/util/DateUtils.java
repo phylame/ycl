@@ -18,11 +18,7 @@ package pw.phylame.commons.util;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.function.Provider;
-import pw.phylame.commons.log.Log;
-import pw.phylame.commons.value.Lazy;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,80 +39,52 @@ public final class DateUtils {
 
     public static final String ANSIC_FORMAT = "EEE MMM d HH:mm:ss z yyyy";
 
-    private static final Lazy<DateFormat> isoFormatter = new Lazy<>(new Provider<DateFormat>() {
-        @Override
-        public DateFormat provide() throws Exception {
-            return new SimpleDateFormat(ISO_FORMAT, Locale.ENGLISH);
-        }
-    });
-
-    private static final Lazy<DateFormat> rfc1123Formatter = new Lazy<>(new Provider<DateFormat>() {
-        @Override
-        public DateFormat provide() {
-            return new SimpleDateFormat(RFC1123_FORMAT, Locale.ENGLISH);
-        }
-    });
-
-    private static final Lazy<DateFormat> rfc1036Formatter = new Lazy<>(new Provider<DateFormat>() {
-        @Override
-        public DateFormat provide() {
-            return new SimpleDateFormat(RFC1036_FORMAT, Locale.ENGLISH);
-        }
-    });
-
-    private static final Lazy<DateFormat> ansicFormatter = new Lazy<>(new Provider<DateFormat>() {
-        @Override
-        public DateFormat provide() {
-            return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH);
-        }
-    });
-
     public static String toISO(@NonNull Date date) {
-        return isoFormatter.get().format(date);
+        return new SimpleDateFormat(ISO_FORMAT).format(date);
     }
 
     public static Date forISO(@NonNull String str) throws ParseException {
-        return isoFormatter.get().parse(str);
+        return new SimpleDateFormat(ISO_FORMAT).parse(str);
     }
 
     public static String toRFC1123(@NonNull Date date) {
-        return rfc1123Formatter.get().format(date);
+        return new SimpleDateFormat(RFC1123_FORMAT, Locale.ENGLISH).format(date);
     }
 
     public static String toRFC822(@NonNull Date date) {
-        return rfc1123Formatter.get().format(date);
+        return toRFC1123(date);
     }
 
     public static Date forRFC1123(@NonNull String str) throws ParseException {
-        return rfc1123Formatter.get().parse(str);
+        return new SimpleDateFormat(RFC1123_FORMAT, Locale.ENGLISH).parse(str);
     }
 
     public static Date forRFC822(@NonNull String str) throws ParseException {
-        return rfc1123Formatter.get().parse(str);
+        return forRFC1123(str);
     }
 
     public static String toRFC1036(@NonNull Date date) {
-        return rfc1036Formatter.get().format(date);
+        return new SimpleDateFormat(RFC1036_FORMAT, Locale.ENGLISH).format(date);
     }
 
     public static String toRFC850(@NonNull Date date) {
-        return rfc1036Formatter.get().format(date);
+        return toRFC1036(date);
     }
 
     public static Date forRFC1036(@NonNull String str) throws ParseException {
-        return rfc1036Formatter.get().parse(str);
+        return new SimpleDateFormat(RFC1036_FORMAT, Locale.ENGLISH).parse(str);
     }
 
     public static Date forRFC850(@NonNull String str) throws ParseException {
-        return rfc1036Formatter.get().parse(str);
+        return forRFC1036(str);
     }
 
     public static String toANSIC(@NonNull Date date) {
-        return ansicFormatter.get().format(date);
+        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).format(date);
     }
 
     public static Date forANSIC(@NonNull String str) throws ParseException {
-        return ansicFormatter.get().parse(str);
+        return new SimpleDateFormat(ANSIC_FORMAT, Locale.ENGLISH).parse(str);
     }
 
     public static Date parseDate(String str, Date defaultValue) {
@@ -125,18 +93,15 @@ public final class DateUtils {
         }
         try {
             return forISO(str);
-        } catch (ParseException e) {
-            Log.e(TAG, e);
+        } catch (ParseException ignored) {
         }
         try {
             return forRFC1123(str);
-        } catch (ParseException e) {
-            Log.e(TAG, e);
+        } catch (ParseException ignored) {
         }
         try {
             return forRFC1036(str);
-        } catch (ParseException e) {
-            Log.e(TAG, e);
+        } catch (ParseException ignored) {
         }
         try {
             return forANSIC(str);

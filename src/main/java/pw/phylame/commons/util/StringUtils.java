@@ -266,9 +266,9 @@ public final class StringUtils {
      * Returns list of lines split from text content in this object.
      *
      * @param cs        the input string
-     * @param skipEmpty <code>true</code> to skip empty line
-     * @return list of lines, never <code>null</code>
-     * @throws NullPointerException if the <code>cs</code> is <code>null</code>
+     * @param skipEmpty {@literal true} to skip empty line
+     * @return list of lines, never {@code null}
+     * @throws NullPointerException if the {@code cs} is {@code null}
      */
     public static List<String> splitLines(@NonNull CharSequence cs, boolean skipEmpty) {
         val lines = new LinkedList<String>();

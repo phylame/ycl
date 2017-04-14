@@ -42,5 +42,4 @@ public class Triple<A, B, C> implements Serializable {
         this.second = second;
         this.third = third;
     }
-
 }

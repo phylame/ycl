@@ -24,8 +24,6 @@ public class Lazy<T> implements Value<T> {
     @Getter
     protected volatile boolean initialized = false;
 
-    protected T value;
-
     private final Provider<? extends T> provider;
 
     @Getter
@@ -33,6 +31,8 @@ public class Lazy<T> implements Value<T> {
 
     @Getter
     protected Exception error;
+
+    protected T value;
 
     public Lazy(Provider<? extends T> provider) {
         this(provider, null);
@@ -44,15 +44,15 @@ public class Lazy<T> implements Value<T> {
     }
 
     @Override
-    public T get() {
+    public final T get() {
         if (!initialized) {
             synchronized (this) {
                 if (!initialized) {
                     try {
                         value = provider.provide();
                     } catch (Exception e) {
-                        error = e;
                         value = fallback;
+                        error = e;
                     }
                     initialized = true;
                 }

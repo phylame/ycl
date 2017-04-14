@@ -16,6 +16,7 @@
 
 package pw.phylame.commons.value;
 
+import lombok.val;
 import pw.phylame.commons.function.Provider;
 
 public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
@@ -28,9 +29,11 @@ public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
     }
 
     @Override
-    public void set(T value) {
+    public T set(T value) {
+        val prev = this.value;
         this.value = value;
         this.error = null;
         initialized = true;
+        return prev;
     }
 }

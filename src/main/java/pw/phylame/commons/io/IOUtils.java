@@ -147,7 +147,7 @@ public final class IOUtils {
      *
      * @param file     the output file
      * @param cs       the char sequence
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @throws IOException if occur I/O errors
      */
     public static void write(File file, CharSequence cs, String encoding) throws IOException {
@@ -169,7 +169,7 @@ public final class IOUtils {
      *
      * @param file     the output file
      * @param cs       the char sequence
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @throws IOException if occur I/O errors
      */
     public static void writeLines(File file, Collection<?> items, String lineSeparator, String encoding) throws IOException {
@@ -179,7 +179,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>InputStream</code> to <code>OutputStream</code>.
+     * Copies bytes from {@code InputStream} to {@code OutputStream}.
      *
      * @param in         source stream
      * @param out        destination stream
@@ -197,7 +197,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>InputSteam</code> to <code>RandomAccessFile</code>.
+     * Copies bytes from {@code InputSteam} to {@code RandomAccessFile}.
      *
      * @param in         source stream
      * @param out        destination file
@@ -215,7 +215,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>RandomAccessFile</code> to <code>OutputStream</code>.
+     * Copies bytes from {@code RandomAccessFile} to {@code OutputStream}.
      *
      * @param in         source file
      * @param out        destination stream
@@ -233,7 +233,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>RandomAccessFile</code> to <code>RandomAccessFile</code>.
+     * Copies bytes from {@code RandomAccessFile} to {@code RandomAccessFile}.
      *
      * @param in         source file
      * @param out        destination file
@@ -251,7 +251,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies bytes from <code>Reading</code> to <code>Writing</code>.
+     * Copies bytes from {@code Reading} to {@code Writing}.
      *
      * @param in         input source
      * @param out        destination output
@@ -322,7 +322,7 @@ public final class IOUtils {
      * Opens a reader for specified file with encoding.
      *
      * @param file     the input file
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the reader
      * @throws IOException if occur I/O errors
      */
@@ -339,7 +339,7 @@ public final class IOUtils {
      * Open a reader for specified input stream with specified encoding.
      *
      * @param in       the input stream
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the reader
      * @throws UnsupportedEncodingException if specified encoding is unsupported
      */
@@ -355,7 +355,7 @@ public final class IOUtils {
      * Opens a writer for specified file with encoding.
      *
      * @param file     the output file
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the writer
      * @throws IOException if occur I/O errors
      */
@@ -372,7 +372,7 @@ public final class IOUtils {
      * Open a writer for specified output stream with specified encoding.
      *
      * @param out      the out stream
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the writer
      * @throws UnsupportedEncodingException if specified encoding is unsupported
      */
@@ -385,7 +385,7 @@ public final class IOUtils {
     }
 
     /**
-     * Copies characters from <code>Reader</code> to <code>Reader</code>.
+     * Copies characters from {@code Reader} to {@code Reader}.
      *
      * @param in         source reader
      * @param out        destination writer
@@ -442,7 +442,7 @@ public final class IOUtils {
      * Gets string from specified input with specified encoding.
      *
      * @param in       the input
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the string
      * @throws IOException if occur I/O error
      */
@@ -458,7 +458,7 @@ public final class IOUtils {
      * Gets string from specified input with specified encoding.
      *
      * @param in       the input
-     * @param encoding the encoding, if <code>null</code> use default encoding
+     * @param encoding the encoding, if {@code null} use default encoding
      * @return the string
      * @throws IOException if occur I/O error
      */
@@ -476,8 +476,8 @@ public final class IOUtils {
      * Gets all lines of specified input stream.
      *
      * @param in        the input stream
-     * @param encoding  encoding of the bytes or <code>null</code> to use default encoding
-     * @param skipEmpty <code>true</code> to skip empty lines
+     * @param encoding  encoding of the bytes or {@code null} to use default encoding
+     * @param skipEmpty {@literal true} to skip empty lines
      * @return list of lines
      * @throws IOException if occur I/O error
      */
@@ -497,7 +497,7 @@ public final class IOUtils {
      * Gets all lines of specified reader.
      *
      * @param reader    the input reader
-     * @param skipEmpty <code>true</code> to skip empty lines
+     * @param skipEmpty {@literal true} to skip empty lines
      * @return list of lines
      * @throws IOException if occur I/O error
      */

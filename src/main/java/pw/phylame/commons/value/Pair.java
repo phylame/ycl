@@ -26,7 +26,7 @@ import java.util.Map;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Pair<A, B> implements Map.Entry<A, B>, Serializable {
+public class Pair<A, B> implements Value<B>, Map.Entry<A, B>, Serializable {
     private static final long serialVersionUID = -5592516496835082752L;
 
     protected A first;
@@ -39,6 +39,11 @@ public class Pair<A, B> implements Map.Entry<A, B>, Serializable {
     public <F extends A, S extends B> Pair(F first, S second) {
         this.first = first;
         this.second = second;
+    }
+
+    @Override
+    public B get() {
+        return second;
     }
 
     @Override

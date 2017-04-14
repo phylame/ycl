@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 /**
- * Wrapper for block of <code>RandomAccessFile</code> as <code>InputStream</code>.
+ * Wrapper for block of {@code RandomAccessFile} as {@code InputStream}.
  */
 public class RAFInputStream extends InputStream {
     private final RandomAccessFile source;

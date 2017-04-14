@@ -22,5 +22,4 @@ public final class Versions {
     static {
         jvmVersion = Runtime.class.getPackage().getSpecificationVersion().charAt(2) - '0';
     }
-
 }

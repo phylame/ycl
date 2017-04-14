@@ -17,5 +17,5 @@
 package pw.phylame.commons.value;
 
 public interface MutableValue<T> extends Value<T> {
-    void set(T value);
+    T set(T value);
 }
