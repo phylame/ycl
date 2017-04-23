@@ -28,28 +28,28 @@ public class MutablePair<A, B> extends Pair<A, B> implements MutableValue<B> {
         super(first, second);
     }
 
-    public void setFirst(A first) {
+    public final void setFirst(A first) {
         this.first = first;
     }
 
-    public void setSecond(B second) {
+    public final void setSecond(B second) {
         this.second = second;
     }
 
-    public void set(A first, B second) {
+    public final void set(A first, B second) {
         this.first = first;
         this.second = second;
     }
 
     @Override
-    public B setValue(B value) {
+    public final B setValue(B value) {
         val oldValue = second;
         second = value;
         return oldValue;
     }
 
     @Override
-    public B set(B value) {
+    public final B set(B value) {
         return setValue(value);
     }
 }
