@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static pw.phylame.commons.util.CollectionUtils.iterable;
-import static pw.phylame.commons.util.CollectionUtils.iterator;
+import static pw.phylame.commons.util.CollectionUtils.*;
 
 public class ZipVamReader implements VamReader {
     private final ZipFile zip;
@@ -72,7 +71,7 @@ public class ZipVamReader implements VamReader {
 
     @Override
     public Iterable<? extends ZipItem> items() {
-        return iterable(Functionals.map(iterator(zip.entries()), new Function<ZipEntry, ZipItem>() {
+        return iterable(map(iterator(zip.entries()), new Function<ZipEntry, ZipItem>() {
             @Override
             public ZipItem apply(ZipEntry i) {
                 return new ZipItem(i, zip);

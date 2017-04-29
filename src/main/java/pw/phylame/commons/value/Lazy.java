@@ -27,10 +27,10 @@ public class Lazy<T> implements Value<T> {
     private final Provider<? extends T> provider;
 
     @Getter
-    private final T fallback;
+    protected Exception error;
 
     @Getter
-    protected Exception error;
+    private final T fallback;
 
     protected T value;
 

@@ -42,7 +42,7 @@ public class Pair<A, B> implements Value<B>, Map.Entry<A, B>, Serializable {
     }
 
     @Override
-    public B get() {
+    public final B get() {
         return second;
     }
 

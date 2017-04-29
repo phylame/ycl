@@ -410,8 +410,8 @@ public final class StringUtils {
 
         private Render<? super T> transform;
 
-        private CharSequence prefix = null;
-        private CharSequence suffix = null;
+        private CharSequence prefix;
+        private CharSequence suffix;
 
         public String join() {
             val b = new StringBuilder();

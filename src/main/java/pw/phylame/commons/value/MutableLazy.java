@@ -29,11 +29,11 @@ public class MutableLazy<T> extends Lazy<T> implements MutableValue<T> {
     }
 
     @Override
-    public T set(T value) {
+    public final T set(T value) {
         val prev = this.value;
+        initialized = true;
         this.value = value;
         this.error = null;
-        initialized = true;
         return prev;
     }
 }

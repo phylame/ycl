@@ -106,6 +106,14 @@ public final class CollectionUtils {
         };
     }
 
+    public static <E, T> Iterator<T> map(@NonNull Iterator<? extends E> i, @NonNull Function<? super E, ? extends T> transform) {
+        val results = new LinkedList<T>();
+        while (i.hasNext()) {
+            results.add(transform.apply(i.next()));
+        }
+        return results.iterator();
+    }
+
     public static <K, V> V getOrElse(Map<K, V> m, K key, Function<K, ? extends V> supplier) {
         return getOrElse(m, key, false, supplier);
     }
@@ -134,6 +142,7 @@ public final class CollectionUtils {
         return value;
     }
 
+    @SuppressWarnings("unchecked")
     public static <E> void extend(@NonNull Collection<E> c, Iterable<? extends E> i) {
         if (i == null) {
             return;
@@ -157,6 +166,7 @@ public final class CollectionUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <K, V> void update(@NonNull Map<K, V> m, Iterable<? extends Map.Entry<? extends K, ? extends V>> i) {
         if (i == null) {
             return;
